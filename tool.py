@@ -21,23 +21,22 @@ def calculate_p_cruise(W, cd_0, rho, v_cruise, S, A, e):
     return W * (((cd_0 * (1 / 2) * rho * v_cruise**3) / (W / S)) + ((W / S) * (1 / pi * A * e * (1 / 2) * rho *
                                                                                v_cruise)))
 #Range
-def calculate_range(specific_energy, m_energy, m, L, D, efficiency_total):
+def calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_total):
     """Calculates the range, R. Inputs are specific energy of the energy source E^*, mass of the energy source m_energy,
     mass of the aircraft m, lift L, drag D and total efficiency eta_total."""
-    return specific_energy * (m_energy / m) * (1 / 9.81) * (L / D) * efficiency_total
+    return specific_energy * (m_energy / m) * (1 / 9.81) * L_over_D * efficiency_total
 
 #Climb rate
-def calculate_max_climb_rate(p_max, W, S, cd_0, rho, A, e):
-    """Calculates the maximum climb rate, c. Inputs are maximum power p_max, weight W, wing surface area S, zero lift
-    drag coefficient Cd_0, air density rho, aspect ratio A and Oswald efficiency factor e."""
+def calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e):
+    """Calculates the maximum climb rate c, the climb rate G at maximum climb rate and the velocity V at maximum climb
+    rate. Inputs are maximum power p_max, weight W, wing surface area S, zero lift drag coefficient Cd_0, air density
+    rho, aspect ratio A and Oswald efficiency factor e."""
     cl = sqrt(3 * cd_0 * pi * A * e)
     cd = 4 * cd_0
-    return (p_max / W) - ((sqrt(W / S) * sqrt(2)) / ((cl**(3 / 2) / cd) * sqrt(rho)))
-
-#Climb gradient
-def calculate_climb_gradient(c, v):
-    """Calculates the climb gradient, G. Inputs are climb rate c and velocity v."""
-    return c / v
+    max_climb_rate = (p_max / W) - ((sqrt(W / S) * sqrt(2)) / ((cl**(3 / 2) / cd) * sqrt(rho)))
+    max_climb_gradient = (p_max / W) * (1 / sqrt((W / S) * (2 / rho) * (1 / cl))) - cd / cl
+    velocity_at_max_climb_rate = max_climb_rate / max_climb_gradient
+    return max_climb_rate, max_climb_gradient, velocity_at_max_climb_rate
 
 #Runway length take-off
 def calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff, cd_0, A, e):
@@ -88,3 +87,33 @@ def calculate_design_efficiency(E_d, efficiency_pt, efficiency_r, T):
     efficiency of the powertrain eta_pt, percentage of the total used energy that is recovered for other systems eta_r
     and the total amount of thrust energy T."""
     return (E_d * efficiency_pt * (1 + efficiency_r)) / T
+
+#Tool
+def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, cl_takeoff):
+    cl_opt = calculate_cl_opt(cd_0, A, e)
+    v_cruise = calculate_v_cruise(W, S, rho, cl_opt)
+    p_cruise = calculate_p_cruise(W, cd_0, rho, v_cruise, S, A, e)
+    max_range = calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_total)
+
+    print(f"**************CRUISE CHARACTERISTICS******************** \n"
+          f"Optimum lift coefficient Cl_opt = {round(cl_opt, 2)} [-]\n"
+          f"Cruise speed                    = {round(v_cruise, 2)} [m/s] \n"
+          f"Required cruise power           = {round(p_cruise, 2)} [Watt] \n"
+          f"Max range                       = {round(max_range, 2)} [m]")
+
+
+    max_climb_rate, max_climb_gradient, climb_velocity = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho,
+                                                                                               A, e)
+    # runway_length_takeoff = calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff)
+    TOP = calculate_takeoff_parameter(W, S, p_max, cl_takeoff)
+
+    print(f"**************TAKE-OFF CHARACTERISTICS****************** \n"
+          f"Max climb rate                  = {round(max_climb_rate, 2)} [m/s] \n"
+          f"Climb gradient @max climb rate  = {round(degrees(atan(max_climb_gradient)), 2)} [deg] \n"
+          f"Velocity       @max climb rate  = {round(climb_velocity, 2)} [m/s] \n"
+          f"Take-Off Parameter (TOP)        = {round(TOP, 2)} [N^2/Wm^2]")
+
+
+
+
+
