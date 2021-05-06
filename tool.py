@@ -64,4 +64,27 @@ def calculate_runway_length_landing(W, rho, A, cl_max):
     v_stall = sqrt((2 * W) / rho * A * cl_max)
     return 0.5915 * v_stall**2
 
+#Refuel time
+def calculate_refuel_time(tank_capacity, fill_speed):
+    """Calculates refuel time t_rf. Inputs are tank capacity and fill speed."""
+    return tank_capacity / fill_speed
 
+def calculate_charging_time(E_batt, p_ch, efficiency_ch):
+    """Calculates charging time t_ch. Inputs are battery capacity E_batt, charging power p_ch and charging efficiency
+    eta_ch."""
+    return E_batt / (p_ch * efficiency_ch)
+
+#Noise
+def calculate_max_sound_pressure_level(p_br, D, M_t, B, N, r):
+    """Calculates the maximum sound pressure level, SPL_max. Inputs are break shaft power p_br, propeller diameter D,
+    rotational tip Mach number M_t, number of blades per propeller B, number of propellers N and distance to the
+    propeller r."""
+    return 83.4 + 15.3 * np.log10(p_br) - 20 * np.log10(D) + 38.5 * M_t - 3 * (B - 2) + 10 * np.log10(N) - 20 * \
+           np.log10(r)
+
+#Design efficiency
+def calculate_design_efficiency(E_d, efficiency_pt, efficiency_r, T):
+    """Calculates the design efficiency GI_1. Inputs are the amount of energy per kg energy source material E_d, total
+    efficiency of the powertrain eta_pt, percentage of the total used energy that is recovered for other systems eta_r
+    and the total amount of thrust energy T."""
+    return (E_d * efficiency_pt * (1 + efficiency_r)) / T
