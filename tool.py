@@ -89,7 +89,7 @@ def calculate_design_efficiency(E_d, efficiency_pt, efficiency_r, T):
     return (E_d * efficiency_pt * (1 + efficiency_r)) / T
 
 #Tool
-def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, cl_takeoff):
+def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, cl_takeoff, cl_max, battery=True):
     cl_opt = calculate_cl_opt(cd_0, A, e)
     v_cruise = calculate_v_cruise(W, S, rho, cl_opt)
     p_cruise = calculate_p_cruise(W, cd_0, rho, v_cruise, S, A, e)
@@ -106,14 +106,27 @@ def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficien
                                                                                                A, e)
     # runway_length_takeoff = calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff)
     TOP = calculate_takeoff_parameter(W, S, p_max, cl_takeoff)
+    runway_length_landing = calculate_runway_length_landing(W, rho, A, cl_max)
 
-    print(f"**************TAKE-OFF CHARACTERISTICS****************** \n"
+    print(f"***********TAKE-OFF/LANDING CHARACTERISTICS************* \n"
           f"Max climb rate                  = {round(max_climb_rate, 2)} [m/s] \n"
           f"Climb gradient @max climb rate  = {round(degrees(atan(max_climb_gradient)), 2)} [deg] \n"
           f"Velocity       @max climb rate  = {round(climb_velocity, 2)} [m/s] \n"
-          f"Take-Off Parameter (TOP)        = {round(TOP, 2)} [N^2/Wm^2]")
+          f"Take-Off Parameter (TOP)        = {round(TOP, 2)} [N^2/Wm^2] \n"
+          f"Runway length @landing          = {round(runway_length_landing, 2)} [m]")
 
+    if battery:
+        E_batt = float(input('E_batt [J]    = '))
+        p_ch = float(input('p_ch [W]     = '))
+        efficiency_ch = float(input('efficiency_ch = '))
+        charge_time = calculate_charging_time(E_batt, p_ch, efficiency_ch)
+        print(f"***********OTHER CHARACTERISTICS************* \n"
+              f"Battery charge time             = {round(charge_time, 2)} [sec]")
 
-
-
+    else:
+        tank_capacity = float(input('tank capacity [kg] = '))
+        fill_speed = float(input('fill speed  [kg/s] = '))
+        refuel_time = calculate_refuel_time(tank_capacity, fill_speed)
+        print(f"***********OTHER CHARACTERISTICS************* \n"
+              f"Refuel time                     = {round(refuel_time, 2)} [sec]")
 
