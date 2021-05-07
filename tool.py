@@ -38,9 +38,9 @@ def calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e):
     cl = sqrt(3 * cd_0 * pi * A * e)
     cd = 4 * cd_0
     max_climb_rate = (p_max / W) - ((sqrt(W / S) * sqrt(2)) / ((cl ** (3 / 2) / cd) * sqrt(rho)))
-    #max_climb_gradient = (p_max / W) * (1 / sqrt((W / S) * (2 / rho) * (1 / cl))) - cd / cl
+    max_climb_gradient = (p_max / W) * (1 / sqrt((W / S) * (2 / rho) * (1 / cl))) - cd / cl
     #velocity_at_max_climb_rate = max_climb_rate / max_climb_gradient
-    return max_climb_rate
+    return max_climb_rate, max_climb_gradient
 
 
 # Runway length take-off
@@ -104,7 +104,7 @@ def calculate_design_efficiency(specific_energy, efficiency_fuelcell, efficiency
 
 
 # Tool
-def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_fuelcell, efficiency_prop, p_max, cl_takeoff, cl_max,
+def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_over_D, efficiency_fuelcell, efficiency_prop, p_max, cl_takeoff, cl_max,
          p_br, D, M_t, B, N, r, E_d, efficiency_pt, efficiency_r, E_T, battery=True):
     # (cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, v_initial, v_final, T,
     #  mu, cl_takeoff, cl_max, p_br, D, M_t, B, N, r, E_d, efficiency_pt, efficiency_r, E_T, battery=True)
@@ -151,21 +151,21 @@ def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficien
           #f"Required cruise power           = {round(p_cruise, 2)} [Watt] \n"
           f"Max range                       = {round(max_range, 2)} [m]")
 
-    max_climb_rate = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e)
+    max_climb_rate, max_climb_gradient = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e)
     #runway_length_takeoff = calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff, cd_0, A, e)
     #TOP = calculate_takeoff_parameter(W, S, p_max, cl_takeoff)
-    runway_length_landing = calculate_runway_length_landing(W, rho, A, cl_max)
+    runway_length_landing = calculate_landing_distance(W, rho_sealevel, S, cl_max)
     TOP = calculate_takeoff_parameter(W, S, p_max, cl_takeoff)
     takeoff_distance = calculate_takeoff_distance(TOP)
 
     print(f"***********TAKE-OFF/LANDING CHARACTERISTICS************* \n"
           f"Max climb rate                  = {round(max_climb_rate, 2)} [m/s] \n"
-          #f"Climb gradient @max climb rate  = {round(degrees(atan(max_climb_gradient)), 2)} [deg] \n"
+          f"Climb gradient @max climb rate  = {round(degrees(atan(max_climb_gradient)), 2)} [deg] \n"
           #f"Velocity       @max climb rate  = {round(climb_velocity, 2)} [m/s] \n"
           f"Take-Off Parameter (TOP)        = {round(TOP, 2)} [N^2/Wm^2] \n"
           f"Take-off distance         = {round(takeoff_distance, 2)} [m] \n"
           #f"Runway length @take-off         = {round(runway_length_takeoff, 2)} [m] \n"
-          f"Runway length @landing          = {round(runway_length_landing, 2)} [m]")
+          f"Landing distance          = {round(runway_length_landing, 2)} [m]")
 
     if battery:
         E_batt = float(input('E_batt [J]    = '))
