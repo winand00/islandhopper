@@ -1,15 +1,19 @@
 from math import *
 import numpy as np
 import matplotlib.pyplot as plt
+from ISA import script
 
 
 C_D_0 = 0.02
 C_L = 2.5
 e = 0.8
+A = 9
+h_cruise = 2000
+
 rho = 1.225
 V_s = 31.38    #stall speed
 n_p = 0.8   #Propellor efficiency
-A = 9
+
 c = 5 #Climb rate
 cV = 0.083  #Climb gradient
 V = 90 #Cruise speed
@@ -70,8 +74,9 @@ def takeoff(x,sigma,C_L_max,S_to):
     return(y)
 
 
-def cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A, e):
-    sigma = 0.86
+def cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A, e, h_cruise):
+    sigma = script(h_cruise)/script(0)
+
     y = []
     for i in range(len(x)):
         y_temp = power_setting / cruise_fraction * n_p * sigma ** 0.75 * (
@@ -114,15 +119,15 @@ plt.plot(x,takeoff(x,sigma,C_L,S_to), label = "Take-off - C_L = " + str(C_L))
 plt.plot(x,takeoff(x,sigma,C_L-0.3,S_to), label = "Take-off - C_L = " + str(C_L-0.3))
 plt.plot(x,takeoff(x,sigma,C_L-0.5,S_to), label = "Take-off - C_L = " + str(C_L-0.5))
 
-plt.plot(x,cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A-3, e), label = "Cruise, A = " + str(A-3))
+plt.plot(x,cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A-3, e, h_cruise), label = "Cruise, A = " + str(A-3))
 plt.plot(x,climb_rate(x, n_p, c, A-3, e, C_D_0, rho),label = 'Climb rate, A = ' + str(A-3))
 plt.plot(x,climb_gradient(x, n_p, cV, C_D_0, C_L, rho, A-3, e), label='Climb gradient, A = ' + str(A-3))
 
-plt.plot(x,cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A, e), label = "Cruise, A = " + str(A))
+plt.plot(x,cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A, e, h_cruise), label = "Cruise, A = " + str(A))
 plt.plot(x,climb_rate(x, n_p, c, A, e, C_D_0, rho),label = 'Climb rate, A = ' + str(A))
 plt.plot(x,climb_gradient(x, n_p, cV, C_D_0, C_L, rho, A, e), label='Climb gradient, A = ' + str(A))
 
-plt.plot(x,cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A+3, e), label = "Cruise, A = " + str(A+3))
+plt.plot(x,cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A+3, e, h_cruise), label = "Cruise, A = " + str(A+3))
 plt.plot(x,climb_rate(x, n_p, c, A+3, e, C_D_0, rho),label = 'Climb rate, A = ' + str(A+3))
 plt.plot(x,climb_gradient(x, n_p, cV, C_D_0, C_L, rho, A+3, e), label='Climb gradient, A = ' + str(A+3))
 
