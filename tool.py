@@ -13,15 +13,15 @@ def calculate_cl_opt(cd_0, A, e):
 def calculate_v_cruise(W, S, rho, cl_opt):
     """Calculates the cruise velocity, V_cruise. Inputs are weight W, wing surface area S, air density rho
     and optimum lift coefficient Cl_opt."""
-    return sqrt((2 * W / S * rho * cl_opt))
+    return sqrt((2 * W / (S * rho * cl_opt)))
 
 # Required power
 def calculate_p_cruise(W, cd_0, rho, v_cruise, S, A, e):
     """Calculates the required power, P_cruise, to fly at cruise speed. Inputs are weight W, zero lift drag
     coefficient Cd_0, air density rho, the cruise velocity v_cruise, wing surface area S, aspect ratio A and
     Oswald efficiency factor e."""
-    return W * (((cd_0 * (1 / 2) * rho * v_cruise ** 3) / (W / S)) + ((W / S) * (1 / pi * A * e * (1 / 2) * rho *
-                                                                                 v_cruise)))
+    return W * (((cd_0 * (1 / 2) * rho * v_cruise ** 3) / (W / S)) + ((W / S) * (1 / (pi * A * e * (1 / 2) * rho *
+                                                                                 v_cruise))))
 
 # Range
 def calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_total):
@@ -151,7 +151,7 @@ def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficien
 
     max_climb_rate, max_climb_gradient, climb_velocity = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho,
                                                                                                A, e)
-    runway_length_takeoff = calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff, cd_0, A, e)
+    #runway_length_takeoff = calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff, cd_0, A, e)
     TOP = calculate_takeoff_parameter(W, S, p_max, cl_takeoff)
     runway_length_landing = calculate_runway_length_landing(W, rho, A, cl_max)
 
@@ -160,7 +160,7 @@ def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficien
           f"Climb gradient @max climb rate  = {round(degrees(atan(max_climb_gradient)), 2)} [deg] \n"
           f"Velocity       @max climb rate  = {round(climb_velocity, 2)} [m/s] \n"
           f"Take-Off Parameter (TOP)        = {round(TOP, 2)} [N^2/Wm^2] \n"
-          f"Runway length @take-off         = {round(runway_length_takeoff, 2)} [m] \n"
+          #f"Runway length @take-off         = {round(runway_length_takeoff, 2)} [m] \n"
           f"Runway length @landing          = {round(runway_length_landing, 2)} [m]")
 
     if battery:
@@ -187,3 +187,9 @@ def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficien
 
 # if __name__ == "__main__":
 #     tool()
+
+tool(0.0376, 10, 0.75, 68179.5, 0.54895, 25.08, 46200000, 1483, 6950, 8.16, 0.65, 1074000, 1.8, 2, 771, 2.69,
+     0.9, 4, 2, 100, 46200000, 0.7, 0.3, 4567890, False)
+
+#def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, cl_takeoff, cl_max,
+#         p_br, D, M_t, B, N, r, E_d, efficiency_pt, efficiency_r, E_T, battery=True):
