@@ -12,8 +12,8 @@ class TestTool(unittest.TestCase):
         self.assertEqual(round(result, 5), 236.61703)
 
     def test_calculate_range(self):
-        result = tool.calculate_range(46200000, 664.1, 7350, 8.16, 0.65)
-        self.assertEqual(round(result, 3), 2256953.569)
+        result = tool.calculate_range(46200000, 664.1, 7350, 8.16, 1, 0.8)
+        self.assertEqual(round(result, 3), 2777789.008)
 
     def test_calculate_max_climb_rate_and_gradient(self):
         result = tool.calculate_max_climb_rate_and_gradient(1074000, 7350 * 9.81, 25.08, 0.0376, 0.54895, 10.0, 0.75)
@@ -24,10 +24,10 @@ class TestTool(unittest.TestCase):
         result = tool.calculate_takeoff_parameter(7350 * 9.81, 25.08, 1074000, 1.8)
         self.assertEqual(round(result, 5), 107.22804)
 
-    def test_calculate_runway_length_landing(self):
-        result = tool.calculate_runway_length_landing(7350 * 9.81, 0.54895, 10.0, 2)
-        self.assertEqual(round(result, 5), 3107694.34375)
-        self.assertTrue(0 < result < 5500000)
+    def test_calculate_landing_distance(self):
+        result = tool.calculate_landing_distance(7350 * 9.81, 1.225, 25.08, 2)
+        self.assertEqual(round(result, 5), 1388.18541)
+        self.assertTrue(0 < result < 5500)
 
     def test_calculate_refuel_time(self):
         result = tool.calculate_refuel_time(1483, 1000 / 60)
@@ -38,12 +38,8 @@ class TestTool(unittest.TestCase):
         self.assertEqual(round(result, 2), 2.74)
 
     def test_calculate_max_sound_pressure_level(self):
-        result = tool.calculate_max_sound_pressure_level(1342500, 2.49936, 0.9, 5, 2, 50)
-        self.assertEqual(round(result, 2), 163.88)
-
-    def test_
-
-
+        result = tool.calculate_max_sound_pressure_level(2.49936, 5, 2, 1342500, 0.8)
+        self.assertEqual(round(result, 2), 154.74)
 
 if __name__ == "__main__":
     unittest.main()
