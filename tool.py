@@ -146,9 +146,9 @@ def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficien
     max_range = calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_fuelcell, efficiency_prop)
 
     print(f"**************CRUISE CHARACTERISTICS******************** \n"
-          f"Optimum lift coefficient Cl_opt = {round(cl_opt, 2)} [-]\n"
+          #f"Optimum lift coefficient Cl_opt = {round(cl_opt, 2)} [-]\n"
           f"Cruise speed                    = {round(v_cruise, 2)} [m/s] \n"
-          f"Required cruise power           = {round(p_cruise, 2)} [Watt] \n"
+          #f"Required cruise power           = {round(p_cruise, 2)} [Watt] \n"
           f"Max range                       = {round(max_range, 2)} [m]")
 
     max_climb_rate = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e)
