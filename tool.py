@@ -2,35 +2,35 @@ from math import *
 import numpy as np
 
 
-# Optimum lift coefficient, Cl_opt
+# Optimum lift coefficient, Cl_opt#
 def calculate_cl_opt(cd_0, A, e):
     """Calculates optimum lift coefficient, Cl_opt. Inputs are zero lift drag coefficient Cd_0, aspect ratio A
     and Oswald efficiency factor e."""
     return sqrt((1 / 3) * cd_0 * A * e)
 
 
-# Cruise speed
+# Cruise speed#
 def calculate_v_cruise(W, S, rho, cl_opt):
     """Calculates the cruise velocity, V_cruise. Inputs are weight W, wing surface area S, air density rho
     and optimum lift coefficient Cl_opt."""
     return sqrt((2 * W / (S * rho * cl_opt)))
 
 # Required power
-def calculate_p_cruise(W, cd_0, rho, v_cruise, S, A, e):
-    """Calculates the required power, P_cruise, to fly at cruise speed. Inputs are weight W, zero lift drag
-    coefficient Cd_0, air density rho, the cruise velocity v_cruise, wing surface area S, aspect ratio A and
-    Oswald efficiency factor e."""
-    return W * (((cd_0 * (1 / 2) * rho * v_cruise ** 3) / (W / S)) + ((W / S) * (1 / (pi * A * e * (1 / 2) * rho *
-                                                                                 v_cruise))))
+#def calculate_p_cruise(W, cd_0, rho, v_cruise, S, A, e):
+#    """Calculates the required power, P_cruise, to fly at cruise speed. Inputs are weight W, zero lift drag
+#    coefficient Cd_0, air density rho, the cruise velocity v_cruise, wing surface area S, aspect ratio A and
+#    Oswald efficiency factor e."""
+#    return W * (((cd_0 * (1 / 2) * rho * v_cruise ** 3) / (W / S)) + ((W / S) * (1 / (pi * A * e * (1 / 2) * rho *
+#                                                                                 v_cruise))))
 
-# Range
-def calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_total):
+# Range#
+def calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_fuelcell, efficiency_prop):
     """Calculates the range, R. Inputs are specific energy of the energy source E^*, mass of the energy source m_energy,
     mass of the aircraft m, lift L, drag D and total efficiency eta_total."""
-    return specific_energy * (m_energy / m) * (1 / 9.81) * L_over_D * efficiency_total
+    return specific_energy * (m_energy / m) * (1 / 9.81) * L_over_D * efficiency_fuelcell * efficiency_prop
 
 
-# Climb rate
+# Climb rate#
 def calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e):
     """Calculates the maximum climb rate c, the climb rate G at maximum climb rate and the velocity V at maximum climb
     rate. Inputs are maximum power p_max, weight W, wing surface area S, zero lift drag coefficient Cd_0, air density
@@ -38,9 +38,9 @@ def calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e):
     cl = sqrt(3 * cd_0 * pi * A * e)
     cd = 4 * cd_0
     max_climb_rate = (p_max / W) - ((sqrt(W / S) * sqrt(2)) / ((cl ** (3 / 2) / cd) * sqrt(rho)))
-    max_climb_gradient = (p_max / W) * (1 / sqrt((W / S) * (2 / rho) * (1 / cl))) - cd / cl
-    velocity_at_max_climb_rate = max_climb_rate / max_climb_gradient
-    return max_climb_rate, max_climb_gradient, velocity_at_max_climb_rate
+    #max_climb_gradient = (p_max / W) * (1 / sqrt((W / S) * (2 / rho) * (1 / cl))) - cd / cl
+    #velocity_at_max_climb_rate = max_climb_rate / max_climb_gradient
+    return max_climb_rate
 
 
 # Runway length take-off
@@ -55,7 +55,7 @@ def calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e):
 #    return (1 / (2 * 9.81 * k_a)) * np.log(((k_t + k_a * v_final ** 2) / (k_t + k_a * v_initial ** 2))) * safety_margin
 
 
-# Take-off parameter
+# Take-off parameter#
 def calculate_takeoff_parameter(W, S, p_max, cl_takeoff):
     """Calculates the take-off parameter, TOP_prop. Inputs are weight W, wing surface area S, maximum power p_max and
     lift coefficient at take-off cl_takeoff."""
@@ -63,18 +63,18 @@ def calculate_takeoff_parameter(W, S, p_max, cl_takeoff):
     return (W / S) * (W / p_max) * (1 / cl_takeoff) * (1 / sigma)
 
 
-# Take-off distance
+# Take-off distance#
 def calculate_takeoff_distance(TOP):
     return 0.0577 * TOP ** 2 + 8.6726 * TOP
 
 
-# Runway length landing
+# Runway length landing#
 def calculate_landing_distance(W, rho_sealevel, S, cl_max):
     """Calculates the runway length for landing, s_l. Inputs are weight W, air density rho, aspect ratio A and maximum
     lift coefficient cl_max."""
     return W * 2 * 0.5915 / (cl_max * rho_sealevel * S)
 
-# Refuel time
+# Refuel time#
 def calculate_refuel_time(tank_capacity, fill_speed):
     """Calculates refuel time t_rf. Inputs are tank capacity and fill speed."""
     return tank_capacity / fill_speed
@@ -86,25 +86,25 @@ def calculate_charging_time(E_batt, p_ch, efficiency_ch):
     return E_batt / (p_ch * efficiency_ch)
 
 
-# Noise
-def calculate_max_sound_pressure_level(p_br, D, M_t, B, N, r):
+# Noise#
+def calculate_max_sound_pressure_level(p_br, D, B, N):
     """Calculates the maximum sound pressure level, SPL_max. Inputs are break shaft power p_br, propeller diameter D,
     rotational tip Mach number M_t, number of blades per propeller B, number of propellers N and distance to the
     propeller r."""
-    return 83.4 + 15.3 * np.log10(p_br) - 20 * np.log10(D) + 38.5 * M_t - 3 * (B - 2) + 10 * np.log10(N) - 20 * \
-           np.log10(r)
+    return 83.4 + 15.3 * np.log10(p_br) - 20 * np.log10(D) + 38.5 * 0.9 - 3 * (B - 2) + 10 * np.log10(N) - 20 * \
+           np.log10(100)
 
 
-# Design efficiency
-def calculate_design_efficiency(E_d, efficiency_pt, efficiency_r, E_T):
+# Design efficiency#
+def calculate_design_efficiency(specific_energy, efficiency_fuelcell, efficiency_prop, efficiency_r, m_energy):
     """Calculates the design efficiency GI_1. Inputs are the amount of energy per kg energy source material E_d, total
     efficiency of the powertrain eta_pt, percentage of the total used energy that is recovered for other systems eta_r
     and the total amount of thrust energy T."""
-    return (E_d * efficiency_pt * (1 + efficiency_r)) / E_T
+    return (specific_energy * efficiency_fuelcell * efficiency_prop * (1 + efficiency_r)) / (specific_energy * m_energy)
 
 
 # Tool
-def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, cl_takeoff, cl_max,
+def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_fuelcell, efficiency_prop, p_max, cl_takeoff, cl_max,
          p_br, D, M_t, B, N, r, E_d, efficiency_pt, efficiency_r, E_T, battery=True):
     # (cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, v_initial, v_final, T,
     #  mu, cl_takeoff, cl_max, p_br, D, M_t, B, N, r, E_d, efficiency_pt, efficiency_r, E_T, battery=True)
@@ -140,11 +140,10 @@ def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficien
     # E_T = float(input("Total amount of thrust energy, E_T:"))
     # battery = input("Battery aircraft (True/False):")
 
-
     cl_opt = calculate_cl_opt(cd_0, A, e)
     v_cruise = calculate_v_cruise(W, S, rho, cl_opt)
-    p_cruise = calculate_p_cruise(W, cd_0, rho, v_cruise, S, A, e)
-    max_range = calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_total)
+    #p_cruise = calculate_p_cruise(W, cd_0, rho, v_cruise, S, A, e)
+    max_range = calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_fuelcell, efficiency_prop)
 
     print(f"**************CRUISE CHARACTERISTICS******************** \n"
           f"Optimum lift coefficient Cl_opt = {round(cl_opt, 2)} [-]\n"
@@ -152,17 +151,19 @@ def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficien
           f"Required cruise power           = {round(p_cruise, 2)} [Watt] \n"
           f"Max range                       = {round(max_range, 2)} [m]")
 
-    max_climb_rate, max_climb_gradient, climb_velocity = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho,
-                                                                                               A, e)
+    max_climb_rate = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e)
     #runway_length_takeoff = calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff, cd_0, A, e)
-    TOP = calculate_takeoff_parameter(W, S, p_max, cl_takeoff)
+    #TOP = calculate_takeoff_parameter(W, S, p_max, cl_takeoff)
     runway_length_landing = calculate_runway_length_landing(W, rho, A, cl_max)
+    TOP = calculate_takeoff_parameter(W, S, p_max, cl_takeoff)
+    takeoff_distance = calculate_takeoff_distance(TOP)
 
     print(f"***********TAKE-OFF/LANDING CHARACTERISTICS************* \n"
           f"Max climb rate                  = {round(max_climb_rate, 2)} [m/s] \n"
-          f"Climb gradient @max climb rate  = {round(degrees(atan(max_climb_gradient)), 2)} [deg] \n"
-          f"Velocity       @max climb rate  = {round(climb_velocity, 2)} [m/s] \n"
+          #f"Climb gradient @max climb rate  = {round(degrees(atan(max_climb_gradient)), 2)} [deg] \n"
+          #f"Velocity       @max climb rate  = {round(climb_velocity, 2)} [m/s] \n"
           f"Take-Off Parameter (TOP)        = {round(TOP, 2)} [N^2/Wm^2] \n"
+          f"Take-off distance         = {round(takeoff_distance, 2)} [m] \n"
           #f"Runway length @take-off         = {round(runway_length_takeoff, 2)} [m] \n"
           f"Runway length @landing          = {round(runway_length_landing, 2)} [m]")
 
@@ -189,6 +190,6 @@ def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficien
 
 
 # Inputs jetstream 31
-if __name__ == "__main__":
-    tool(0.0376, 10, 0.75, 68179.5, 0.54895, 25.08, 46200000, 1483, 6950, 8.16, 0.65, 1074000, 1.8, 2, 771, 2.69,
-         0.9, 4, 2, 100, 46200000, 0.7, 0.3, 4567890, False)
+#if __name__ == "__main__":
+#    tool(0.0376, 10, 0.75, 68179.5, 0.54895, 25.08, 46200000, 1483, 6950, 8.16, 0.65, 1074000, 1.8, 2, 771, 2.69,
+#         0.9, 4, 2, 100, 46200000, 0.7, 0.3, 4567890, False)
