@@ -87,11 +87,11 @@ def calculate_charging_time(E_batt, p_ch, efficiency_ch):
 
 
 # Noise#
-def calculate_max_sound_pressure_level(p_br, D, B, N):
+def calculate_max_sound_pressure_level(D, B, N, p_max, efficiency_prop):
     """Calculates the maximum sound pressure level, SPL_max. Inputs are break shaft power p_br, propeller diameter D,
     rotational tip Mach number M_t, number of blades per propeller B, number of propellers N and distance to the
     propeller r."""
-    return 83.4 + 15.3 * np.log10(p_br) - 20 * np.log10(D) + 38.5 * 0.9 - 3 * (B - 2) + 10 * np.log10(N) - 20 * \
+    return 83.4 + 15.3 * np.log10(p_max / (N * efficiency_prop)) - 20 * np.log10(D) + 38.5 * 0.9 - 3 * (B - 2) + 10 * np.log10(N) - 20 * \
            np.log10(100)
 
 
@@ -104,8 +104,8 @@ def calculate_design_efficiency(specific_energy, efficiency_fuelcell, efficiency
 
 
 # Tool
-def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_over_D, efficiency_fuelcell, efficiency_prop, p_max, cl_takeoff, cl_max,
-         p_br, D, M_t, B, N, r, E_d, efficiency_pt, efficiency_r, E_T, battery=True):
+def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_over_D, efficiency_fuelcell,
+         efficiency_prop, p_max, cl_takeoff, cl_max, p_br, D, M_t, B, N, r, E_d, efficiency_r, E_T, battery=True):
     # (cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, v_initial, v_final, T,
     #  mu, cl_takeoff, cl_max, p_br, D, M_t, B, N, r, E_d, efficiency_pt, efficiency_r, E_T, battery=True)
 
@@ -182,8 +182,9 @@ def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_ov
         print(f"***********OTHER CHARACTERISTICS************* \n"
               f"Refuel time                     = {round(refuel_time, 2)} [sec]")
 
-    max_SPL = calculate_max_sound_pressure_level(p_br, D, M_t, B, N, r)
-    design_efficiency = calculate_design_efficiency(E_d, efficiency_pt, efficiency_r, E_T)
+    max_SPL = calculate_max_sound_pressure_level(D, B, N, p_max, efficiency_prop)
+    design_efficiency = calculate_design_efficiency(specific_energy, efficiency_fuelcell, efficiency_prop,
+                                                    efficiency_r, m_energy)
 
     print(f"Maximum sound pressure level    = {round(max_SPL, 2)} [dB] \n"
           f"Design efficiency parameter GI1 = {round(design_efficiency, 2)} [-]")
