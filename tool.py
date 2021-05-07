@@ -105,7 +105,7 @@ def calculate_design_efficiency(specific_energy, efficiency_fuelcell, efficiency
 
 # Tool
 def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_over_D, efficiency_fuelcell,
-         efficiency_prop, p_max, cl_takeoff, cl_max, p_br, D, M_t, B, N, r, E_d, efficiency_r, E_T, battery=True):
+         efficiency_prop, p_max, cl_takeoff, cl_max, D, B, N, efficiency_r, battery=True):
     # (cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, v_initial, v_final, T,
     #  mu, cl_takeoff, cl_max, p_br, D, M_t, B, N, r, E_d, efficiency_pt, efficiency_r, E_T, battery=True)
 
@@ -170,7 +170,7 @@ def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_ov
     if battery:
         E_batt = float(input('E_batt [J]    = '))
         p_ch = float(input('p_ch [W]     = '))
-        efficiency_ch = float(input('efficiency_ch = '))
+        efficiency_ch = float(input('efficiency_ch [-]     = '))
         charge_time = calculate_charging_time(E_batt, p_ch, efficiency_ch)
         print(f"***********OTHER CHARACTERISTICS************* \n"
               f"Battery charge time             = {round(charge_time, 2)} [sec]")
