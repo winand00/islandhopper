@@ -101,40 +101,41 @@ def calculate_design_efficiency(E_d, efficiency_pt, efficiency_r, E_T):
 
 
 # Tool
-def tool():
+def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, cl_takeoff, cl_max,
+         p_br, D, M_t, B, N, r, E_d, efficiency_pt, efficiency_r, E_T, battery=True):
     # (cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, v_initial, v_final, T,
     #  mu, cl_takeoff, cl_max, p_br, D, M_t, B, N, r, E_d, efficiency_pt, efficiency_r, E_T, battery=True)
 
-    print("Enter parameters")
-    cd_0 = float(input("Zero lift drag, Cd_0:"))
-    W = float(input("Weight, W:"))
-    A = float(input("Aspect ratio, A:"))
-    e = float(input("Oswald efficiency factor, e:"))
-    rho = float(input("Air density, rho:"))
-    S = float(input("Wing surface area, S:"))
-    specific_energy = float(input("Specific energy, E^*:"))
-    m_energy = float(input("Mass energy, m_energy:"))
-    m = float(input("Mass, m:"))
-    L_over_D = float(input("Lift over drag, L/D:"))
-    efficiency_total = float(input("Total efficiency, eff_tot:"))
-    p_max = float(input("Maximum power (includes efficiency skim), P_max:"))
-    v_initial = float(input("Take-off initial velocity, v_i:"))
-    v_final = float(input("Take-off final velocity, v_f:"))
-    T = float(input("Thrust, T:"))
-    mu = float(input("Ground friction constant, mu:"))
-    cl_takeoff = float(input("Lift coefficient @take-off, Cl_takeoff:"))
-    cl_max = float(input("Maximum lift coefficient, Cl_max"))
-    p_br = float(input("Break shaft power, P_br:"))
-    D = float(input("Propeller diameter, D:"))
-    M_t = float(input("Rotational tip Mach number, M_t:"))
-    B = float(input("Number of blades per propeller, B:"))
-    N = float(input("Number of propellers, N:"))
-    r = float(input("Distance to the propeller, r:"))
-    E_d = float(input("Amount of energy per kg energy source material, E_d:"))
-    efficiency_pt = float(input("Efficiency of the powertrain, eta_pt:"))
-    efficiency_r = float(input("Percentage of the total used energy that is recovered for other systems, eta_r:"))
-    E_T = float(input("Total amount of thrust energy, E_T:"))
-    battery = input("Battery aircraft (True/False):")
+    # print("Enter parameters")
+    # cd_0 = float(input("Zero lift drag, Cd_0:"))
+    # W = float(input("Weight, W:"))
+    # A = float(input("Aspect ratio, A:"))
+    # e = float(input("Oswald efficiency factor, e:"))
+    # rho = float(input("Air density, rho:"))
+    # S = float(input("Wing surface area, S:"))
+    # specific_energy = float(input("Specific energy, E^*:"))
+    # m_energy = float(input("Mass energy, m_energy:"))
+    # m = float(input("Mass, m:"))
+    # L_over_D = float(input("Lift over drag, L/D:"))
+    # efficiency_total = float(input("Total efficiency, eff_tot:"))
+    # p_max = float(input("Maximum power (includes efficiency skim), P_max:"))
+    # v_initial = float(input("Take-off initial velocity, v_i:"))
+    # v_final = float(input("Take-off final velocity, v_f:"))
+    # T = float(input("Thrust, T:"))
+    # mu = float(input("Ground friction constant, mu:"))
+    # cl_takeoff = float(input("Lift coefficient @take-off, Cl_takeoff:"))
+    # cl_max = float(input("Maximum lift coefficient, Cl_max"))
+    # p_br = float(input("Break shaft power, P_br:"))
+    # D = float(input("Propeller diameter, D:"))
+    # M_t = float(input("Rotational tip Mach number, M_t:"))
+    # B = float(input("Number of blades per propeller, B:"))
+    # N = float(input("Number of propellers, N:"))
+    # r = float(input("Distance to the propeller, r:"))
+    # E_d = float(input("Amount of energy per kg energy source material, E_d:"))
+    # efficiency_pt = float(input("Efficiency of the powertrain, eta_pt:"))
+    # efficiency_r = float(input("Percentage of the total used energy that is recovered for other systems, eta_r:"))
+    # E_T = float(input("Total amount of thrust energy, E_T:"))
+    # battery = input("Battery aircraft (True/False):")
 
 
     cl_opt = calculate_cl_opt(cd_0, A, e)
@@ -184,5 +185,5 @@ def tool():
           f"Design efficiency parameter GI1 = {round(design_efficiency, 2)} [-]")
 
 
-if __name__ == "__main__":
-    tool()
+# if __name__ == "__main__":
+#     tool()
