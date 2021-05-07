@@ -44,15 +44,15 @@ def calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e):
 
 
 # Runway length take-off
-def calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff, cd_0, A, e):
-    """Calculates the runway length for take-off, s_g. Inputs are final velocity v_final, initial velocity v_initial,
-    thrust T, weight W, ground friction constant mu, air density rho, wing surface area S, lift coefficient at take-off
-    cl_takeoff, zero lift drag coefficient cd_0, aspect ratio A and Oswald efficiency factor e."""
-    k = 1 / (pi * A * e)
-    k_t = (T / W) - mu
-    k_a = (rho / (2 * (W / S))) * (mu * cl_takeoff - cd_0 - k * cl_takeoff ** 2)
-    safety_margin = 1.15
-    return (1 / (2 * 9.81 * k_a)) * np.log(((k_t + k_a * v_final ** 2) / (k_t + k_a * v_initial ** 2))) * safety_margin
+#def calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff, cd_0, A, e):
+#    """Calculates the runway length for take-off, s_g. Inputs are final velocity v_final, initial velocity v_initial,
+#    thrust T, weight W, ground friction constant mu, air density rho, wing surface area S, lift coefficient at take-off
+#    cl_takeoff, zero lift drag coefficient cd_0, aspect ratio A and Oswald efficiency factor e."""
+#    k = 1 / (pi * A * e)
+#    k_t = (T / W) - mu
+#    k_a = (rho / (2 * (W / S))) * (mu * cl_takeoff - cd_0 - k * cl_takeoff ** 2)
+#    safety_margin = 1.15
+#    return (1 / (2 * 9.81 * k_a)) * np.log(((k_t + k_a * v_final ** 2) / (k_t + k_a * v_initial ** 2))) * safety_margin
 
 
 # Take-off parameter
@@ -63,13 +63,16 @@ def calculate_takeoff_parameter(W, S, p_max, cl_takeoff):
     return (W / S) * (W / p_max) * (1 / cl_takeoff) * (1 / sigma)
 
 
+# Take-off distance
+def calculate_takeoff_distance(TOP):
+    return 0.0577 * TOP ** 2 + 8.6726 * TOP
+
+
 # Runway length landing
-def calculate_runway_length_landing(W, rho, A, cl_max):
+def calculate_landing_distance(W, rho_sealevel, S, cl_max):
     """Calculates the runway length for landing, s_l. Inputs are weight W, air density rho, aspect ratio A and maximum
     lift coefficient cl_max."""
-    v_stall = sqrt((2 * W) / rho * A * cl_max)
-    return 0.5915 * v_stall ** 2
-
+    return W * 2 * 0.5915 / (cl_max * rho_sealevel * S)
 
 # Refuel time
 def calculate_refuel_time(tank_capacity, fill_speed):
