@@ -191,6 +191,32 @@ def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_ov
 
 
 # Inputs jetstream 31
-#if __name__ == "__main__":
-#    tool(0.0376, 10, 0.75, 68179.5, 0.54895, 25.08, 46200000, 1483, 6950, 8.16, 0.65, 1074000, 1.8, 2, 771, 2.69,
-#         0.9, 4, 2, 100, 46200000, 0.7, 0.3, 4567890, False)
+
+cd_0 =
+A =
+e =
+W =
+rho =
+rho_sealevel =
+S =
+specific_energy =
+m_energy =
+m =
+L_over_D =
+efficiency_fuelcell =
+efficiency_prop =
+p_max =
+cl_takeoff =
+cl_max =
+D =
+B =
+N =
+efficiency_r =
+battery =
+
+
+if __name__ == "__main__":
+   tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_over_D, efficiency_fuelcell,
+        efficiency_prop, p_max, cl_takeoff, cl_max, D, B, N, efficiency_r, battery)
+   #tool(0.0376, 10, 0.75, 68179.5, 0.54895, 25.08, 46200000, 1483, 6950, 8.16, 0.65, 1074000, 1.8, 2, 771, 2.69,
+   #      0.9, 4, 2, 100, 46200000, 0.7, 0.3, 4567890, False)
