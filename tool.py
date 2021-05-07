@@ -188,8 +188,6 @@ def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficien
 # if __name__ == "__main__":
 #     tool()
 
+# Inputs jetstream 31
 tool(0.0376, 10, 0.75, 68179.5, 0.54895, 25.08, 46200000, 1483, 6950, 8.16, 0.65, 1074000, 1.8, 2, 771, 2.69,
      0.9, 4, 2, 100, 46200000, 0.7, 0.3, 4567890, False)
-
-#def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficiency_total, p_max, cl_takeoff, cl_max,
-#         p_br, D, M_t, B, N, r, E_d, efficiency_pt, efficiency_r, E_T, battery=True):
