@@ -185,9 +185,7 @@ def tool(cd_0, A, e, W, rho, S, specific_energy, m_energy, m, L_over_D, efficien
           f"Design efficiency parameter GI1 = {round(design_efficiency, 2)} [-]")
 
 
-# if __name__ == "__main__":
-#     tool()
-
 # Inputs jetstream 31
-tool(0.0376, 10, 0.75, 68179.5, 0.54895, 25.08, 46200000, 1483, 6950, 8.16, 0.65, 1074000, 1.8, 2, 771, 2.69,
-     0.9, 4, 2, 100, 46200000, 0.7, 0.3, 4567890, False)
+if __name__ == "__main__":
+    tool(0.0376, 10, 0.75, 68179.5, 0.54895, 25.08, 46200000, 1483, 6950, 8.16, 0.65, 1074000, 1.8, 2, 771, 2.69,
+         0.9, 4, 2, 100, 46200000, 0.7, 0.3, 4567890, False)
