@@ -3,136 +3,274 @@ import numpy as np
 import matplotlib.pyplot as plt
 from ISA import script
 
+######
+#Write the name of your design option
+#Put it then below at the other functions
+#Change values and plot
+######
 
-C_D_0 = 0.02
-C_L = 2.5
-e = 0.8
-A = 9
-h_cruise = 2000
+class flyingwing:
+    def __init__(self):
+        # Change these 5 as you wish
+        self.C_D_0 = 0.02
+        self.C_L = 2.5
+        self.e = 0.8
+        self.A = 9
+        self.h_cruise = 2000
 
-rho = 1.225
-V_s = 31.38    #stall speed
-n_p = 0.8   #Propellor efficiency
+        self.rho = 1.225
+        self.V_s = 31.38  # stall speed
+        self.n_p = 0.8  # Propellor efficiency
 
-c = 5 #Climb rate
-cV = 0.083  #Climb gradient
-V = 90 #Cruise speed
+        self.c = 5  # Climb rate
+        self.cV = 0.083  # Climb gradient
+        self.V = 90  # Cruise speed
 
-sigma=1  #
-S_to=750    #Take-off distance
-S_l=750     #Landing distance
-f=1 #take-off vs landing max weight
-power_setting=0.9
-cruise_fraction = 1
+        self.sigma = 1  #
+        self.S_to = 750  # Take-off distance
+        self.S_l = 750  # Landing distance
+        self.f = 1  # take-off vs landing max weight
+        self.power_setting = 0.9
+        self.cruise_fraction = 1
 
-"""
-C_D_0 = 0.0335
-C_L = 1.8
-e = 0.7
-rho = 1.225
-V_s = 31.38    #stall speed
-n_p = 0.8   #Propellor efficiency
-A = 9
-c = 5 #Climb rate 
-cV = 0.083  #Climb gradient
-V = 70 #Cruise speed
+class claimthisname1:
+    def __init__(self):
+        # Change these 5 as you wish
+        self.C_D_0 = 0.02
+        self.C_L = 2.5
+        self.e = 0.8
+        self.A = 9
+        self.h_cruise = 2000
 
-sigma= 1  #
-S_to = 700    #Take-off distance
-S_l= 550     #Landing distance
-f=0.95 #take-off vs landing max weight
-power_setting=0.9
-cruise_fraction = 0.8
-"""
+        self.rho = 1.225
+        self.V_s = 31.38  # stall speed
+        self.n_p = 0.8  # Propellor efficiency
 
-def dragcoef(C_D_0, C_L, A, e):
-    C_D = C_D_0 + (C_L ** 2) / (pi * A * e)
+        self.c = 5  # Climb rate
+        self.cV = 0.083  # Climb gradient
+        self.V = 90  # Cruise speed
+
+        self.sigma = 1  #
+        self.S_to = 750  # Take-off distance
+        self.S_l = 750  # Landing distance
+        self.f = 1  # take-off vs landing max weight
+        self.power_setting = 0.9
+        self.cruise_fraction = 1
+
+class claimthisname2:
+    def __init__(self):
+        # Change these 5 as you wish
+        self.C_D_0 = 0.02
+        self.C_L = 2.5
+        self.e = 0.8
+        self.A = 9
+        self.h_cruise = 2000
+
+        self.rho = 1.225
+        self.V_s = 31.38  # stall speed
+        self.n_p = 0.8  # Propellor efficiency
+
+        self.c = 5  # Climb rate
+        self.cV = 0.083  # Climb gradient
+        self.V = 90  # Cruise speed
+
+        self.sigma = 1  #
+        self.S_to = 750  # Take-off distance
+        self.S_l = 750  # Landing distance
+        self.f = 1  # take-off vs landing max weight
+        self.power_setting = 0.9
+        self.cruise_fraction = 1
+
+class claimthisname3:
+    def __init__(self):
+        # Change these 5 as you wish
+        self.C_D_0 = 0.02
+        self.C_L = 2.5
+        self.e = 0.8
+        self.A = 9
+        self.h_cruise = 2000
+
+        self.rho = 1.225
+        self.V_s = 31.38  # stall speed
+        self.n_p = 0.8  # Propellor efficiency
+
+        self.c = 5  # Climb rate
+        self.cV = 0.083  # Climb gradient
+        self.V = 90  # Cruise speed
+
+        self.sigma = 1  #
+        self.S_to = 750  # Take-off distance
+        self.S_l = 750  # Landing distance
+        self.f = 1  # take-off vs landing max weight
+        self.power_setting = 0.9
+        self.cruise_fraction = 1
+
+class claimthisname4:
+    def __init__(self):
+        # Change these 5 as you wish
+        self.C_D_0 = 0.02
+        self.C_L = 2.5
+        self.e = 0.8
+        self.A = 9
+        self.h_cruise = 2000
+
+        self.rho = 1.225
+        self.V_s = 31.38  # stall speed
+        self.n_p = 0.8  # Propellor efficiency
+
+        self.c = 5  # Climb rate
+        self.cV = 0.083  # Climb gradient
+        self.V = 90  # Cruise speed
+
+        self.sigma = 1  #
+        self.S_to = 750  # Take-off distance
+        self.S_l = 750  # Landing distance
+        self.f = 1  # take-off vs landing max weight
+        self.power_setting = 0.9
+        self.cruise_fraction = 1
+
+
+def dragcoef(a, A_value=-1, CL_value=-1):
+    if A_value == -1:
+        A_value = a.A
+    if CL_value == -1:
+        CL_value = a.C_L
+    C_D = a.C_D_0 + (CL_value ** 2) / (pi * A_value * a.e)
     return C_D
 
 
-def Stallload(rho, C_L_max, V_s):
-    WS = 0.5 * rho * V_s ** 2 * C_L_max
+def Stallload(a, A_value=-1, CL_value=-1):
+    if A_value == -1:
+        A_value = a.A
+    if CL_value == -1:
+        CL_value = a.C_L
+    WS = 0.5 * a.rho * a.V_s ** 2 * CL_value
     return (WS)
 
-def Landing(S_l,rho,C_L_max,f):   #C_L_max for landing, f is fraction between takeoff and landing max weigth
-    WS=(C_L_max*rho*(S_l/0.5915)/(2*f))
-    return(WS)
 
-def TOPcalc(S_to):
-    a = 0.0577
-    b = 8.6726
-    c = -S_to
-    TOP = (-b + sqrt(b ** 2 - 4 * a * c)) / (2 * a)
+def Landing(a, A_value=-1, CL_value=-1):  # C_L_max for landing, f is fraction between takeoff and landing max weigth
+    if A_value == -1:
+        A_value = a.A
+    if CL_value == -1:
+        CL_value = a.C_L
+    WS = (CL_value * a.rho * (a.S_l / 0.5915) / (2 * a.f))
+    return (WS)
+
+
+def TOPcalc(a, A_value=-1, CL_value=-1):
+    if A_value == -1:
+        A_value = a.A
+    if CL_value == -1:
+        CL_value = a.C_L
+    A = 0.0577
+    B = 8.6726
+    C = -(a.S_to)
+    TOP = (-B + sqrt(B ** 2 - 4 * A * C)) / (2 * A)
     return TOP
 
-def takeoff(x,sigma,C_L_max,S_to):
-    C_L_to=C_L_max / 1.21
+
+def takeoff(a, A_value=-1, CL_value=-1):
+    if A_value == -1:
+        A_value = a.A
+    if CL_value == -1:
+        CL_value = a.C_L
+    C_L_to = CL_value / 1.21
     y = []
     for i in range(len(x)):
-        y_temp=TOPcalc(S_to) / x[i] * C_L_to * sigma
-        y.append(y_temp)
-    return(y)
-
-
-def cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A, e, h_cruise):
-    sigma = script(h_cruise)/script(0)
-
-    y = []
-    for i in range(len(x)):
-        y_temp = power_setting / cruise_fraction * n_p * sigma ** 0.75 * (
-                (C_D_0 * 0.5 * rho * V ** 3) / (cruise_fraction * x[i]) + (cruise_fraction * x[i]) * 1 / (
-                    pi * A * e * 0.5 * rho * V)) ** (-1)
+        y_temp = TOPcalc(a, A_value, CL_value) / x[i] * C_L_to * a.sigma
         y.append(y_temp)
     return (y)
 
 
-def climb_rate(x, n_p, c, A, e, C_D_0, rho):
+def cruise_perf(a, A_value=-1, CL_value=-1):
+    if A_value == -1:
+        A_value = a.A
+    if CL_value == -1:
+        CL_value = a.C_L
+
+    sigma = script(a.h_cruise) / script(0)
+
     y = []
     for i in range(len(x)):
-        y_temp = n_p / (c + ((sqrt(x[i]) * sqrt(2 / rho)) / (1.345 * (A * e) ** 0.75 / C_D_0 ** 0.25)))
+        y_temp = a.power_setting / a.cruise_fraction * a.n_p * sigma ** 0.75 * (
+                (a.C_D_0 * 0.5 * a.rho * a.V ** 3) / (a.cruise_fraction * x[i]) + (a.cruise_fraction * x[i]) * 1 / (
+                pi * A_value * a.e * 0.5 * a.rho * a.V)) ** (-1)
         y.append(y_temp)
     return (y)
 
 
-def climb_gradient(x, n_p, cV, C_D_0, C_L_m, rho, A, e):
-    C_L = C_L_m / 1.1  #Safety margin of 10% on C_L
-    C_D = dragcoef(C_D_0, C_L, A, e)
+def climb_rate(a, A_value=-1, CL_value=-1):
+    if A_value == -1:
+        A_value = a.A
+    if CL_value == -1:
+        CL_value = a.C_L
+
     y = []
     for i in range(len(x)):
-        y_temp = n_p / (sqrt(x[i]) * (cV + C_D/C_L) * sqrt(2 / rho / C_L))
+        y_temp = a.n_p / (a.c + ((sqrt(x[i]) * sqrt(2 / a.rho)) / (1.345 * (A_value * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
         y.append(y_temp)
     return (y)
 
 
+def climb_gradient(a, A_value=-1, CL_value=-1):
+    if A_value == -1:
+        A_value = a.A
+    if CL_value == -1:
+        CL_value = a.C_L
 
-x = np.arange(1,3000)
-#y = []
-#for i in range(len(x)):
-#    y_temp = climb_gradient(x[i],0.9,10,0.1,5,1.225, 10, 0.8)
-#    y.append(y_temp)
-
-
-
-plt.vlines(Stallload(rho, C_L, V_s),0,1, label = "Stall load",color='red')
-plt.vlines(Landing(S_l,rho,C_L,f),0,1, label = "Landing")
-plt.plot(x,takeoff(x,sigma,C_L,S_to), label = "Take-off - C_L = " + str(C_L))
-plt.plot(x,takeoff(x,sigma,C_L-0.3,S_to), label = "Take-off - C_L = " + str(C_L-0.3))
-plt.plot(x,takeoff(x,sigma,C_L-0.5,S_to), label = "Take-off - C_L = " + str(C_L-0.5))
-
-plt.plot(x,cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A-3, e, h_cruise), label = "Cruise, A = " + str(A-3))
-plt.plot(x,climb_rate(x, n_p, c, A-3, e, C_D_0, rho),label = 'Climb rate, A = ' + str(A-3))
-plt.plot(x,climb_gradient(x, n_p, cV, C_D_0, C_L, rho, A-3, e), label='Climb gradient, A = ' + str(A-3))
-
-plt.plot(x,cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A, e, h_cruise), label = "Cruise, A = " + str(A))
-plt.plot(x,climb_rate(x, n_p, c, A, e, C_D_0, rho),label = 'Climb rate, A = ' + str(A))
-plt.plot(x,climb_gradient(x, n_p, cV, C_D_0, C_L, rho, A, e), label='Climb gradient, A = ' + str(A))
-
-plt.plot(x,cruise_perf(x, sigma, n_p, power_setting, cruise_fraction, C_D_0, rho, V, A+3, e, h_cruise), label = "Cruise, A = " + str(A+3))
-plt.plot(x,climb_rate(x, n_p, c, A+3, e, C_D_0, rho),label = 'Climb rate, A = ' + str(A+3))
-plt.plot(x,climb_gradient(x, n_p, cV, C_D_0, C_L, rho, A+3, e), label='Climb gradient, A = ' + str(A+3))
+    C_L = CL_value / 1.1  # Safety margin of 10% on C_L
+    C_D = dragcoef(a, A_value, CL_value)
+    y = []
+    for i in range(len(x)):
+        y_temp = a.n_p / (sqrt(x[i]) * (a.cV + C_D / CL_value) * sqrt(2 / a.rho / CL_value))
+        y.append(y_temp)
+    return (y)
 
 
-plt.ylim(0,0.4)
-plt.xlim(0,3000)
-plt.legend()
-plt.show()
+x = np.arange(1, 3000)
+#color = ['firebrick','red','tomato','orange','goldenrod','gold','limegreen','lime','seagreen','violet','magenta','deeppink']
+
+def wpws_plot(a,option = -1):
+
+    #Turn of the options you dont need.
+
+    # Stall load and landing constraints
+    plt.vlines(Stallload(a), 0, 1, label="Stall load", color='dimgrey')
+    plt.vlines(Landing(a), 0, 1, label="Landing", color='dimgray')
+
+    # Take-off constraints, varying CL_max
+    plt.plot(x, takeoff(a), label="Take-off - C_L = " + str(a.C_L), color='firebrick')
+    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.3), label="Take-off - C_L = " + str(a.C_L - 0.3), color='red')
+    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.5), label="Take-off - C_L = " + str(a.C_L - 0.5), color='tomato')
+
+    # Cruise constraints, varying A
+    plt.plot(x, cruise_perf(a, A_value=a.A - 3), label="Cruise, A = " + str(a.A - 3), color='limegreen')
+    plt.plot(x, cruise_perf(a), label="Cruise, A = " + str(a.A), color='cornflowerblue')
+    plt.plot(x, cruise_perf(a, A_value=a.A + 3), label="Cruise, A = " + str(a.A + 3), color='blueviolet')
+
+    # Climb rate constraints, Varying A
+    plt.plot(x, climb_rate(a, A_value=a.A - 3), label='Climb rate, A = ' + str(a.A - 3), color='lime')
+    plt.plot(x, climb_rate(a), label='Climb rate, A = ' + str(a.A), color='cyan')
+    plt.plot(x, climb_rate(a, A_value=a.A + 3), label='Climb rate, A = ' + str(a.A + 3), color='magenta')
+
+    # Climb gradient constraints, Varying A
+    plt.plot(x, climb_gradient(a, A_value=a.A - 3), label='Climb gradient, A = ' + str(a.A - 3), color='yellowgreen')
+    plt.plot(x, climb_gradient(a), label='Climb gradient, A = ' + str(a.A), color='dodgerblue')
+    plt.plot(x, climb_gradient(a, A_value=a.A + 3), label='Climb gradient, A = ' + str(a.A + 3), color='deeppink')
+
+    plt.ylim(0, 0.4)
+    plt.xlim(0, 3000)
+    plt.legend()
+    plt.show()
+
+
+wpws_plot(flyingwing())
+
+#wpws_plot(claimthisname1())
+
+#wpws_plot(claimthisname2())
+
+#wpws_plot(claimthisname3())
+
+#wpws_plot(claimthisname4())
+
