@@ -169,7 +169,7 @@ class flyingwing:
         self.W = 8618.255  # kg
 
 
-class claimthisname1:
+class hydrogen:
     def __init__(self):
         # Change these 5 as you wish
         self.C_D_0 = 0.02
