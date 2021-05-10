@@ -155,7 +155,7 @@ def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_ov
           #f"Required cruise power           = {round(p_cruise, 2)} [Watt] \n"
           f"Max range                       = {round(max_range, 2)} [m]")
 
-    max_climb_rate, max_climb_gradient = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e,efficiency_prop)
+    max_climb_rate, max_climb_gradient = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho_sealevel, A, e,efficiency_prop)
     #runway_length_takeoff = calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff, cd_0, A, e)
     #TOP = calculate_takeoff_parameter(W, S, p_max, cl_takeoff)
     runway_length_landing = calculate_landing_distance(W, rho_sealevel, S, cl_max)

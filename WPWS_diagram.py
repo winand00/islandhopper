@@ -152,8 +152,8 @@ class flyingwing:
         self.e = 0.8
         self.A = 7
         self.h_cruise = 3000
-        self.m_energy = 2000 #[kg]
-        self.battery = False  # Aircraft on batteries
+        self.m_energy = 1500 #[kg]
+        self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
         self.D = 2.69 #Propellor diameter
@@ -173,7 +173,7 @@ class flyingwing:
 
         self.sigma = 1  #
         self.S_to = 750  # Take-off distance
-        self.S_l = 750  # Landing distance
+        self.S_l = self.S_to  # Landing distance
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
@@ -442,7 +442,8 @@ def climb_gradient(a, A_value=-1, CL_value=-1):
     if CL_value == -1:
         CL_value = a.C_L
 
-    C_L = CL_value / 1.1  # Safety margin of 10% on C_L
+
+    C_L = sqrt(3 * a.C_D_0 * pi * a.A * a.e)
     C_D = dragcoef(a, A_value, CL_value)
     y = []
     for i in range(len(x)):
@@ -506,12 +507,13 @@ def design_point(a, WS, WP):
     cruisepower = Power * power_setting
     print('Cruise power = ', cruisepower)
 
-    c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
+    c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho0)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
     print('Climb rate = ', c)
 
-    C_L = a.C_L / 1.1  # Safety margin of 10% on C_L
+
+    C_L = sqrt(3 * a.C_D_0 * pi * a.A * a.e)
     C_D = dragcoef(a, CL_value=C_L)
-    cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho / C_L))) - C_D / C_L
+    cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
     print('Climb gradient = ', degrees(atan(cV)))
 
 def Tool(a,WS, WP):
@@ -526,7 +528,7 @@ def Tool(a,WS, WP):
 ####
 #Fill in aircraftname, WS, WP
 
-Tool(flyingwing(),1856, 0.066)
+Tool(flyingwing(),1553, 0.065)
 
 
 
