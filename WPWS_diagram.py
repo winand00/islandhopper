@@ -195,7 +195,7 @@ class hydrogen:
         self.W = 8618.255  # kg
 
 
-class claimthisname2:
+class conc_batteries:
     def __init__(self):
         # Change these 5 as you wish
         self.C_D_0 = 0.02
@@ -431,9 +431,9 @@ def design_point(a, WS, WP):
     print('Climb gradient = ', cV)
 
 
-wpws_plot(flyingwing())
+#wpws_plot(flyingwing())
 
-# wpws_plot(claimthisname1())
+wpws_plot(conc_batteries())
 
 # wpws_plot(claimthisname2())
 
