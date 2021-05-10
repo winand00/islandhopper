@@ -1,6 +1,7 @@
 from math import *
 import numpy as np
 import matplotlib.pyplot as plt
+from tool import tool
 
 
 # from ISA import script
@@ -176,7 +177,7 @@ class flyingwing:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
-        self.W = 8618.255  # kg
+        self.W = 8618.255 * 9.80665  # kg
 
         self.S = 0  #Wing surface area
         self.specific_energy = 46200000 #Specific energy of fuel [J/kg]
@@ -491,7 +492,11 @@ def wpws_plot(a, option=-1):
 
 def design_point(a, WS, WP):
     S_l = WS * (2 * a.f) / (a.C_L * a.rho) * 0.5915
-    Power = a.W*9.81 / WP
+    Power = a.W / WP
+
+    a.P = Power
+    a.S = a.W / WS
+
     print('Landing length = ', S_l)
     print('Power required = ', Power)
 
@@ -510,17 +515,19 @@ def design_point(a, WS, WP):
     cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho / C_L))) - C_D / C_L
     print('Climb gradient = ', cV)
 
-
-#wpws_plot(flyingwing())
-
-wpws_plot(conc_batteries())
-
-# wpws_plot(claimthisname2())
-
-# wpws_plot(claimthisname3())
-
-# wpws_plot(claimthisname4())
+def Tool(a,WS, WP):
+    wpws_plot(a)
+    design_point(a,WS, WP)
+    tool(a.C_D_0, a.A, a.e, a.W, a.rho, a.rho0, a.S, a.specific_energy, a.m_energy, a.W / 9.80665, a.L_over_D,
+         a.efficiency_fuelcell, a.n_p, a.P, a.C_L_takeoff, a.C_L, a.D, a.B, a.N, a.efficiency_r, a.battery)
 
 
-design_point(flyingwing(), 1206, 0.0835)
+
+
+
+
+Tool(flyingwing(),1206, 0.0835)
+
+
+
 
