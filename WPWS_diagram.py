@@ -368,7 +368,7 @@ def Stallload(a, A_value=-1, CL_value=-1):
         A_value = a.A
     if CL_value == -1:
         CL_value = a.C_L
-    WS = 0.5 * a.rho * a.V_s ** 2 * CL_value
+    WS = 0.5 * a.rho0 * a.V_s ** 2 * CL_value
     return (WS)
 
 
@@ -377,7 +377,7 @@ def Landing(a, A_value=-1, CL_value=-1):  # C_L_max for landing, f is fraction b
         A_value = a.A
     if CL_value == -1:
         CL_value = a.C_L
-    WS = (CL_value * a.rho * (a.S_l / 0.5915) / (2 * a.f))
+    WS = (CL_value * a.rho0 * (a.S_l / 0.5915) / (2 * a.f))
     return (WS)
 
 
@@ -432,7 +432,7 @@ def climb_rate(a, A_value=-1, CL_value=-1):
 
     y = []
     for i in range(len(x)):
-        y_temp = a.n_p / (a.c + ((sqrt(x[i]) * sqrt(2 / a.rho)) / (1.345 * (A_value * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
+        y_temp = a.n_p / (a.c + ((sqrt(x[i]) * sqrt(2 / a.rho0)) / (1.345 * (A_value * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
         y.append(y_temp)
     return (y)
 
@@ -447,7 +447,7 @@ def climb_gradient(a, A_value=-1, CL_value=-1):
     C_D = dragcoef(a, A_value, CL_value)
     y = []
     for i in range(len(x)):
-        y_temp = a.n_p / (sqrt(x[i]) * (a.cV + C_D / CL_value) * sqrt(2 / a.rho / CL_value))
+        y_temp = a.n_p / (sqrt(x[i]) * (a.cV + C_D / CL_value) * sqrt(2 / a.rho0 / CL_value))
         y.append(y_temp)
     return (y)
 
