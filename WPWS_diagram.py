@@ -12,7 +12,7 @@ from ISA import script
 class flyingwing:
     def __init__(self):
         # Change these 5 as you wish
-        self.C_D_0 = 0.02
+        self.C_D_0 = 0.039
         self.C_L = 2.5
         self.e = 0.8
         self.A = 9
@@ -36,9 +36,9 @@ class flyingwing:
 class hydrogen:
     def __init__(self):
         # Change these 5 as you wish
-        self.C_D_0 = 0.02
+        self.C_D_0 = 0.039
         self.C_L = 2.5
-        self.e = 0.8
+        self.e = 0.75
         self.A = 9
         self.h_cruise = 2000
 
