@@ -4,16 +4,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 C_D_0 = 0.07
-C_L = 2.0
+C_L = 1.3#2.0
 
-A = 7
+A = 5#7
 e = 0.8
-h = 2000
-V = np.arange(150)
-S = 72
+h = 30000#2000
+V = np.arange(350)
+S = 818#72
 rho = script(h)
 
-W = 19000/2.2*9.80665
+W = 128000/2.2*9.80665 #19000
 
 D_1 = []
 for i in range(len(V)):
