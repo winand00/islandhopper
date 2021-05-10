@@ -29,10 +29,32 @@ def dcl(a_w,alpha_w, alpha_p, beta):
 
 
 
-def DCL(dY, T_c,M,A,sweep,CL,alpha_p,beta,xp_rp, T_W,rho,V,N,dy,W_S,chi):
-    return dcl(a_w(a_p(T_c),contraction_ratio(a_p(thrust_coef(T_W,N,rho, V,normalized_D_p(N,dY, dy,A,W_S), chi)),xp_rp)), alpha_w(M,A,sweep,CL), alpha_p, beta)*dY
+def DCL(dY,M,A,sweep,CL,alpha_p,beta,xp_rp, T_W,rho,V,N,dy,W_S,chi):
+    return
+    print(dcl(a_w(a_p(thrust_coef(T_W,N,rho, V,normalized_D_p(N,dY, dy,A,W_S),chi)),contraction_ratio(a_p(thrust_coef(T_W,N,rho, V,normalized_D_p(N,dY, dy,A,W_S), chi)),xp_rp)), alpha_w(M,A,sweep,CL), alpha_p, beta)*dY)
 
-def DCD0(dY, T_c,xp_rp,cf, T_W,rho,V,N,dy,W_S,chi,A):
-    return dY*a_w(a_p(T_c),contraction_ratio(a_p(thrust_coef(T_W,N,rho, V, normalized_D_p(N,dY, dy,A,W_S), chi)),xp_rp))**2*cf
+def DCD0(dY, xp_rp,cf, T_W,rho,V,N,dy,W_S,chi,A):
+    print(dY*a_w(a_p(thrust_coef(T_W,N,rho, V,normalized_D_p(N,dY, dy,A,W_S),chi)),contraction_ratio(a_p(thrust_coef(T_W,N,rho, V, normalized_D_p(N,dY, dy,A,W_S), chi)),xp_rp))**2*cf)
 
+dY = 0.8
+V = 90 #m/s
+a = 328.4
+M = V/a
+A = 10
+sweep = 0
+CL = 1.8
+alpha_p = 0
+beta = 0.8
+xp_rp = 0.7
+T_W = 0.645
+rho = 0.904637
+cf = 0.009
+
+N = 12
+dy = 0.2
+W_S = 1320
+chi = 1
+
+DCL(dY,M,A,sweep,CL,alpha_p,beta,xp_rp, T_W,rho,V,N,dy,W_S,chi)
+DCD0(dY, xp_rp,cf, T_W,rho,V,N,dy,W_S,chi,A)
 
