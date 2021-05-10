@@ -33,7 +33,7 @@ class flyingwing:
         self.power_setting = 0.9
         self.cruise_fraction = 1
 
-class claimthisname1:
+class hydrogen:
     def __init__(self):
         # Change these 5 as you wish
         self.C_D_0 = 0.02
