@@ -35,14 +35,14 @@ def calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_fuelcell,
 
 
 # Climb rate#
-def calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e):
+def calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e,efficiency_prop):
     """Calculates the maximum climb rate c, the climb rate G at maximum climb rate and the velocity V at maximum climb
     rate. Inputs are maximum power p_max, weight W, wing surface area S, zero lift drag coefficient Cd_0, air density
     rho, aspect ratio A and Oswald efficiency factor e."""
     cl = sqrt(3 * cd_0 * pi * A * e)
     cd = 4 * cd_0
-    max_climb_rate = (p_max / W) - ((sqrt(W / S) * sqrt(2)) / ((cl ** (3 / 2) / cd) * sqrt(rho)))
-    max_climb_gradient = (p_max / W) * (1 / sqrt((W / S) * (2 / rho) * (1 / cl))) - cd / cl
+    max_climb_rate = efficiency_prop*(p_max / W) - ((sqrt(W / S) * sqrt(2)) / ((cl ** (3 / 2) / cd) * sqrt(rho)))
+    max_climb_gradient = efficiency_prop*(p_max / W) * (1 / sqrt((W / S) * (2 / rho) * (1 / cl))) - (cd / cl)
     #velocity_at_max_climb_rate = max_climb_rate / max_climb_gradient
     return max_climb_rate, max_climb_gradient
 
@@ -155,7 +155,7 @@ def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_ov
           #f"Required cruise power           = {round(p_cruise, 2)} [Watt] \n"
           f"Max range                       = {round(max_range, 2)} [m]")
 
-    max_climb_rate, max_climb_gradient = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho, A, e)
+    max_climb_rate, max_climb_gradient = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho_sealevel, A, e,efficiency_prop)
     #runway_length_takeoff = calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff, cd_0, A, e)
     #TOP = calculate_takeoff_parameter(W, S, p_max, cl_takeoff)
     runway_length_landing = calculate_landing_distance(W, rho_sealevel, S, cl_max)

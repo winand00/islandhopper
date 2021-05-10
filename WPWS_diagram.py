@@ -148,12 +148,12 @@ class flyingwing:
     def __init__(self):
         # Change these first 7 as you wish
         self.C_D_0 = 0.007
-        self.C_L = 2
+        self.C_L = 2.0
         self.e = 0.8
         self.A = 7
-        self.h_cruise = 1500
-        self.m_energy = 2000 #[kg]
-        self.battery = False  # Aircraft on batteries
+        self.h_cruise = 3000
+        self.m_energy = 1500 #[kg]
+        self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
         self.D = 2.69 #Propellor diameter
@@ -163,7 +163,7 @@ class flyingwing:
 
         self.rho0 = 1.225
         self.rho= script(self.h_cruise) / script(0)
-        self.V_s = 31.38  # stall speed
+        self.V_s = 43  # stall speed
         self.n_p = 0.8  # Propellor efficiency
         self.C_L_takeoff = self.C_L/(1.1**2)
 
@@ -173,7 +173,7 @@ class flyingwing:
 
         self.sigma = 1  #
         self.S_to = 750  # Take-off distance
-        self.S_l = 750  # Landing distance
+        self.S_l = self.S_to  # Landing distance
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
@@ -413,7 +413,6 @@ def cruise_perf(a, A_value=-1, CL_value=-1):
         CL_value = a.C_L
 
     sigma = script(a.h_cruise) / script(0)
-    print(sigma)
 
     y = []
     for i in range(len(x)):
@@ -443,7 +442,8 @@ def climb_gradient(a, A_value=-1, CL_value=-1):
     if CL_value == -1:
         CL_value = a.C_L
 
-    C_L = CL_value / 1.1  # Safety margin of 10% on C_L
+
+    C_L = sqrt(3 * a.C_D_0 * pi * a.A * a.e)
     C_D = dragcoef(a, A_value, CL_value)
     y = []
     for i in range(len(x)):
@@ -461,7 +461,7 @@ def wpws_plot(a, option=-1):
     # Turn of the options you dont need.
 
     # Stall load and landing constraints
-    plt.vlines(Stallload(a), 0, 1, label="Stall load", color='dimgrey')
+    plt.vlines(Stallload(a), 0, 1, label="Stall load", color='red')
     plt.vlines(Landing(a), 0, 1, label="Landing", color='dimgray')
 
     # Take-off constraints, varying CL_max
@@ -510,10 +510,11 @@ def design_point(a, WS, WP):
     c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho0)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
     print('Climb rate = ', c)
 
-    C_L = a.C_L / 1.1  # Safety margin of 10% on C_L
+
+    C_L = sqrt(3 * a.C_D_0 * pi * a.A * a.e)
     C_D = dragcoef(a, CL_value=C_L)
     cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
-    print('Climb gradient = ', cV)
+    print('Climb gradient = ', degrees(atan(cV)))
 
 def Tool(a,WS, WP):
     wpws_plot(a)
@@ -527,7 +528,7 @@ def Tool(a,WS, WP):
 ####
 #Fill in aircraftname, WS, WP
 
-Tool(flyingwing(),1206, 0.0835)
+Tool(flyingwing(),1553, 0.065)
 
 
 
