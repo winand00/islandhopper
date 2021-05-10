@@ -148,13 +148,22 @@ class flyingwing:
         # Change these 5 as you wish
         self.C_D_0 = 0.007
         self.C_L = 2
+        self.battery = False  # Aircraft on batteries
         self.e = 0.8
         self.A = 7
         self.h_cruise = 1500
+        self.m_energy = 2000 #[kg]
 
-        self.rho = 1.225
+        self.D = 2.69 #Propellor diamter
+        self.B = 4 #number of blader per propellor
+        self.N = 2 #Number of engines
+        self.efficiency_r = 0.1 #Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho= script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L/(1.1**2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -168,15 +177,23 @@ class flyingwing:
         self.cruise_fraction = 1
         self.W = 8618.255  # kg
 
+        self.S = 0  #Wing surface area
+        self.specific_energy = 46200000 #Specific energy of fuel [J/kg]
+
+        self.P = 0 #Max power [W]
+        self.L_over_D= self.C_L/dragcoef(self)
+
+
+
 
 class hydrogen:
     def __init__(self):
         # Change these 5 as you wish
         self.C_D_0 = 0.02
-        self.C_L = 2.5
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 4000
 
         self.rho = 1.225
         self.V_s = 31.38  # stall speed
@@ -411,7 +428,7 @@ def wpws_plot(a, option=-1):
 
 def design_point(a, WS, WP):
     S_l = WS * (2 * a.f) / (a.C_L * a.rho) * 0.5915
-    Power = WP * a.W
+    Power = a.W*9.81 / WP
     print('Landing length = ', S_l)
     print('Power required = ', Power)
 
