@@ -491,7 +491,7 @@ def wpws_plot(a, option=-1):
 
 
 def design_point(a, WS, WP):
-    S_l = WS * (2 * a.f) / (a.C_L * a.rho) * 0.5915
+    S_l = WS * (2 * a.f) / (a.C_L * a.rho0) * 0.5915
     Power = a.W / WP
 
     a.P = Power
@@ -507,12 +507,12 @@ def design_point(a, WS, WP):
     cruisepower = Power * power_setting
     print('Cruise power = ', cruisepower)
 
-    c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
+    c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho0)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
     print('Climb rate = ', c)
 
     C_L = a.C_L / 1.1  # Safety margin of 10% on C_L
     C_D = dragcoef(a, CL_value=C_L)
-    cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho / C_L))) - C_D / C_L
+    cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
     print('Climb gradient = ', cV)
 
 def Tool(a,WS, WP):
