@@ -1,6 +1,7 @@
 from math import *
 import numpy as np
 import matplotlib.pyplot as plt
+from tool import tool
 
 
 # from ISA import script
@@ -145,16 +146,26 @@ def script(h):
 
 class flyingwing:
     def __init__(self):
-        # Change these 5 as you wish
+        # Change these first 7 as you wish
         self.C_D_0 = 0.007
         self.C_L = 2
         self.e = 0.8
         self.A = 7
         self.h_cruise = 1500
+        self.m_energy = 2000 #[kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69 #Propellor diameter
+        self.B = 4 #number of blader per propellor
+        self.N = 2 #Number of engines
+        self.efficiency_r = 0.1 #Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho= script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L/(1.1**2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -166,21 +177,39 @@ class flyingwing:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
-        self.W = 8618.255  # kg
+        self.W = 8618.255 * 9.80665  # kg
+
+        self.S = 0  #Wing surface area
+        self.specific_energy = 46200000 #Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.P = 0 #Max power [W]
+        self.L_over_D= self.C_L/dragcoef(self)
+
+
 
 
 class hydrogen:
     def __init__(self):
-        # Change these 5 as you wish
+        # Change these 7 as you wish
         self.C_D_0 = 0.02
-        self.C_L = 2.5
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 4000
+        self.m_energy = 2000 #[kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -194,19 +223,33 @@ class hydrogen:
         self.cruise_fraction = 1
         self.W = 8618.255  # kg
 
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
 
-class claimthisname2:
+class conc_batteries:
     def __init__(self):
-        # Change these 5 as you wish
         self.C_D_0 = 0.02
-        self.C_L = 2.5
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 4000
+        self.m_energy = 2000  # [kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -219,20 +262,35 @@ class claimthisname2:
         self.power_setting = 0.9
         self.cruise_fraction = 1
         self.W = 8618.255  # kg
+
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
 
 
 class claimthisname3:
     def __init__(self):
-        # Change these 5 as you wish
         self.C_D_0 = 0.02
-        self.C_L = 2.5
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 4000
+        self.m_energy = 2000  # [kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
-        self.n_p = 0.8  # Propeller efficiency
+        self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -245,20 +303,37 @@ class claimthisname3:
         self.power_setting = 0.9
         self.cruise_fraction = 1
         self.W = 8618.255  # kg
+
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
 
 
 class claimthisname4:
     def __init__(self):
         # Change these 5 as you wish
         self.C_D_0 = 0.02
-        self.C_L = 2.5
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 4000
+        self.m_energy = 2000  # [kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -271,6 +346,12 @@ class claimthisname4:
         self.power_setting = 0.9
         self.cruise_fraction = 1
         self.W = 8618.255  # kg
+
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
 
 
 def dragcoef(a, A_value=-1, CL_value=-1):
@@ -287,7 +368,7 @@ def Stallload(a, A_value=-1, CL_value=-1):
         A_value = a.A
     if CL_value == -1:
         CL_value = a.C_L
-    WS = 0.5 * a.rho * a.V_s ** 2 * CL_value
+    WS = 0.5 * a.rho0 * a.V_s ** 2 * CL_value
     return (WS)
 
 
@@ -296,7 +377,7 @@ def Landing(a, A_value=-1, CL_value=-1):  # C_L_max for landing, f is fraction b
         A_value = a.A
     if CL_value == -1:
         CL_value = a.C_L
-    WS = (CL_value * a.rho * (a.S_l / 0.5915) / (2 * a.f))
+    WS = (CL_value * a.rho0 * (a.S_l / 0.5915) / (2 * a.f))
     return (WS)
 
 
@@ -351,7 +432,7 @@ def climb_rate(a, A_value=-1, CL_value=-1):
 
     y = []
     for i in range(len(x)):
-        y_temp = a.n_p / (a.c + ((sqrt(x[i]) * sqrt(2 / a.rho)) / (1.345 * (A_value * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
+        y_temp = a.n_p / (a.c + ((sqrt(x[i]) * sqrt(2 / a.rho0)) / (1.345 * (A_value * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
         y.append(y_temp)
     return (y)
 
@@ -366,7 +447,7 @@ def climb_gradient(a, A_value=-1, CL_value=-1):
     C_D = dragcoef(a, A_value, CL_value)
     y = []
     for i in range(len(x)):
-        y_temp = a.n_p / (sqrt(x[i]) * (a.cV + C_D / CL_value) * sqrt(2 / a.rho / CL_value))
+        y_temp = a.n_p / (sqrt(x[i]) * (a.cV + C_D / CL_value) * sqrt(2 / a.rho0 / CL_value))
         y.append(y_temp)
     return (y)
 
@@ -410,8 +491,12 @@ def wpws_plot(a, option=-1):
 
 
 def design_point(a, WS, WP):
-    S_l = WS * (2 * a.f) / (a.C_L * a.rho) * 0.5915
-    Power = WP * a.W
+    S_l = WS * (2 * a.f) / (a.C_L * a.rho0) * 0.5915
+    Power = a.W / WP
+
+    a.P = Power
+    a.S = a.W / WS
+
     print('Landing length = ', S_l)
     print('Power required = ', Power)
 
@@ -422,25 +507,28 @@ def design_point(a, WS, WP):
     cruisepower = Power * power_setting
     print('Cruise power = ', cruisepower)
 
-    c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
+    c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho0)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
     print('Climb rate = ', c)
 
     C_L = a.C_L / 1.1  # Safety margin of 10% on C_L
     C_D = dragcoef(a, CL_value=C_L)
-    cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho / C_L))) - C_D / C_L
+    cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
     print('Climb gradient = ', cV)
 
-
-wpws_plot(flyingwing())
-
-# wpws_plot(claimthisname1())
-
-# wpws_plot(claimthisname2())
-
-# wpws_plot(claimthisname3())
-
-# wpws_plot(claimthisname4())
+def Tool(a,WS, WP):
+    wpws_plot(a)
+    design_point(a,WS, WP)
+    tool(a.C_D_0, a.A, a.e, a.W, a.rho, a.rho0, a.S, a.specific_energy, a.m_energy, a.W / 9.80665, a.L_over_D,
+         a.efficiency_fuelcell, a.n_p, a.P, a.C_L_takeoff, a.C_L, a.D, a.B, a.N, a.efficiency_r, a.battery)
 
 
-design_point(flyingwing(), 1206, 0.0835)
+
+
+####
+#Fill in aircraftname, WS, WP
+
+Tool(flyingwing(),1206, 0.0835)
+
+
+
 
