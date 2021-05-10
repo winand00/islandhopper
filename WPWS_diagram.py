@@ -145,16 +145,17 @@ def script(h):
 
 class flyingwing:
     def __init__(self):
-        # Change these 5 as you wish
+        # Change these first 7 as you wish
         self.C_D_0 = 0.007
         self.C_L = 2
-        self.battery = False  # Aircraft on batteries
         self.e = 0.8
         self.A = 7
         self.h_cruise = 1500
         self.m_energy = 2000 #[kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.D = 2.69 #Propellor diamter
+        # Change these engine variables as you wish
+        self.D = 2.69 #Propellor diameter
         self.B = 4 #number of blader per propellor
         self.N = 2 #Number of engines
         self.efficiency_r = 0.1 #Fraction of total used energy that is recovered for other systems
@@ -179,7 +180,7 @@ class flyingwing:
 
         self.S = 0  #Wing surface area
         self.specific_energy = 46200000 #Specific energy of fuel [J/kg]
-
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
         self.P = 0 #Max power [W]
         self.L_over_D= self.C_L/dragcoef(self)
 
@@ -188,16 +189,26 @@ class flyingwing:
 
 class hydrogen:
     def __init__(self):
-        # Change these 5 as you wish
+        # Change these 7 as you wish
         self.C_D_0 = 0.02
         self.C_L = 2.0
         self.e = 0.8
         self.A = 7
         self.h_cruise = 4000
+        self.m_energy = 2000 #[kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -211,19 +222,33 @@ class hydrogen:
         self.cruise_fraction = 1
         self.W = 8618.255  # kg
 
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
 
 class conc_batteries:
     def __init__(self):
-        # Change these 5 as you wish
         self.C_D_0 = 0.02
-        self.C_L = 2.5
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 4000
+        self.m_energy = 2000  # [kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -236,20 +261,35 @@ class conc_batteries:
         self.power_setting = 0.9
         self.cruise_fraction = 1
         self.W = 8618.255  # kg
+
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
 
 
 class claimthisname3:
     def __init__(self):
-        # Change these 5 as you wish
         self.C_D_0 = 0.02
-        self.C_L = 2.5
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 4000
+        self.m_energy = 2000  # [kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
-        self.n_p = 0.8  # Propeller efficiency
+        self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -262,20 +302,37 @@ class claimthisname3:
         self.power_setting = 0.9
         self.cruise_fraction = 1
         self.W = 8618.255  # kg
+
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
 
 
 class claimthisname4:
     def __init__(self):
         # Change these 5 as you wish
         self.C_D_0 = 0.02
-        self.C_L = 2.5
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 4000
+        self.m_energy = 2000  # [kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -288,6 +345,12 @@ class claimthisname4:
         self.power_setting = 0.9
         self.cruise_fraction = 1
         self.W = 8618.255  # kg
+
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
 
 
 def dragcoef(a, A_value=-1, CL_value=-1):
