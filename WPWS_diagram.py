@@ -524,7 +524,8 @@ def Tool(a,WS, WP):
 
 
 
-
+####
+#Fill in aircraftname, WS, WP
 
 Tool(flyingwing(),1206, 0.0835)
 
