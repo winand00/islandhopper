@@ -1,26 +1,171 @@
 from math import *
 import numpy as np
 import matplotlib.pyplot as plt
-from ISA import script
+from tool import tool
+
+
+# from ISA import script
+
+
+def script(h):
+    # ISA CALCULATOR WINAND E4G#
+    #############INPUT
+
+    '''
+    print("     **** ISA calculator ****")
+    print()
+    print("1. Calculate ISA for altitude in meters")
+    print("2. Calculate ISA for altitude in feet")
+    print("3. Calculate ISA for altitude in FL")
+    print()
+    c = float(input("Enter your choice:"))
+
+    #############CHOICES
+
+    if c == 1.:
+        print()
+        h = float(input("Enter altitude [m]: "))
+
+    elif c == 2.:
+        print()
+        h = float(input("Enter altitude [ft]: "))
+        h = h * 0.3048
+
+    elif c == 3.:
+        print()
+        h = float(input("Enter altitude [FL]: "))
+        h = h * 30.48
+
+    #############TEMPERATURE
+
+    print()
+    print("                        Sea level temperature")
+    t0 = (input("Press enter when using standard temperature):"))
+    if t0 == "":
+        t0 = 288.15
+    else:
+        t0 = float(t0)
+    '''
+
+    t0 = 288.15
+    #############CONSTANTS
+
+    h1 = min(h, 11000.)
+    h2 = min(h, 20000.)
+    h3 = min(h, 32000.)
+    h4 = min(h, 47000.)
+    h5 = min(h, 51000.)
+    h6 = min(h, 71000.)
+    h7 = min(h, 84852.)
+
+    g0 = 9.80665
+    r = 287.05
+    p0 = 101325
+    rho0 = 1.225
+    a1 = -0.0065
+    a2 = 0.0000
+    a3 = 0.0010
+    a4 = 0.0028
+    a5 = 0.0000
+    a6 = -0.0028
+    a7 = -0.0020
+
+    #############VALUES
+    t1 = t0 + h1 * a1
+    p1 = p0 * (t1 / t0) ** (-g0 / (a1 * r))
+    rho1 = rho0 * (t1 / t0) ** (-g0 / (a1 * r) - 1)
+
+    t2 = t1 + (h2 - h1) * a2
+    p2 = p1 * e ** (-g0 / (r * t2) * (h2 - h1))
+    rho2 = rho1 * e ** (-g0 / (r * t2) * (h2 - h1))
+
+    t3 = t2 + (h3 - h2) * a3
+    p3 = p2 * (t3 / t2) ** (-g0 / (a3 * r))
+    rho3 = rho2 * (t3 / t2) ** (-g0 / (a3 * r) - 1)
+
+    t4 = t3 + (h4 - h3) * a4
+    p4 = p3 * (t4 / t3) ** (-g0 / (a4 * r))
+    rho4 = rho2 * (t4 / t3) ** (-g0 / (a4 * r) - 1)
+
+    t5 = t4 + (h5 - h4) * a5
+    p5 = p4 * e ** (-g0 / (r * t5) * (h5 - h4))
+    rho5 = rho4 * e ** (-g0 / (r * t5) * (h5 - h4))
+
+    t6 = t5 + (h6 - h5) * a6
+    p6 = p5 * (t6 / t5) ** (-g0 / (a6 * r))
+    rho6 = rho5 * (t6 / t5) ** (-g0 / (a6 * r) - 1)
+
+    t7 = t6 + (h7 - h6) * a7
+    p7 = p6 * (t7 / t6) ** (-g0 / (a7 * r))
+    rho7 = rho6 * (t7 / t6) ** (-g0 / (a7 * r) - 1)
+
+    #############
+
+    tt = [t0, t1, t2, t3, t4, t5, t6, t7]
+    pp = [p0, p1, p2, p3, p4, p5, p6, p7]
+    rr = [rho0, rho1, rho2, rho3, rho4, rho5, rho6, rho7]
+
+    #############sorry
+
+    if h > 84852:
+        print()
+        print("not yet possible :( ")
+
+    #############CALCULATING
+
+    else:
+        if h <= 11000:
+            oo = 1
+        elif 11000 < h <= 20000:
+            oo = 2
+        elif 20000 < h <= 32000:
+            oo = 3
+        elif 32000 < h <= 47000:
+            oo = 4
+        elif 47000 < h <= 51000:
+            oo = 5
+        elif 51000 < h <= 71000:
+            oo = 6
+        elif 71000 < h <= 84852:
+            oo = 7
+        # print()
+        tc = tt[oo] - 273.15
+        # print("Temperature : ", round(tt[oo], 2), "K", " (", round(tc, 2), "'C)")
+        ps = (pp[oo] / p0) * 100
+        # print("Pressure    : ", round(pp[oo], 2), "Pa", "(", round(ps, 2), "%SL)")
+        rhos = (rr[oo] / rho0) * 100
+        # print("Density     : ", round(rr[oo], 2), "kg/m3", "(", round(rhos, 2), "%SL)")\
+    return (rr[oo])
+
 
 ######
-#Write the name of your design option
-#Put it then below at the other functions
-#Change values and plot
+# Write the name of your design option
+# Put it then below at the other functions
+# Change values and plot
 ######
 
 class flyingwing:
     def __init__(self):
-        # Change these 5 as you wish
-        self.C_D_0 = 0.039
-        self.C_L = 2.5
+        # Change these first 7 as you wish
+        self.C_D_0 = 0.007
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 3000
+        self.m_energy = 2000 #[kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
-        self.V_s = 31.38  # stall speed
+        # Change these engine variables as you wish
+        self.D = 2.69 #Propellor diameter
+        self.B = 4 #number of blader per propellor
+        self.N = 2 #Number of engines
+        self.efficiency_r = 0.1 #Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho= script(self.h_cruise) / script(0)
+        self.V_s = 43  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L/(1.1**2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -32,43 +177,39 @@ class flyingwing:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
+        self.W = 8618.255 * 9.80665  # kg
+
+        self.S = 0  #Wing surface area
+        self.specific_energy = 46200000 #Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.P = 0 #Max power [W]
+        self.L_over_D= self.C_L/dragcoef(self)
+
+
+
 
 class hydrogen:
     def __init__(self):
-        # Change these 5 as you wish
-        self.C_D_0 = 0.039
-        self.C_L = 2.5
-        self.e = 0.75
-        self.A = 9
-        self.h_cruise = 2000
-
-        self.rho = 1.225
-        self.V_s = 31.38  # stall speed
-        self.n_p = 0.8  # Propellor efficiency
-
-        self.c = 5  # Climb rate
-        self.cV = 0.083  # Climb gradient
-        self.V = 90  # Cruise speed
-
-        self.sigma = 1  #
-        self.S_to = 750  # Take-off distance
-        self.S_l = 750  # Landing distance
-        self.f = 1  # take-off vs landing max weight
-        self.power_setting = 0.9
-        self.cruise_fraction = 1
-
-class claimthisname2:
-    def __init__(self):
-        # Change these 5 as you wish
+        # Change these 7 as you wish
         self.C_D_0 = 0.02
-        self.C_L = 2.5
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 4000
+        self.m_energy = 2000 #[kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -80,19 +221,76 @@ class claimthisname2:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
+        self.W = 8618.255  # kg
+
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
+
+class conc_batteries:
+    def __init__(self):
+        self.C_D_0 = 0.02
+        self.C_L = 2.0
+        self.e = 0.8
+        self.A = 7
+        self.h_cruise = 4000
+        self.m_energy = 2000  # [kg]
+        self.battery = False  # Aircraft on batteries
+
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
+        self.V_s = 31.38  # stall speed
+        self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
+
+        self.c = 5  # Climb rate
+        self.cV = 0.083  # Climb gradient
+        self.V = 90  # Cruise speed
+
+        self.sigma = 1  #
+        self.S_to = 750  # Take-off distance
+        self.S_l = 750  # Landing distance
+        self.f = 1  # take-off vs landing max weight
+        self.power_setting = 0.9
+        self.cruise_fraction = 1
+        self.W = 8618.255  # kg
+
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
+
 
 class claimthisname3:
     def __init__(self):
-        # Change these 5 as you wish
         self.C_D_0 = 0.02
-        self.C_L = 2.5
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 4000
+        self.m_energy = 2000  # [kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -104,19 +302,38 @@ class claimthisname3:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
+        self.W = 8618.255  # kg
+
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
+
 
 class claimthisname4:
     def __init__(self):
         # Change these 5 as you wish
         self.C_D_0 = 0.02
-        self.C_L = 2.5
+        self.C_L = 2.0
         self.e = 0.8
-        self.A = 9
-        self.h_cruise = 2000
+        self.A = 7
+        self.h_cruise = 4000
+        self.m_energy = 2000  # [kg]
+        self.battery = False  # Aircraft on batteries
 
-        self.rho = 1.225
+        # Change these engine variables as you wish
+        self.D = 2.69  # Propellor diameter
+        self.B = 4  # number of blader per propellor
+        self.N = 2  # Number of engines
+        self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
+
+        self.rho0 = 1.225
+        self.rho = script(self.h_cruise) / script(0)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
+        self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
         self.cV = 0.083  # Climb gradient
@@ -128,6 +345,13 @@ class claimthisname4:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
+        self.W = 8618.255  # kg
+
+        self.S = 0  # Wing surface area
+        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.P = 0  # Max power [W]
+        self.L_over_D = self.C_L / dragcoef(self)
 
 
 def dragcoef(a, A_value=-1, CL_value=-1):
@@ -144,7 +368,7 @@ def Stallload(a, A_value=-1, CL_value=-1):
         A_value = a.A
     if CL_value == -1:
         CL_value = a.C_L
-    WS = 0.5 * a.rho * a.V_s ** 2 * CL_value
+    WS = 0.5 * a.rho0 * a.V_s ** 2 * CL_value
     return (WS)
 
 
@@ -153,7 +377,7 @@ def Landing(a, A_value=-1, CL_value=-1):  # C_L_max for landing, f is fraction b
         A_value = a.A
     if CL_value == -1:
         CL_value = a.C_L
-    WS = (CL_value * a.rho * (a.S_l / 0.5915) / (2 * a.f))
+    WS = (CL_value * a.rho0 * (a.S_l / 0.5915) / (2 * a.f))
     return (WS)
 
 
@@ -207,7 +431,7 @@ def climb_rate(a, A_value=-1, CL_value=-1):
 
     y = []
     for i in range(len(x)):
-        y_temp = a.n_p / (a.c + ((sqrt(x[i]) * sqrt(2 / a.rho)) / (1.345 * (A_value * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
+        y_temp = a.n_p / (a.c + ((sqrt(x[i]) * sqrt(2 / a.rho0)) / (1.345 * (A_value * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
         y.append(y_temp)
     return (y)
 
@@ -222,20 +446,21 @@ def climb_gradient(a, A_value=-1, CL_value=-1):
     C_D = dragcoef(a, A_value, CL_value)
     y = []
     for i in range(len(x)):
-        y_temp = a.n_p / (sqrt(x[i]) * (a.cV + C_D / CL_value) * sqrt(2 / a.rho / CL_value))
+        y_temp = a.n_p / (sqrt(x[i]) * (a.cV + C_D / CL_value) * sqrt(2 / a.rho0 / CL_value))
         y.append(y_temp)
     return (y)
 
 
 x = np.arange(1, 3000)
-#color = ['firebrick','red','tomato','orange','goldenrod','gold','limegreen','lime','seagreen','violet','magenta','deeppink']
 
-def wpws_plot(a,option = -1):
 
-    #Turn of the options you dont need.
+# color = ['firebrick','red','tomato','orange','goldenrod','gold','limegreen','lime','seagreen','violet','magenta','deeppink']
+
+def wpws_plot(a, option=-1):
+    # Turn of the options you dont need.
 
     # Stall load and landing constraints
-    plt.vlines(Stallload(a), 0, 1, label="Stall load", color='dimgrey')
+    plt.vlines(Stallload(a), 0, 1, label="Stall load", color='red')
     plt.vlines(Landing(a), 0, 1, label="Landing", color='dimgray')
 
     # Take-off constraints, varying CL_max
@@ -264,13 +489,45 @@ def wpws_plot(a,option = -1):
     plt.show()
 
 
-wpws_plot(flyingwing())
+def design_point(a, WS, WP):
+    S_l = WS * (2 * a.f) / (a.C_L * a.rho0) * 0.5915
+    Power = a.W / WP
 
-#wpws_plot(claimthisname1())
+    a.P = Power
+    a.S = a.W / WS
 
-#wpws_plot(claimthisname2())
+    print('Landing length = ', S_l)
+    print('Power required = ', Power)
 
-#wpws_plot(claimthisname3())
+    sigma = script(a.h_cruise) / script(0)
 
-#wpws_plot(claimthisname4())
+    power_setting = ((a.C_D_0 * 0.5 * a.rho * a.V ** 3) / (a.cruise_fraction * WS) + (a.cruise_fraction * WS) * 1 / (
+                pi * a.A * a.e * 0.5 * a.rho * a.V)) * WP * a.cruise_fraction * (a.n_p * sigma ** 0.75) ** (-1)
+    cruisepower = Power * power_setting
+    print('Cruise power = ', cruisepower)
+
+    c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
+    print('Climb rate = ', c)
+
+    C_L = a.C_L / 1.1  # Safety margin of 10% on C_L
+    C_D = dragcoef(a, CL_value=C_L)
+    cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho / C_L))) - C_D / C_L
+    print('Climb gradient = ', degrees(atan(cV)))
+
+def Tool(a,WS, WP):
+    wpws_plot(a)
+    design_point(a,WS, WP)
+    tool(a.C_D_0, a.A, a.e, a.W, a.rho, a.rho0, a.S, a.specific_energy, a.m_energy, a.W / 9.80665, a.L_over_D,
+         a.efficiency_fuelcell, a.n_p, a.P, a.C_L_takeoff, a.C_L, a.D, a.B, a.N, a.efficiency_r, a.battery)
+
+
+
+
+####
+#Fill in aircraftname, WS, WP
+
+Tool(flyingwing(),1856, 0.066)
+
+
+
 
