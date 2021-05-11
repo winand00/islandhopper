@@ -231,23 +231,23 @@ class hydrogen:
 
 class conc_batteries:
     def __init__(self):
-        self.C_D_0 = 0.02
-        self.C_L = 2.0
-        self.e = 0.8
-        self.A = 7
-        self.h_cruise = 4000
-        self.m_energy = 2000  # [kg]
-        self.battery = False  # Aircraft on batteries
+        self.C_D_0 = 0.025
+        self.C_L = 2.4
+        self.e = 0.85
+        self.A = 12
+        self.h_cruise = 3048
+        self.m_energy = 1360  # [kg]
+        self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 2.69  # Propellor diameter
-        self.B = 4  # number of blader per propellor
+        self.D = 2.77  # Propeller diameter
+        self.B = 6 # number of blades per propeller
         self.N = 2  # Number of engines
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
 
         self.rho0 = 1.225
         self.rho = script(self.h_cruise)
-        self.V_s = 31.38  # stall speed
+        self.V_s = 43  # stall speed
         self.n_p = 0.8  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
@@ -259,13 +259,13 @@ class conc_batteries:
         self.S_to = 750  # Take-off distance
         self.S_l = 750  # Landing distance
         self.f = 1  # take-off vs landing max weight
-        self.power_setting = 0.9
+        self.power_setting = 0.5
         self.cruise_fraction = 1
         self.W = 8618.255*9.80655  # N
 
         self.S = 0  # Wing surface area
-        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
-        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.specific_energy = 600*3600  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 1   # Efficiency fuel cell
         self.P = 0  # Max power [W]
         self.L_over_D = self.C_L / dragcoef(self)
 
