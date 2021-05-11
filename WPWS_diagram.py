@@ -491,7 +491,7 @@ def wpws_plot(a, option=-1):
 
 
 def design_point(a, WS, WP):
-    print('Density at cruise altitude is',script(a.h_cruise))
+    print('Density at cruise altitude is =',script(a.h_cruise))
     S_l = WS * (2 * a.f) / (a.C_L * a.rho0) * 0.5915
     Power = a.W / WP
 
