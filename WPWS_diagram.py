@@ -151,14 +151,14 @@ class flyingwing:
         self.C_L = 2.0
         self.e = 0.8
         self.A = 7
-        self.h_cruise = 4000
-        self.m_energy = 1500 #[kg]
+        self.h_cruise = 10000*0.3048
+        self.m_energy = 2495.1275 #[kg]
         self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 2.69 #Propellor diameter
+        self.D = 0 #Propellor diameter
         self.B = 4 #number of blader per propellor
-        self.N = 2 #Number of engines
+        self.N = 4 #Number of engines
         self.efficiency_r = 0.1 #Fraction of total used energy that is recovered for other systems
 
         self.rho0 = 1.225
@@ -180,7 +180,7 @@ class flyingwing:
         self.W = 8618.255 * 9.80665  # kg
 
         self.S = 0  #Wing surface area
-        self.specific_energy = 46200000 #Specific energy of fuel [J/kg]
+        self.specific_energy = 550*3600 #Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
         self.P = 0 #Max power [W]
         self.L_over_D= self.C_L/dragcoef(self)
@@ -221,7 +221,7 @@ class hydrogen:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
-        self.W = 8618.255  # kg
+        self.W = 8618.255*9.80655  # N
 
         self.S = 0  # Wing surface area
         self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
@@ -261,7 +261,7 @@ class conc_batteries:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
-        self.W = 8618.255  # kg
+        self.W = 8618.255*9.80655  # N
 
         self.S = 0  # Wing surface area
         self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
@@ -302,7 +302,7 @@ class claimthisname3:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
-        self.W = 8618.255  # kg
+        self.W = 8618.255*9.80655  # N
 
         self.S = 0  # Wing surface area
         self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
@@ -345,7 +345,7 @@ class claimthisname4:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
-        self.W = 8618.255  # kg
+        self.W = 8618.255*9.80655  # N
 
         self.S = 0  # Wing surface area
         self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
@@ -491,6 +491,7 @@ def wpws_plot(a, option=-1):
 
 
 def design_point(a, WS, WP):
+    print('Density at cruise altitude is',script(a.h_cruise))
     S_l = WS * (2 * a.f) / (a.C_L * a.rho0) * 0.5915
     Power = a.W / WP
 
@@ -499,7 +500,8 @@ def design_point(a, WS, WP):
     print('Surface area =', a.S)
     print('Landing length = ', S_l)
     print('Power required = ', Power)
-
+    a.D = 0.55*((Power/(1000*a.N))**(0.25))
+    print('Propeller diamter in [m] = ',a.D,'With ',a.N,' engines')
     sigma = script(a.h_cruise) / script(0)
 
     power_setting = ((a.C_D_0 * 0.5 * a.rho * a.V ** 3) / (a.cruise_fraction * WS) + (a.cruise_fraction * WS) * 1 / (
@@ -515,6 +517,7 @@ def design_point(a, WS, WP):
     C_D = dragcoef(a, CL_value=C_L)
     cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
     print('Climb gradient = ', degrees(atan(cV)))
+    print('Lift over drag is ',a.L_over_D)
 
 def Tool(a,WS, WP):
     plt.scatter(WS,WP)
@@ -528,8 +531,8 @@ def Tool(a,WS, WP):
 
 ####
 #Fill in aircraftname, WS, WP
-WS = 1200
-WP = 0.0846
+WS = 1408.6
+WP = 0.07215
 Tool(flyingwing(),WS,WP)
 
 
