@@ -547,9 +547,9 @@ def Tool(a,WS, WP):
 #Tool(hydrogen(),WS,WP)
 #wpws_plot(hydrogen())
 
-WS = 1408.6
-WP = 0.07215
-Tool(flyingwing(),WS,WP)
+#WS = 1408.6
+#WP = 0.07215
+#Tool(flyingwing(),WS,WP)
 
 
 
