@@ -1,8 +1,8 @@
 import numpy as np
+eta_fc = 0.6
+eta_total = 0.85 * eta_fc * 0.9 * 0.9
 
-eta_total = 0.85 * 0.5 * 0.9 * 0.9
-eta_fc = 0.5
-LD = 8.16
+LD = 9.79
 E_h2 = 120*10**6
 payload = 1814.06
 mass_max_payload = 8618
@@ -12,12 +12,13 @@ payload_range = 1.852 * 200 *10**3
 rho_liquid = 70
 rho_pressure = 40
 energy_margin = 1.3
-eta_storage_liquid = 0.2
+eta_storage_liquid = 0.25
 eta_storage_pressure = 0.1
-max_power = 500 * 10**3
+max_power = 1500 * 10**3
+cruise_power = 500 * 10**3
 rho_pmad = 10000
 rho_em = 5000
-rho_fc = 2000
+rho_fc = 3400 #3400
 rho_comp = 2000
 rho_cool = 2000
 T_air = 298.15
@@ -51,7 +52,7 @@ def tank_sizing(range, mass, rho_h2, eta_storage, rho_type, cooling):
     volume_tank = mass_h2 / (rho_h2 * 0.5)
     length_tank = cylinder_length(volume_tank)
     mass_tank_hydrogen = mass_h2 / eta_storage
-    mass_other_systems = maximum_power/rho_fc + maximum_power/rho_pmad + maximum_power/rho_em + maximum_power/rho_type
+    mass_other_systems = maximum_power/rho_fc + maximum_power/rho_pmad + maximum_power/rho_em + cruise_power/rho_type
     mass_total = mass_other_systems + mass_tank_hydrogen
     return mass_h2, mass_tank_hydrogen, volume_tank, length_tank, mass_total
 

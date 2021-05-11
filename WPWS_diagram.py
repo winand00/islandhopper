@@ -2,6 +2,8 @@ from math import *
 import numpy as np
 import matplotlib.pyplot as plt
 from tool import tool
+
+
 # from ISA import script
 
 
@@ -147,10 +149,13 @@ class flyingwing:
         # Change these first 7 as you wish
         self.C_D_0 = 0.007
         self.C_L = 2.0
+        self.C_L_cruise = 0.8
         self.e = 0.8
         self.A = 7
+
         self.h_cruise = 10000*0.3048
         self.m_energy = 2495.1275 #[kg]
+
         self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
@@ -178,10 +183,13 @@ class flyingwing:
         self.W = 8618.255 * 9.80665  # kg
 
         self.S = 0  #Wing surface area
+
+
         self.specific_energy = 550*3600 #Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+
         self.P = 0 #Max power [W]
-        self.L_over_D= self.C_L/dragcoef(self)
+        self.L_over_D= self.C_L_cruise/dragcoef(self)
 
 
 
@@ -189,8 +197,9 @@ class flyingwing:
 class hydrogen:
     def __init__(self):
         # Change these 7 as you wish
-        self.C_D_0 = 0.03
-        self.C_L = 2.0
+        self.C_D_0 = 0.039
+        self.C_L = 2.2
+        self.C_L_cruise = 0.8
         self.e = 0.8
         self.A = 9
         self.h_cruise = 3048
@@ -198,7 +207,7 @@ class hydrogen:
         self.battery = False  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 2.966  # Propellor diameter
+        self.D = 0  # Propellor diameter
         self.B = 4  # number of blader per propellor
         self.N = 2  # Number of engines
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
@@ -206,7 +215,7 @@ class hydrogen:
         self.rho0 = 1.225
         self.rho = script(self.h_cruise)
         self.V_s = 43  # stall speed
-        self.n_p = 0.8  # Propellor efficiency
+        self.n_p = 0.85  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
@@ -219,18 +228,21 @@ class hydrogen:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
+
         self.W = 8618.255*9.80655  # N
 
+
         self.S = 0  # Wing surface area
-        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
-        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.specific_energy = 120000000  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 0.6   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L / dragcoef(self)
+        self.L_over_D = self.C_L_cruise / dragcoef(self)
 
 class conc_batteries:
     def __init__(self):
         self.C_D_0 = 0.025
         self.C_L = 2.4
+        self.C_L_cruise = 0.8
         self.e = 0.85
         self.A = 12
         self.h_cruise = 3048
@@ -265,13 +277,14 @@ class conc_batteries:
         self.specific_energy = 600*3600  # Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 1   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L / dragcoef(self)
+        self.L_over_D = self.C_L_cruise / dragcoef(self)
 
 
 class distributed:
     def __init__(self):
         self.C_D_0 = 0.0307
         self.C_L = 3.66
+        self.C_L_cruise = 0.8
         self.e = 0.8
         self.A = 10
         self.h_cruise = 3000
@@ -307,7 +320,7 @@ class distributed:
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
 
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L / dragcoef(self)
+        self.L_over_D = self.C_L_cruise / dragcoef(self)
 
 
 class claimthisname4:
@@ -515,10 +528,6 @@ def design_point(a, WS, WP):
     C_D = dragcoef(a, CL_value=C_L)
     cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
     print('Climb gradient = ', degrees(atan(cV)))
-    C_L_Cruise = a.W / (0.5 * a.rho * a.S * a.V ** 2)
-    print(C_L_Cruise)
-    print(dragcoef(a))
-    a.L_over_D=C_L_Cruise/(dragcoef(a))
     print('Lift over drag is ',a.L_over_D)
 
 def Tool(a,WS, WP):
@@ -536,6 +545,18 @@ def Tool(a,WS, WP):
 WS = 1553
 WP = 0.0653
 Tool(hydrogen(),WS,WP)
+
+#WS = 1200
+#WP = 0.0846
+#Tool(flyingwing(),WS,WP)
+#Tool(hydrogen(), WS, WP)
+#wpws_plot(hydrogen())
+
+
+#WS = 1408.6
+#WP = 0.07215
+#Tool(distributed(),WS,WP)
+
 
 
 
