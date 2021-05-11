@@ -546,8 +546,8 @@ WS = 1553
 WP = 0.0653
 Tool(hydrogen(),WS,WP)
 
-#WS = 1200
-#WP = 0.0846
+WS = 1200
+WP = 0.0846
 #Tool(flyingwing(),WS,WP)
 #Tool(hydrogen(), WS, WP)
 #wpws_plot(hydrogen())
