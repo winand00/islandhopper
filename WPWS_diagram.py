@@ -274,7 +274,7 @@ class conc_batteries:
         self.W = 8618.255*9.80655  # N
 
         self.S = 0  # Wing surface area
-        self.specific_energy = 600*3600  # Specific energy of fuel [J/kg]
+        self.specific_energy = 600*3600  # Specific energy of fuel [J/kg].
         self.efficiency_fuelcell = 1   # Efficiency fuel cell
         self.P = 0  # Max power [W]
         self.L_over_D = self.C_L_cruise / dragcoef(self,CL_value=self.C_L_cruise)
