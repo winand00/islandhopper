@@ -284,17 +284,17 @@ class distributed:
     def __init__(self):
         self.C_D_0 = 0.0307
         self.C_L = 3.66
-        self.C_L_cruise = 0.8
+        self.C_L_cruise = 1.08
         self.e = 0.8
-        self.A = 10
+        self.A = 15.16
         self.h_cruise = 3000
         self.m_energy = 2000  # [kg]
         self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 2.69  # Propellor diameter
+        self.D = 1.72  # Propellor diameter
         self.B = 4  # number of blader per propellor
-        self.N = 2  # Number of engines
+        self.N = 12  # Number of engines
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
 
         self.rho0 = 1.225
@@ -315,11 +315,11 @@ class distributed:
         self.cruise_fraction = 1
         self.W = 8618.255*9.80655  # N
 
-        self.S = 0  # Wing surface area
-        self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
-        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.S = 29.74  # Wing surface area
+        self.specific_energy = 550*3600  # Specific energy of fuel [J/kg]
+        self.efficiency_fuelcell = 1   # Efficiency fuel cell
 
-        self.P = 0  # Max power [W]
+        self.P = 1293925  # Max power [W]
         self.L_over_D = self.C_L_cruise / dragcoef(self)
 
 
@@ -544,7 +544,7 @@ def Tool(a,WS, WP):
 #Fill in aircraftname, WS, WP
 WS = 1553
 WP = 0.0653
-Tool(hydrogen(),WS,WP)
+#Tool(distributed(),WS,WP)
 
 WS = 1200
 WP = 0.0846
@@ -553,9 +553,9 @@ WP = 0.0846
 #wpws_plot(hydrogen())
 
 
-#WS = 1408.6
-#WP = 0.07215
-#Tool(distributed(),WS,WP)
+WS = 2842.4
+WP = 0.06535
+Tool(distributed(),WS,WP)
 
 
 
