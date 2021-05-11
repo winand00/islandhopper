@@ -288,7 +288,7 @@ class distributed:
         self.e = 0.8
         self.A = 15.16
         self.h_cruise = 3000
-        self.m_energy = 2000  # [kg]
+        self.m_energy = 1360  # [kg]
         self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
@@ -316,10 +316,10 @@ class distributed:
         self.W = 8618.255*9.80655  # N
 
         self.S = 29.74  # Wing surface area
-        self.specific_energy = 550*3600  # Specific energy of fuel [J/kg]
+        self.specific_energy = 600*3600  # Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 1   # Efficiency fuel cell
 
-        self.P = 1293925  # Max power [W]
+        self.P = 1293727  # Max power [W]
         self.L_over_D = self.C_L_cruise / dragcoef(self,CL_value=self.C_L_cruise)
 
 
@@ -554,9 +554,9 @@ def Tool(a,WS, WP):
 #Tool(hydrogen(),WS,WP)
 #wpws_plot(hydrogen())
 
-WS = 1408.6
-WP = 0.07215
-Tool(flyingwing(),WS,WP)
+#WS = 1408.6
+#WP = 0.07215
+#Tool(flyingwing(),WS,WP)
 
 
 
