@@ -148,7 +148,7 @@ def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_ov
     v_cruise = calculate_v_cruise(W, S, rho, cl_opt)
     #p_cruise = calculate_p_cruise(W, cd_0, rho, v_cruise, S, A, e)
     max_range = calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_fuelcell, efficiency_prop)
-
+    print(m)
     print(f"**************CRUISE CHARACTERISTICS******************** \n"
           #f"Optimum lift coefficient Cl_opt = {round(cl_opt, 2)} [-]\n"
           f"Cruise speed                    = {round(v_cruise, 2)} [m/s] \n"
