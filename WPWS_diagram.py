@@ -189,7 +189,7 @@ class flyingwing:
 class hydrogen:
     def __init__(self):
         # Change these 7 as you wish
-        self.C_D_0 = 0.039
+        self.C_D_0 = 0.03
         self.C_L = 2.0
         self.e = 0.8
         self.A = 9
@@ -317,7 +317,7 @@ class claimthisname4:
         self.C_L = 2.0
         self.e = 0.8
         self.A = 7
-        self.h_cruise = 4000
+        self.h_cruise = 10000*0.3048
         self.m_energy = 2000  # [kg]
         self.battery = False  # Aircraft on batteries
 
@@ -515,6 +515,10 @@ def design_point(a, WS, WP):
     C_D = dragcoef(a, CL_value=C_L)
     cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
     print('Climb gradient = ', degrees(atan(cV)))
+    C_L_Cruise = a.W / (0.5 * a.rho * a.S * a.V ** 2)
+    print(C_L_Cruise)
+    print(dragcoef(a))
+    a.L_over_D=C_L_Cruise/(dragcoef(a))
     print('Lift over drag is ',a.L_over_D)
 
 def Tool(a,WS, WP):
@@ -529,9 +533,9 @@ def Tool(a,WS, WP):
 
 ####
 #Fill in aircraftname, WS, WP
-WS = 1408.6
-WP = 0.07215
-Tool(distributed(),WS,WP)
+WS = 1553
+WP = 0.0653
+Tool(hydrogen(),WS,WP)
 
 
 
