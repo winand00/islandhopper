@@ -189,7 +189,7 @@ class flyingwing:
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
 
         self.P = 0 #Max power [W]
-        self.L_over_D= self.C_L_cruise/dragcoef(self)
+        self.L_over_D= self.C_L_cruise/dragcoef(self,CL_value=self.C_L_cruise)
 
 
 
@@ -236,7 +236,7 @@ class hydrogen:
         self.specific_energy = 120000000  # Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 0.6   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L_cruise / dragcoef(self)
+        self.L_over_D = self.C_L_cruise / dragcoef(self,CL_value=self.C_L_cruise)
 
 class conc_batteries:
     def __init__(self):
@@ -277,7 +277,7 @@ class conc_batteries:
         self.specific_energy = 600*3600  # Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 1   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L_cruise / dragcoef(self)
+        self.L_over_D = self.C_L_cruise / dragcoef(self,CL_value=self.C_L_cruise)
 
 
 class distributed:
@@ -320,7 +320,7 @@ class distributed:
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
 
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L_cruise / dragcoef(self)
+        self.L_over_D = self.C_L_cruise / dragcoef(self,CL_value=self.C_L_cruise)
 
 
 class claimthisname4:
@@ -362,7 +362,7 @@ class claimthisname4:
         self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L / dragcoef(self)
+        self.L_over_D = self.C_L / dragcoef(self,CL_value=self.C_L_cruise)
 
 
 def dragcoef(a, A_value=-1, CL_value=-1):
@@ -542,15 +542,16 @@ def Tool(a,WS, WP):
 
 ####
 #Fill in aircraftname, WS, WP
-WS = 1553
-WP = 0.0653
-Tool(hydrogen(),WS,WP)
-
-WS = 1200
-WP = 0.0846
-#Tool(flyingwing(),WS,WP)
-#Tool(hydrogen(), WS, WP)
+#WS = 1553
+#WP = 0.0653
+#Tool(hydrogen(),WS,WP)
 #wpws_plot(hydrogen())
+
+WS = 1408.6
+WP = 0.07215
+Tool(flyingwing(),WS,WP)
+
+
 
 
 #WS = 1408.6
