@@ -183,7 +183,7 @@ class flyingwing:
         self.W = 8618.255 * 9.80665  # kg
 
         self.S = 0  #Wing surface area
-
+        self.C_D_cruise=0
 
         self.specific_energy = 550*3600 #Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
@@ -522,7 +522,11 @@ def design_point(a, WS, WP):
 
     c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho0)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
     print('Climb rate = ', c)
-
+    a.C_L_cruise2=a.W/(0.5*a.rho*a.S*a.V**2)
+    a.C_D_cruise=dragcoef(a,CL_value=a.C_L_cruise2)
+    Drag = a.C_D_cruise*0.5*a.rho*a.S*a.V**2
+    powerreq=Drag*a.V
+    print(a.C_L_cruise,a.C_D_cruise,Drag,powerreq)
 
     C_L = sqrt(3 * a.C_D_0 * pi * a.A * a.e)
     C_D = dragcoef(a, CL_value=C_L)
