@@ -191,23 +191,23 @@ class flyingwing:
 class hydrogen:
     def __init__(self):
         # Change these 7 as you wish
-        self.C_D_0 = 0.02
+        self.C_D_0 = 0.039
         self.C_L = 2.0
         self.e = 0.8
-        self.A = 7
-        self.h_cruise = 4000
-        self.m_energy = 2000 #[kg]
+        self.A = 9
+        self.h_cruise = 3048
+        self.m_energy = 104.8 #[kg]
         self.battery = False  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 2.69  # Propellor diameter
+        self.D = 2.966  # Propellor diameter
         self.B = 4  # number of blader per propellor
         self.N = 2  # Number of engines
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
 
         self.rho0 = 1.225
         self.rho = script(self.h_cruise)
-        self.V_s = 31.38  # stall speed
+        self.V_s = 43  # stall speed
         self.n_p = 0.8  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
