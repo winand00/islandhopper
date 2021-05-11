@@ -10,7 +10,7 @@ On the bottom of the file you can put in your own values for all parameters
 def calculate_cl_opt(cd_0, A, e):
     """Calculates optimum lift coefficient, Cl_opt. Inputs are zero lift drag coefficient Cd_0, aspect ratio A
     and Oswald efficiency factor e."""
-    return sqrt((1 / 3) * cd_0 * A * e)
+    return sqrt(pi * cd_0 * A * e)
 
 
 # Cruise speed#
@@ -106,6 +106,9 @@ def calculate_design_efficiency(specific_energy, efficiency_fuelcell, efficiency
     and the total amount of thrust energy T."""
     return (specific_energy * efficiency_fuelcell * efficiency_prop * (1 + efficiency_r)) / (specific_energy * m_energy)
 
+#def calculate_cruise_cl(v_cruise, W, rho, S)
+    """Calculated cruise Cl based on cruise speed"""
+
 
 # Tool
 def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_over_D, efficiency_fuelcell,
@@ -150,7 +153,7 @@ def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_ov
     max_range = calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_fuelcell, efficiency_prop)
     print(m)
     print(f"**************CRUISE CHARACTERISTICS******************** \n"
-          #f"Optimum lift coefficient Cl_opt = {round(cl_opt, 2)} [-]\n"
+          f"Optimum lift coefficient Cl_opt = {round(cl_opt, 2)} [-]\n"
           f"Cruise speed                    = {round(v_cruise, 2)} [m/s] \n"
           #f"Required cruise power           = {round(p_cruise, 2)} [Watt] \n"
           f"Max range                       = {round(max_range, 2)} [m]")
