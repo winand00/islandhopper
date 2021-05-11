@@ -35,13 +35,13 @@ def DCL(dY,M,A,sweep,CL,alpha_p,beta,xp_rp, T_W,rho,V,N,dy,W_S,chi):
 def DCD0(dY, xp_rp,cf, T_W,rho,V,N,dy,W_S,chi,A):
     return dY*a_w(a_p(thrust_coef(T_W,N,rho, V,normalized_D_p(N,dY, dy,A,W_S),chi)),contraction_ratio(a_p(thrust_coef(T_W,N,rho, V, normalized_D_p(N,dY, dy,A,W_S), chi)),xp_rp))**2*cf
 
-dY = 0.8
+dY = 0.7
 V = 90 #m/s
 a = 328.4
 M = V/a
-A = 10
+A = 15
 sweep = 0
-CL = 1.8
+CL = 2.4
 alpha_p = 0.
 beta = 0.8
 xp_rp = 0.7
@@ -49,12 +49,13 @@ T_W = 0.645
 rho = 0.904637
 cf = 0.009
 e = 0.8
-cd0 = 0.04
+cd0 = 0.03
 
 N = 12
 dy = 0.2
-W_S = 1700
+W_S = 1800
 chi = 1
+b = 20
 
 dcl = DCL(dY,M,A,sweep,CL,alpha_p,beta,xp_rp, T_W,rho,V,N,dy,W_S,chi)
 dcd0 = DCD0(dY, xp_rp,cf, T_W,rho,V,N,dy,W_S,chi,A)
@@ -68,7 +69,10 @@ oldcd = cd0 + CL**2/(pi*A*e)
 
 newcl = CL+dcl
 newcd = oldcd+dcdi+dcd0
+newcd0 = cd0+dcd0
 
 print(oldcl,newcl)
 print(oldcd,newcd)
 print(oldcl/oldcd,newcl/newcd)
+print(newcd0, newcl)
+print(prop_diameter(N,dY, dy, b))

@@ -270,15 +270,15 @@ class conc_batteries:
         self.L_over_D = self.C_L / dragcoef(self)
 
 
-class claimthisname3:
+class distributed:
     def __init__(self):
-        self.C_D_0 = 0.02
-        self.C_L = 2.0
+        self.C_D_0 = 0.0307
+        self.C_L = 3.66
         self.e = 0.8
-        self.A = 7
-        self.h_cruise = 4000
+        self.A = 10
+        self.h_cruise = 3000
         self.m_energy = 2000  # [kg]
-        self.battery = False  # Aircraft on batteries
+        self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
         self.D = 2.69  # Propellor diameter
@@ -288,7 +288,7 @@ class claimthisname3:
 
         self.rho0 = 1.225
         self.rho = script(self.h_cruise)
-        self.V_s = 31.38  # stall speed
+        self.V_s = 84  # stall speed
         self.n_p = 0.8  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
@@ -533,8 +533,7 @@ def Tool(a,WS, WP):
 #Fill in aircraftname, WS, WP
 WS = 1408.6
 WP = 0.07215
-Tool(flyingwing(),WS,WP)
-
+Tool(distributed(),WS,WP)
 
 
 
