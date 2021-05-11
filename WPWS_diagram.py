@@ -151,7 +151,7 @@ class flyingwing:
         self.C_L = 2.0
         self.e = 0.8
         self.A = 7
-        self.h_cruise = 3000
+        self.h_cruise = 4000
         self.m_energy = 1500 #[kg]
         self.battery = True  # Aircraft on batteries
 
@@ -162,7 +162,7 @@ class flyingwing:
         self.efficiency_r = 0.1 #Fraction of total used energy that is recovered for other systems
 
         self.rho0 = 1.225
-        self.rho= script(self.h_cruise) / script(0)
+        self.rho= script(self.h_cruise)
         self.V_s = 43  # stall speed
         self.n_p = 0.8  # Propellor efficiency
         self.C_L_takeoff = self.C_L/(1.1**2)
@@ -206,7 +206,7 @@ class hydrogen:
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
 
         self.rho0 = 1.225
-        self.rho = script(self.h_cruise) / script(0)
+        self.rho = script(self.h_cruise)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
@@ -246,7 +246,7 @@ class conc_batteries:
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
 
         self.rho0 = 1.225
-        self.rho = script(self.h_cruise) / script(0)
+        self.rho = script(self.h_cruise)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
@@ -287,7 +287,7 @@ class claimthisname3:
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
 
         self.rho0 = 1.225
-        self.rho = script(self.h_cruise) / script(0)
+        self.rho = script(self.h_cruise)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
@@ -330,7 +330,7 @@ class claimthisname4:
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
 
         self.rho0 = 1.225
-        self.rho = script(self.h_cruise) / script(0)
+        self.rho = script(self.h_cruise)
         self.V_s = 31.38  # stall speed
         self.n_p = 0.8  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
@@ -496,7 +496,7 @@ def design_point(a, WS, WP):
 
     a.P = Power
     a.S = a.W / WS
-
+    print('Surface area =', a.S)
     print('Landing length = ', S_l)
     print('Power required = ', Power)
 
@@ -517,6 +517,7 @@ def design_point(a, WS, WP):
     print('Climb gradient = ', degrees(atan(cV)))
 
 def Tool(a,WS, WP):
+    plt.scatter(WS,WP)
     wpws_plot(a)
     design_point(a,WS, WP)
     tool(a.C_D_0, a.A, a.e, a.W, a.rho, a.rho0, a.S, a.specific_energy, a.m_energy, a.W / 9.80665, a.L_over_D,
@@ -527,8 +528,9 @@ def Tool(a,WS, WP):
 
 ####
 #Fill in aircraftname, WS, WP
-
-Tool(flyingwing(),1553, 0.065)
+WS = 1200
+WP = 0.0846
+Tool(flyingwing(),WS,WP)
 
 
 
