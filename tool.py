@@ -195,7 +195,7 @@ def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_ov
 
     print(f"Maximum sound pressure level    = {round(max_SPL, 2)} [dB] \n"
           f"Design efficiency parameter GI1 = {round(design_efficiency, 2)} [-]")
-
+    return (cl_opt)
 
 # Inputs jetstream 31
 

@@ -299,7 +299,7 @@ class distributed:
 
         self.rho0 = 1.225
         self.rho = script(self.h_cruise)
-        self.V_s = 84  # stall speed
+        self.V_s = 43  # stall speed
         self.n_p = 0.8  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
@@ -522,15 +522,18 @@ def design_point(a, WS, WP):
 
     c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho0)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
     print('Climb rate = ', c)
-    a.C_L_cruise2=a.W/(0.5*a.rho*a.S*a.V**2)
-    a.C_D_cruise=dragcoef(a,CL_value=a.C_L_cruise2)
+
+    a.C_L_cruise=a.W/(0.5*a.rho*a.S*a.V**2)
+    a.C_D_cruise=dragcoef(a,CL_value=a.C_L_cruise)
     Drag = a.C_D_cruise*0.5*a.rho*a.S*a.V**2
     powerreq=Drag*a.V
-    print(a.C_L_cruise,a.C_D_cruise,Drag,powerreq)
+    print('Power required during Cruise = ',powerreq,'[W]')
+    a.L_over_D = a.C_L_cruise/a.C_D_cruise
 
     C_L = sqrt(3 * a.C_D_0 * pi * a.A * a.e)
     C_D = dragcoef(a, CL_value=C_L)
     cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
+
     print('Climb gradient = ', degrees(atan(cV)))
     print('Lift over drag is ',a.L_over_D)
 
@@ -538,9 +541,9 @@ def Tool(a,WS, WP):
     plt.scatter(WS,WP)
     wpws_plot(a)
     design_point(a,WS, WP)
-    tool(a.C_D_0, a.A, a.e, a.W, a.rho, a.rho0, a.S, a.specific_energy, a.m_energy, a.W / 9.80665, a.L_over_D,
+    cl_opt = tool(a.C_D_0, a.A, a.e, a.W, a.rho, a.rho0, a.S, a.specific_energy, a.m_energy, a.W / 9.80665, a.L_over_D,
          a.efficiency_fuelcell, a.n_p, a.P, a.C_L_takeoff, a.C_L, a.D, a.B, a.N, a.efficiency_r, a.battery)
-
+    print('Lift over drag is ',cl_opt/(dragcoef(a,CL_value=cl_opt)))
 
 
 
@@ -558,10 +561,14 @@ Tool(flyingwing(),WS,WP)
 
 
 
-WS = 2842.4
-WP = 0.06535
-Tool(distributed(),WS,WP)
+#WS = 2842.4
+#WP = 0.06535
+#Tool(distributed(),WS,WP)
 
+#WS = 1863
+#WP = 0.0545
+
+#Tool(conc_batteries(),WS,WP)
 
 
 
