@@ -41,7 +41,7 @@ a = 328.4
 M = V/a
 A = 15
 sweep = 0
-CL = 2.4
+CL = 0.5
 alpha_p = 0.
 beta = 0.8
 xp_rp = 0.7
@@ -49,11 +49,11 @@ T_W = 0.645
 rho = 0.904637
 cf = 0.009
 e = 0.8
-cd0 = 0.03
+cd0 = 0.028
 
 N = 12
 dy = 0.2
-W_S = 1800
+W_S = 2842
 chi = 1
 b = 20
 
@@ -65,11 +65,12 @@ dcdi = (dcl**2 + 2*CL*dcl)/(pi*A*e)
 oldcl = CL
 oldcd = cd0 + CL**2/(pi*A*e)
 
-
+clopt = sqrt(1/3 *cd0*A*e)
 
 newcl = CL+dcl
 newcd = oldcd+dcdi+dcd0
 newcd0 = cd0+dcd0
+
 
 print(oldcl,newcl)
 print(oldcd,newcd)

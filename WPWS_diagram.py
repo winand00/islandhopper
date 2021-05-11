@@ -149,6 +149,7 @@ class flyingwing:
         # Change these first 7 as you wish
         self.C_D_0 = 0.007
         self.C_L = 2.0
+        self.C_L_cruise = 0.8
         self.e = 0.8
         self.A = 7
 
@@ -188,7 +189,7 @@ class flyingwing:
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
 
         self.P = 0 #Max power [W]
-        self.L_over_D= self.C_L/dragcoef(self)
+        self.L_over_D= self.C_L_cruise/dragcoef(self)
 
 
 
@@ -198,6 +199,7 @@ class hydrogen:
         # Change these 7 as you wish
         self.C_D_0 = 0.039
         self.C_L = 2.2
+        self.C_L_cruise = 0.8
         self.e = 0.8
         self.A = 9
         self.h_cruise = 3048
@@ -234,12 +236,13 @@ class hydrogen:
         self.specific_energy = 120000000  # Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 0.6   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L / dragcoef(self)
+        self.L_over_D = self.C_L_cruise / dragcoef(self)
 
 class conc_batteries:
     def __init__(self):
         self.C_D_0 = 0.025
         self.C_L = 2.4
+        self.C_L_cruise = 0.8
         self.e = 0.85
         self.A = 12
         self.h_cruise = 3048
@@ -274,13 +277,14 @@ class conc_batteries:
         self.specific_energy = 600*3600  # Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 1   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L / dragcoef(self)
+        self.L_over_D = self.C_L_cruise / dragcoef(self)
 
 
 class distributed:
     def __init__(self):
         self.C_D_0 = 0.0307
         self.C_L = 3.66
+        self.C_L_cruise = 0.8
         self.e = 0.8
         self.A = 10
         self.h_cruise = 3000
@@ -316,7 +320,7 @@ class distributed:
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
 
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L / dragcoef(self)
+        self.L_over_D = self.C_L_cruise / dragcoef(self)
 
 
 class claimthisname4:
