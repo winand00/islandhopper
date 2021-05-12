@@ -149,7 +149,6 @@ class flyingwing:
         # Change these first 7 as you wish
         self.C_D_0 = 0.007
         self.C_L = 2.0
-        self.C_L_cruise = 0.8
         self.e = 0.8
         self.A = 7
 
@@ -189,7 +188,8 @@ class flyingwing:
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
 
         self.P = 0 #Max power [W]
-        self.L_over_D= self.C_L_cruise/dragcoef(self,CL_value=self.C_L_cruise)
+        self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
+        self.L_over_D = self.C_L_cruise / dragcoef(self, CL_value=self.C_L_cruise)
 
 
 
@@ -199,7 +199,6 @@ class hydrogen:
         # Change these 7 as you wish
         self.C_D_0 = 0.039
         self.C_L = 2.2
-        self.C_L_cruise = 0.8
         self.e = 0.8
         self.A = 9
         self.h_cruise = 3048
@@ -236,13 +235,13 @@ class hydrogen:
         self.specific_energy = 120000000  # Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 0.6   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L_cruise / dragcoef(self,CL_value=self.C_L_cruise)
+        self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
+        self.L_over_D = self.C_L_cruise / dragcoef(self, CL_value=self.C_L_cruise)
 
 class conc_batteries:
     def __init__(self):
         self.C_D_0 = 0.025
         self.C_L = 2.4
-        self.C_L_cruise = 0.8
         self.e = 0.85
         self.A = 12
         self.h_cruise = 3048
@@ -258,7 +257,7 @@ class conc_batteries:
         self.rho0 = 1.225
         self.rho = script(self.h_cruise)
         self.V_s = 43  # stall speed
-        self.n_p = 0.8  # Propellor efficiency
+        self.n_p = 0.85  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
@@ -277,14 +276,14 @@ class conc_batteries:
         self.specific_energy = 600*3600  # Specific energy of fuel [J/kg].
         self.efficiency_fuelcell = 1   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L_cruise / dragcoef(self,CL_value=self.C_L_cruise)
+        self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
+        self.L_over_D = self.C_L_cruise / dragcoef(self, CL_value=self.C_L_cruise)
 
 
 class distributed:
     def __init__(self):
         self.C_D_0 = 0.0307
         self.C_L = 3.66
-        self.C_L_cruise = 1.08
         self.e = 0.8
         self.A = 15.16
         self.h_cruise = 3000
@@ -320,7 +319,8 @@ class distributed:
         self.efficiency_fuelcell = 1   # Efficiency fuel cell
 
         self.P = 1293727  # Max power [W]
-        self.L_over_D = self.C_L_cruise / dragcoef(self,CL_value=self.C_L_cruise)
+        self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
+        self.L_over_D = self.C_L_cruise / dragcoef(self, CL_value=self.C_L_cruise)
 
 
 class claimthisname4:
@@ -362,7 +362,8 @@ class claimthisname4:
         self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L / dragcoef(self,CL_value=self.C_L_cruise)
+        self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
+        self.L_over_D = self.C_L / dragcoef(self, CL_value=self.C_L_cruise)
 
 
 def dragcoef(a, A_value=-1, CL_value=-1):
@@ -553,9 +554,9 @@ def Tool(a,WS, WP):
 #Tool(hydrogen(),WS,WP)
 #wpws_plot(hydrogen())
 
-WS = 1408.6
-WP = 0.0720
-Tool(flyingwing(),WS,WP)
+#WS = 1408.6
+#WP = 0.0720
+#Tool(flyingwing(),WS,WP)
 
 
 
