@@ -529,12 +529,10 @@ def design_point(a, WS, WP):
     powerreq=Drag*a.V
     #print('Power required during Cruise = ',powerreq,'[W]')
     #a.L_over_D = a.C_L_cruise/a.C_D_cruise
-
+    print('Lift over drag is ',a.L_over_D)'''
     C_L = sqrt(3 * a.C_D_0 * pi * a.A * a.e)
     C_D = dragcoef(a, CL_value=C_L)
     cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
-    print('Lift over drag is ',a.L_over_D)'''
-
     print('Climb gradient = ', degrees(atan(cV)))
 
 
