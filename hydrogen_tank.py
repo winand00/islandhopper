@@ -1,5 +1,5 @@
 import numpy as np
-eta_fc = 0.6
+eta_fc = 0.5
 eta_total = 0.85 * eta_fc * 0.9 * 0.9
 
 LD = 8.97
@@ -12,7 +12,7 @@ payload_range = 1.852 * 200 *10**3
 rho_liquid = 70
 rho_pressure = 40
 energy_margin = 1.3
-eta_storage_liquid = 0.25
+eta_storage_liquid = 0.2
 eta_storage_pressure = 0.1
 max_power = 1383.229 * 10**3
 cruise_power = 1244.048 * 10**3
