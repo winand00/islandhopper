@@ -240,10 +240,10 @@ class hydrogen:
 
 class conc_batteries:
     def __init__(self):
-        self.C_D_0 = 0.025
+        self.C_D_0 = 0.03
         self.C_L = 2.4
-        self.e = 0.85
-        self.A = 12
+        self.e = 0.8
+        self.A = 10
         self.h_cruise = 3048
         self.m_energy = 1360  # [kg]
         self.battery = True  # Aircraft on batteries
@@ -563,12 +563,12 @@ def Tool(a,WS, WP):
 
 WS = 2842.4
 WP = 0.06535
-Tool(distributed(),WS,WP)
+#Tool(distributed(),WS,WP)
 
 #WS = 1863
 #WP = 0.0545
 
-#Tool(conc_batteries(),WS,WP)
+Tool(conc_batteries(),WS,WP)
 
 
 
