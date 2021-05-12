@@ -154,7 +154,7 @@ class flyingwing:
         self.A = 7
 
         self.h_cruise = 10000*0.3048
-        self.m_energy = 2495.1275 #[kg]
+        self.m_energy = 2120.86 #[kg]
 
         self.battery = True  # Aircraft on batteries
 
@@ -167,7 +167,7 @@ class flyingwing:
         self.rho0 = 1.225
         self.rho= script(self.h_cruise)
         self.V_s = 43  # stall speed
-        self.n_p = 0.8  # Propellor efficiency
+        self.n_p = 0.85  # Propellor efficiency
         self.C_L_takeoff = self.C_L/(1.1**2)
 
         self.c = 5  # Climb rate
@@ -185,7 +185,7 @@ class flyingwing:
         self.S = 0  #Wing surface area
         self.C_D_cruise=0
 
-        self.specific_energy = 550*3600 #Specific energy of fuel [J/kg]
+        self.specific_energy = 600*3600 #Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
 
         self.P = 0 #Max power [W]
@@ -523,19 +523,20 @@ def design_point(a, WS, WP):
     c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho0)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
     print('Climb rate = ', c)
 
-    a.C_L_cruise=a.W/(0.5*a.rho*a.S*a.V**2)
+    ''''a.C_L_cruise=a.W/(0.5*a.rho*a.S*a.V**2)
     a.C_D_cruise=dragcoef(a,CL_value=a.C_L_cruise)
     Drag = a.C_D_cruise*0.5*a.rho*a.S*a.V**2
     powerreq=Drag*a.V
-    print('Power required during Cruise = ',powerreq,'[W]')
-    a.L_over_D = a.C_L_cruise/a.C_D_cruise
+    #print('Power required during Cruise = ',powerreq,'[W]')
+    #a.L_over_D = a.C_L_cruise/a.C_D_cruise
 
     C_L = sqrt(3 * a.C_D_0 * pi * a.A * a.e)
     C_D = dragcoef(a, CL_value=C_L)
     cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
+    print('Lift over drag is ',a.L_over_D)''''
 
     print('Climb gradient = ', degrees(atan(cV)))
-    print('Lift over drag is ',a.L_over_D)
+
 
 def Tool(a,WS, WP):
     plt.scatter(WS,WP)
@@ -554,9 +555,9 @@ def Tool(a,WS, WP):
 #Tool(hydrogen(),WS,WP)
 #wpws_plot(hydrogen())
 
-#WS = 1408.6
-#WP = 0.07215
-#Tool(flyingwing(),WS,WP)
+WS = 1408.6
+WP = 0.0720
+Tool(flyingwing(),WS,WP)
 
 
 
