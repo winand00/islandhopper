@@ -5,7 +5,6 @@ import numpy as np
 On the bottom of the file you can put in your own values for all parameters
 """
 
-
 # Optimum lift coefficient, Cl_opt#
 def calculate_cl_opt(cd_0, A, e):
     """Calculates optimum lift coefficient, Cl_opt. Inputs are zero lift drag coefficient Cd_0, aspect ratio A
@@ -148,12 +147,15 @@ def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_ov
     # battery = input("Battery aircraft (True/False):")
 
     cl_opt = calculate_cl_opt(cd_0, A, e)
+    cl_end = cl_opt * sqrt(3)
     v_cruise = calculate_v_cruise(W, S, rho, cl_opt)
+    v_end = calculate_v_cruise(W, S, rho, cl_end)
     #p_cruise = calculate_p_cruise(W, cd_0, rho, v_cruise, S, A, e)
-    max_range = calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_fuelcell, efficiency_prop)
+    max_range = calculate_range(specific_energy, m_energy, m, L_over_D, efficiency_fuelcell, efficiency_prop) - 2700 * v_end
     print(m)
     print(f"**************CRUISE CHARACTERISTICS******************** \n"
           f"Optimum lift coefficient Cl_opt = {round(cl_opt, 2)} [-]\n"
+          f"Lift coefficient for endurance Cl_end = {round(cl_end, 2)} [-]\n"
           f"Cruise speed                    = {round(v_cruise, 2)} [m/s] \n"
           #f"Required cruise power           = {round(p_cruise, 2)} [Watt] \n"
           f"Max range                       = {round(max_range, 2)} [m]")
