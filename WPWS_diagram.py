@@ -523,7 +523,7 @@ def design_point(a, WS, WP):
     c = a.n_p / WP - (((sqrt(WS) * sqrt(2 / a.rho0)) / (1.345 * (a.A * a.e) ** 0.75 / a.C_D_0 ** 0.25)))
     print('Climb rate = ', c)
 
-    ''''a.C_L_cruise=a.W/(0.5*a.rho*a.S*a.V**2)
+    '''a.C_L_cruise=a.W/(0.5*a.rho*a.S*a.V**2)
     a.C_D_cruise=dragcoef(a,CL_value=a.C_L_cruise)
     Drag = a.C_D_cruise*0.5*a.rho*a.S*a.V**2
     powerreq=Drag*a.V
@@ -533,7 +533,7 @@ def design_point(a, WS, WP):
     C_L = sqrt(3 * a.C_D_0 * pi * a.A * a.e)
     C_D = dragcoef(a, CL_value=C_L)
     cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
-    print('Lift over drag is ',a.L_over_D)''''
+    print('Lift over drag is ',a.L_over_D)'''
 
     print('Climb gradient = ', degrees(atan(cV)))
 
