@@ -300,7 +300,7 @@ class distributed:
         self.rho0 = 1.225
         self.rho = script(self.h_cruise)
         self.V_s = 43  # stall speed
-        self.n_p = 0.8  # Propellor efficiency
+        self.n_p = 0.85  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate

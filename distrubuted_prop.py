@@ -49,10 +49,10 @@ T_W = 0.645
 rho = 0.904637
 cf = 0.009
 e = 0.8
-cd0 = 0.028
+cd0 = 0.03
 
 N = 12
-dy = 0.2
+dy = 0.05
 W_S = 2842
 chi = 1
 b = 20
@@ -75,5 +75,6 @@ newcd0 = cd0+dcd0
 print(oldcl,newcl)
 print(oldcd,newcd)
 print(oldcl/oldcd,newcl/newcd)
-print(newcd0, newcl)
+
 print(prop_diameter(N,dY, dy, b))
+print(newcd0)
