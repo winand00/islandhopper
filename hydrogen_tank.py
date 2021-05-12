@@ -1,21 +1,24 @@
 import numpy as np
 eta_fc = 0.5
-eta_total = 0.85 * eta_fc * 0.9 * 0.9
+eta_elecsys = 0.9
+eta_em = 0.9
+eta_pmad = 0.9
+eta_total = 0.85 * eta_fc * eta_em * eta_pmad * eta_elecsys
 
-LD = 8.97
+LD = 12.041452736768791
 E_h2 = 120*10**6
 payload = 1814.06
 mass_max_payload = 8618
 mass_no_payload = 8618 - payload
-max_range = 1.852 * 300 *10**3
-payload_range = 1.852 * 200 *10**3
+max_range = 1.852 * 300 *10**3 + 50.32 * 45 * 60
+payload_range = 1.852 * 200 *10**3 + 50.32 * 45 * 60
 rho_liquid = 70
 rho_pressure = 40
-energy_margin = 1.3
+energy_margin = 1
 eta_storage_liquid = 0.2
 eta_storage_pressure = 0.1
-max_power = 1383.229 * 10**3
-cruise_power = 1244.048 * 10**3
+max_power = 1294262.6121018375
+cruise_power = 1114089.2877240134
 rho_pmad = 10000
 rho_em = 5000
 rho_fc = 3400
