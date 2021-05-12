@@ -249,7 +249,7 @@ class conc_batteries:
         self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 2.77  # Propeller diameter
+        self.D = 3  # Propeller diameter
         self.B = 6 # number of blades per propeller
         self.N = 2  # Number of engines
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
@@ -270,7 +270,7 @@ class conc_batteries:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.5
         self.cruise_fraction = 1
-        self.W = 8618.255*9.80655  # N
+        self.W = 8618.255*9.80655 - 1814*9.80655  # N
 
         self.S = 0  # Wing surface area
         self.specific_energy = 600*3600  # Specific energy of fuel [J/kg].
@@ -561,13 +561,15 @@ def Tool(a,WS, WP):
 
 
 
-WS = 2842.4
-WP = 0.06535
+#WS = 2842.4
+#WP = 0.06535
 #Tool(distributed(),WS,WP)
 
 #WS = 1863
 #WP = 0.0545
 
+WS = 1863.9
+WP = 0.04749
 Tool(conc_batteries(),WS,WP)
 
 
