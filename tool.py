@@ -94,8 +94,8 @@ def calculate_max_sound_pressure_level(D, B, N, p_max, efficiency_prop):
     """Calculates the maximum sound pressure level, SPL_max. Inputs are break shaft power p_br, propeller diameter D,
     rotational tip Mach number M_t, number of blades per propeller B, number of propellers N and distance to the
     propeller r."""
-    return 83.4 + 15.3 * np.log10(p_max / (N * efficiency_prop)) - 20 * np.log10(D) + 38.5 * 0.9 - 3 * (B - 2) + 10 * np.log10(N) - 20 * \
-           np.log10(100)
+    return 83.4 + 15.3 * np.log10(p_max / 1000 / N) - 20 * np.log10(D) + 38.5 * 0.9 - 3 * (B - 2) + 10 * np.log10(N) - 20 * \
+           np.log10(2500)
 
 
 # Design efficiency#

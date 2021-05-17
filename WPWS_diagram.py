@@ -158,7 +158,7 @@ class flyingwing:
         self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 0 #Propellor diameter
+        self.D = 2.275 #Propellor diameter
         self.B = 4 #number of blader per propellor
         self.N = 4 #Number of engines
         self.efficiency_r = 0.1 #Fraction of total used energy that is recovered for other systems
@@ -206,7 +206,7 @@ class hydrogen:
         self.battery = False  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 0  # Propellor diameter
+        self.D = 2.77  # Propellor diameter
         self.B = 4  # number of blader per propellor
         self.N = 2  # Number of engines
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
@@ -245,7 +245,7 @@ class conc_batteries:
         self.e = 0.8
         self.A = 10
         self.h_cruise = 3048
-        self.m_energy = 1360 + 6*95 #+ 1814  # [kg]
+        self.m_energy = 1360  # + 6*95 #+ 1814  # [kg]
         self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
@@ -270,7 +270,7 @@ class conc_batteries:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.5
         self.cruise_fraction = 1
-        self.W = 8618.255*9.80655 - 1814*9.80655 #- 4*95*9.80655  # N
+        self.W = 8618.255*9.80655 #- 1814*9.80655 #- 4*95*9.80655  # N
 
         self.S = 0  # Wing surface area
         self.specific_energy = 600*3600  # Specific energy of fuel [J/kg].
@@ -291,7 +291,7 @@ class distributed:
         self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 1.72  # Propellor diameter
+        self.D = 0.97  # Propellor diameter
         self.B = 4  # number of blader per propellor
         self.N = 12  # Number of engines
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
@@ -538,18 +538,20 @@ def design_point(a, WS, WP):
 
 
 def Tool(a,WS, WP):
+    print("Diameter =", a.D)
     plt.scatter(WS,WP)
     wpws_plot(a)
     design_point(a,WS, WP)
     cl_opt = tool(a.C_D_0, a.A, a.e, a.W, a.rho, a.rho0, a.S, a.specific_energy, a.m_energy, a.W / 9.80665, a.L_over_D,
          a.efficiency_fuelcell, a.n_p, a.P, a.C_L_takeoff, a.C_L, a.D, a.B, a.N, a.efficiency_r, a.battery)
     print('Lift over drag is ',cl_opt/(dragcoef(a,CL_value=cl_opt)))
+    print("Diameter =", a.D)
 
 
 
 ####
 #Fill in aircraftname, WS, WP
-#WS = 1553
+#WS = 1863
 #WP = 0.0653
 #Tool(hydrogen(),WS,WP)
 #wpws_plot(hydrogen())
