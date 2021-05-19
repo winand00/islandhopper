@@ -24,7 +24,7 @@ D = 2.69                    # Propeller diameter
 B = 4                       # Number of blades per propeller
 N = 2                       # Number of propellers
 efficiency_r = 0.1          # Fraction of total used energy that is recovered for other systems
-fuel_weight = 1483          # Fuel weight
+fuel_weight_maxfuel = 1483  # Fuel weight
 fuel_speed = 1000 / 60      # Fuel speed in l/min
 battery = False             # Aircraft on batteries
 
@@ -60,9 +60,9 @@ class TestTool(unittest.TestCase):
         self.assertEqual(round(result, 5), 1312.6379)
 
     def test_calculate_refuel_time(self):
-        result = tool.calculate_refuel_time(fuel_weight, fuel_speed)
+        result = tool.calculate_refuel_time(fuel_W_maxpayload, fuel_speed)
         self.assertTrue(result > 0)
-        self.assertEqual(round(result, 5), 88.98)
+        self.assertEqual(round(result, 5), 39.846)
 
     def test_calculate_charging_time(self):
         result = tool.calculate_charging_time(650, 250, 0.95)
