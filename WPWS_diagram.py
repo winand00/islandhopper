@@ -185,7 +185,7 @@ class flyingwing:
         self.C_D_cruise=0
 
         self.specific_energy = 600*3600 #Specific energy of fuel [J/kg]
-        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.efficiency_fuelcell = 1   # Efficiency fuel cell
 
         self.P = 0 #Max power [W]
         self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
@@ -198,7 +198,7 @@ class hydrogen:
     def __init__(self):
         # Change these 7 as you wish
         self.C_D_0 = 0.039
-        self.C_L = 2.2
+        self.C_L = 2.4#2.2
         self.e = 0.8
         self.A = 9
         self.h_cruise = 3048
@@ -233,7 +233,7 @@ class hydrogen:
 
         self.S = 0  # Wing surface area
         self.specific_energy = 120000000  # Specific energy of fuel [J/kg]
-        self.efficiency_fuelcell = 0.6   # Efficiency fuel cell
+        self.efficiency_fuelcell = 0.5   # Efficiency fuel cell
         self.P = 0  # Max power [W]
         self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
         self.L_over_D = self.C_L_cruise / dragcoef(self, CL_value=self.C_L_cruise)
@@ -473,31 +473,33 @@ def wpws_plot(a, option=-1):
     # Turn of the options you dont need.
 
     # Stall load and landing constraints
-    plt.vlines(Stallload(a), 0, 1, label="Stall load", color='red')
+    #plt.vlines(Stallload(a), 0, 1, label="Stall load", color='red')
     plt.vlines(Landing(a), 0, 1, label="Landing", color='dimgray')
 
     # Take-off constraints, varying CL_max
-    plt.plot(x, takeoff(a), label="Take-off - C_L = " + str(a.C_L), color='firebrick')
-    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.3), label="Take-off - C_L = " + str(a.C_L - 0.3), color='red')
-    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.5), label="Take-off - C_L = " + str(a.C_L - 0.5), color='tomato')
+    plt.plot(x, takeoff(a), label="Take-off - C_L = " + str(a.C_L), color='C0')
+    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.3), label="Take-off - C_L = " + str(a.C_L - 0.3), color='C1')
+    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.5), label="Take-off - C_L = " + str(a.C_L - 0.5), color='C2')
 
     # Cruise constraints, varying A
-    plt.plot(x, cruise_perf(a, A_value=a.A - 3), label="Cruise, A = " + str(a.A - 3), color='limegreen')
-    plt.plot(x, cruise_perf(a), label="Cruise, A = " + str(a.A), color='cornflowerblue')
-    plt.plot(x, cruise_perf(a, A_value=a.A + 3), label="Cruise, A = " + str(a.A + 3), color='blueviolet')
+    plt.plot(x, cruise_perf(a, A_value=a.A - 3), label="Cruise, A = " + str(a.A - 3), color='c', linestyle=':')
+    plt.plot(x, cruise_perf(a), label="Cruise, A = " + str(a.A), color='c')
+    plt.plot(x, cruise_perf(a, A_value=a.A + 3), label="Cruise, A = " + str(a.A + 3), color='c', linestyle='-.')
 
     # Climb rate constraints, Varying A
-    plt.plot(x, climb_rate(a, A_value=a.A - 3), label='Climb rate, A = ' + str(a.A - 3), color='lime')
-    plt.plot(x, climb_rate(a), label='Climb rate, A = ' + str(a.A), color='cyan')
-    plt.plot(x, climb_rate(a, A_value=a.A + 3), label='Climb rate, A = ' + str(a.A + 3), color='magenta')
+    plt.plot(x, climb_rate(a, A_value=a.A - 3), label='Climb rate, A = ' + str(a.A - 3), color='m', linestyle=':')
+    plt.plot(x, climb_rate(a), label='Climb rate, A = ' + str(a.A), color='m')
+    plt.plot(x, climb_rate(a, A_value=a.A + 3), label='Climb rate, A = ' + str(a.A + 3), color='m', linestyle='-.')
 
     # Climb gradient constraints, Varying A
-    plt.plot(x, climb_gradient(a, A_value=a.A - 3), label='Climb gradient, A = ' + str(a.A - 3), color='yellowgreen')
-    plt.plot(x, climb_gradient(a), label='Climb gradient, A = ' + str(a.A), color='dodgerblue')
-    plt.plot(x, climb_gradient(a, A_value=a.A + 3), label='Climb gradient, A = ' + str(a.A + 3), color='deeppink')
+    plt.plot(x, climb_gradient(a, A_value=a.A - 3), label='Climb gradient, A = ' + str(a.A - 3), color='y', linestyle=':')
+    plt.plot(x, climb_gradient(a), label='Climb gradient, A = ' + str(a.A), color='y')
+    plt.plot(x, climb_gradient(a, A_value=a.A + 3), label='Climb gradient, A = ' + str(a.A + 3), color='y', linestyle='-.')
 
     plt.ylim(0, 0.4)
     plt.xlim(0, 3000)
+    plt.xlabel('W/S [N/m^2]')
+    plt.ylabel('W/P [N/W]')
     plt.legend()
     plt.show()
 
@@ -531,6 +533,7 @@ def design_point(a, WS, WP):
     #print('Power required during Cruise = ',powerreq,'[W]')
     #a.L_over_D = a.C_L_cruise/a.C_D_cruise
     print('Lift over drag is ',a.L_over_D)'''
+
     C_L = sqrt(3 * a.C_D_0 * pi * a.A * a.e)
     C_D = dragcoef(a, CL_value=C_L)
     cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
@@ -551,28 +554,32 @@ def Tool(a,WS, WP):
 
 ####
 #Fill in aircraftname, WS, WP
-#WS = 1863
-#WP = 0.0653
-#Tool(hydrogen(),WS,WP)
+
+
+WS = 1863
+WP = 0.0653
+Tool(hydrogen(),WS,WP)
 #wpws_plot(hydrogen())
 
-#WS = 1408.6
-#WP = 0.0720
+
+
+WS = 1408.6
+WP = 0.0720
 #Tool(flyingwing(),WS,WP)
-
-
 
 
 WS = 2842.4
 WP = 0.06535
-Tool(distributed(),WS,WP)
+#Tool(distributed(),WS,WP)
 
-#WS = 1863
-#WP = 0.0545
 
-#WS = 1863.9
-#WP = 0.04749
+
+WS = 1863.9
+WP = 0.04749
 #Tool(conc_batteries(),WS,WP)
 
 
 
+
+#WS = 1863
+#WP = 0.0545
