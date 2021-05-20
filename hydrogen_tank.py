@@ -8,6 +8,7 @@ payload = 1814.06
 mass_max_payload = 8618
 mass_no_payload = 8618 - payload
 max_range = 1.852 * 300 *10**3
+print(max_range)
 payload_range = 1.852 * 200 *10**3
 rho_liquid = 70
 rho_pressure = 40
