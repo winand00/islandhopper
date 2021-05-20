@@ -149,7 +149,6 @@ class flyingwing:
         # Change these first 7 as you wish
         self.C_D_0 = 0.007
         self.C_L = 2.0
-        self.C_L_cruise = 0.8
         self.e = 0.8
         self.A = 7
 
@@ -159,7 +158,7 @@ class flyingwing:
         self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 0 #Propellor diameter
+        self.D = 2.275 #Propellor diameter
         self.B = 4 #number of blader per propellor
         self.N = 4 #Number of engines
         self.efficiency_r = 0.1 #Fraction of total used energy that is recovered for other systems
@@ -186,10 +185,11 @@ class flyingwing:
         self.C_D_cruise=0
 
         self.specific_energy = 600*3600 #Specific energy of fuel [J/kg]
-        self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
+        self.efficiency_fuelcell = 1   # Efficiency fuel cell
 
         self.P = 0 #Max power [W]
-        self.L_over_D= self.C_L_cruise/dragcoef(self,CL_value=self.C_L_cruise)
+        self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
+        self.L_over_D = self.C_L_cruise / dragcoef(self, CL_value=self.C_L_cruise)
 
 
 
@@ -198,8 +198,7 @@ class hydrogen:
     def __init__(self):
         # Change these 7 as you wish
         self.C_D_0 = 0.039
-        self.C_L = 2.4
-        self.C_L_cruise = 0.94
+        self.C_L = 2.4#2.2
         self.e = 0.8
         self.A = 9
         self.h_cruise = 3048
@@ -207,7 +206,7 @@ class hydrogen:
         self.battery = False  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 0  # Propellor diameter
+        self.D = 2.77  # Propellor diameter
         self.B = 4  # number of blader per propellor
         self.N = 2  # Number of engines
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
@@ -234,31 +233,31 @@ class hydrogen:
 
         self.S = 0  # Wing surface area
         self.specific_energy = 120000000  # Specific energy of fuel [J/kg]
-        self.efficiency_fuelcell = 0.6   # Efficiency fuel cell
+        self.efficiency_fuelcell = 0.5   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L_cruise / dragcoef(self,CL_value=self.C_L_cruise)
+        self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
+        self.L_over_D = self.C_L_cruise / dragcoef(self, CL_value=self.C_L_cruise)
 
 class conc_batteries:
     def __init__(self):
-        self.C_D_0 = 0.025
+        self.C_D_0 = 0.03
         self.C_L = 2.4
-        self.C_L_cruise = 0.8
-        self.e = 0.85
-        self.A = 12
+        self.e = 0.8
+        self.A = 10
         self.h_cruise = 3048
-        self.m_energy = 1360  # [kg]
+        self.m_energy = 1360  # + 6*95 #+ 1814  # [kg]
         self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 2.77  # Propeller diameter
-        self.B = 6 # number of blades per propeller
+        self.D = 3  # Propeller diameter
+        self.B = 4 # number of blades per propeller
         self.N = 2  # Number of engines
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
 
         self.rho0 = 1.225
         self.rho = script(self.h_cruise)
         self.V_s = 43  # stall speed
-        self.n_p = 0.8  # Propellor efficiency
+        self.n_p = 0.85  # Propellor efficiency
         self.C_L_takeoff = self.C_L / (1.1 ** 2)
 
         self.c = 5  # Climb rate
@@ -271,28 +270,28 @@ class conc_batteries:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.5
         self.cruise_fraction = 1
-        self.W = 8618.255*9.80655  # N
+        self.W = 8618.255*9.80655 #- 1814*9.80655 #- 4*95*9.80655  # N
 
         self.S = 0  # Wing surface area
         self.specific_energy = 600*3600  # Specific energy of fuel [J/kg].
         self.efficiency_fuelcell = 1   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L_cruise / dragcoef(self,CL_value=self.C_L_cruise)
+        self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
+        self.L_over_D = self.C_L_cruise / dragcoef(self, CL_value=self.C_L_cruise)
 
 
 class distributed:
     def __init__(self):
         self.C_D_0 = 0.0307
         self.C_L = 3.66
-        self.C_L_cruise = 1.08
         self.e = 0.8
         self.A = 15.16
         self.h_cruise = 3000
-        self.m_energy = 1360  # [kg]
+        self.m_energy = 1360 # [kg]
         self.battery = True  # Aircraft on batteries
 
         # Change these engine variables as you wish
-        self.D = 1.72  # Propellor diameter
+        self.D = 0.97  # Propellor diameter
         self.B = 4  # number of blader per propellor
         self.N = 12  # Number of engines
         self.efficiency_r = 0.1  # Fraction of total used energy that is recovered for other systems
@@ -313,14 +312,15 @@ class distributed:
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
-        self.W = 8618.255*9.80655  # N
+        self.W = 8618.255*9.80655 #- 2*95*9.80655 #  # N
 
         self.S = 29.74  # Wing surface area
         self.specific_energy = 600*3600  # Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 1   # Efficiency fuel cell
 
         self.P = 1293727  # Max power [W]
-        self.L_over_D = self.C_L_cruise / dragcoef(self,CL_value=self.C_L_cruise)
+        self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
+        self.L_over_D = self.C_L_cruise / dragcoef(self, CL_value=self.C_L_cruise)
 
 
 class claimthisname4:
@@ -362,7 +362,8 @@ class claimthisname4:
         self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
         self.efficiency_fuelcell = 0.9   # Efficiency fuel cell
         self.P = 0  # Max power [W]
-        self.L_over_D = self.C_L / dragcoef(self,CL_value=self.C_L_cruise)
+        self.C_L_cruise = sqrt(pi * self.A * self.e * self.C_D_0)
+        self.L_over_D = self.C_L / dragcoef(self, CL_value=self.C_L_cruise)
 
 
 def dragcoef(a, A_value=-1, CL_value=-1):
@@ -472,31 +473,33 @@ def wpws_plot(a, option=-1):
     # Turn of the options you dont need.
 
     # Stall load and landing constraints
-    plt.vlines(Stallload(a), 0, 1, label="Stall load", color='red')
+    #plt.vlines(Stallload(a), 0, 1, label="Stall load", color='red')
     plt.vlines(Landing(a), 0, 1, label="Landing", color='dimgray')
 
     # Take-off constraints, varying CL_max
-    plt.plot(x, takeoff(a), label="Take-off - C_L = " + str(a.C_L), color='firebrick')
-    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.3), label="Take-off - C_L = " + str(a.C_L - 0.3), color='red')
-    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.5), label="Take-off - C_L = " + str(a.C_L - 0.5), color='tomato')
+    plt.plot(x, takeoff(a), label="Take-off - C_L = " + str(a.C_L), color='C0')
+    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.3), label="Take-off - C_L = " + str(a.C_L - 0.3), color='C1')
+    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.5), label="Take-off - C_L = " + str(a.C_L - 0.5), color='C2')
 
     # Cruise constraints, varying A
-    plt.plot(x, cruise_perf(a, A_value=a.A - 3), label="Cruise, A = " + str(a.A - 3), color='limegreen')
-    plt.plot(x, cruise_perf(a), label="Cruise, A = " + str(a.A), color='cornflowerblue')
-    plt.plot(x, cruise_perf(a, A_value=a.A + 3), label="Cruise, A = " + str(a.A + 3), color='blueviolet')
+    plt.plot(x, cruise_perf(a, A_value=a.A - 3), label="Cruise, A = " + str(a.A - 3), color='c', linestyle=':')
+    plt.plot(x, cruise_perf(a), label="Cruise, A = " + str(a.A), color='c')
+    plt.plot(x, cruise_perf(a, A_value=a.A + 3), label="Cruise, A = " + str(a.A + 3), color='c', linestyle='-.')
 
     # Climb rate constraints, Varying A
-    plt.plot(x, climb_rate(a, A_value=a.A - 3), label='Climb rate, A = ' + str(a.A - 3), color='lime')
-    plt.plot(x, climb_rate(a), label='Climb rate, A = ' + str(a.A), color='cyan')
-    plt.plot(x, climb_rate(a, A_value=a.A + 3), label='Climb rate, A = ' + str(a.A + 3), color='magenta')
+    plt.plot(x, climb_rate(a, A_value=a.A - 3), label='Climb rate, A = ' + str(a.A - 3), color='m', linestyle=':')
+    plt.plot(x, climb_rate(a), label='Climb rate, A = ' + str(a.A), color='m')
+    plt.plot(x, climb_rate(a, A_value=a.A + 3), label='Climb rate, A = ' + str(a.A + 3), color='m', linestyle='-.')
 
     # Climb gradient constraints, Varying A
-    plt.plot(x, climb_gradient(a, A_value=a.A - 3), label='Climb gradient, A = ' + str(a.A - 3), color='yellowgreen')
-    plt.plot(x, climb_gradient(a), label='Climb gradient, A = ' + str(a.A), color='dodgerblue')
-    plt.plot(x, climb_gradient(a, A_value=a.A + 3), label='Climb gradient, A = ' + str(a.A + 3), color='deeppink')
+    plt.plot(x, climb_gradient(a, A_value=a.A - 3), label='Climb gradient, A = ' + str(a.A - 3), color='y', linestyle=':')
+    plt.plot(x, climb_gradient(a), label='Climb gradient, A = ' + str(a.A), color='y')
+    plt.plot(x, climb_gradient(a, A_value=a.A + 3), label='Climb gradient, A = ' + str(a.A + 3), color='y', linestyle='-.')
 
     plt.ylim(0, 0.4)
     plt.xlim(0, 3000)
+    plt.xlabel('W/S [N/m^2]')
+    plt.ylabel('W/P [N/W]')
     plt.legend()
     plt.show()
 
@@ -530,6 +533,7 @@ def design_point(a, WS, WP):
     #print('Power required during Cruise = ',powerreq,'[W]')
     #a.L_over_D = a.C_L_cruise/a.C_D_cruise
     print('Lift over drag is ',a.L_over_D)'''
+
     C_L = sqrt(3 * a.C_D_0 * pi * a.A * a.e)
     C_D = dragcoef(a, CL_value=C_L)
     cV = a.n_p * (1 / WP) * (1 / (sqrt(WS * 2 / a.rho0 / C_L))) - C_D / C_L
@@ -537,37 +541,45 @@ def design_point(a, WS, WP):
 
 
 def Tool(a,WS, WP):
+    print("Diameter =", a.D)
     plt.scatter(WS,WP)
     wpws_plot(a)
     design_point(a,WS, WP)
     cl_opt = tool(a.C_D_0, a.A, a.e, a.W, a.rho, a.rho0, a.S, a.specific_energy, a.m_energy, a.W / 9.80665, a.L_over_D,
          a.efficiency_fuelcell, a.n_p, a.P, a.C_L_takeoff, a.C_L, a.D, a.B, a.N, a.efficiency_r, a.battery)
     print('Lift over drag is ',cl_opt/(dragcoef(a,CL_value=cl_opt)))
+    print("Diameter =", a.D)
 
 
 
 ####
 #Fill in aircraftname, WS, WP
-WS = 1553
+
+
+WS = 1863
 WP = 0.0653
 Tool(hydrogen(),WS,WP)
 #wpws_plot(hydrogen())
+
+
 
 WS = 1408.6
 WP = 0.0720
 #Tool(flyingwing(),WS,WP)
 
 
-
-
 WS = 2842.4
 WP = 0.06535
 #Tool(distributed(),WS,WP)
 
-#WS = 1863
-#WP = 0.0545
 
+
+WS = 1863.9
+WP = 0.04749
 #Tool(conc_batteries(),WS,WP)
 
 
 
+
+#WS = 1863
+#WP = 0.0545

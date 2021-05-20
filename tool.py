@@ -94,8 +94,8 @@ def calculate_max_sound_pressure_level(D, B, N, p_max, efficiency_prop):
     """Calculates the maximum sound pressure level, SPL_max. Inputs are break shaft power p_br, propeller diameter D,
     rotational tip Mach number M_t, number of blades per propeller B, number of propellers N and distance to the
     propeller r."""
-    return 83.4 + 15.3 * np.log10(p_max / (N * efficiency_prop)) - 20 * np.log10(D) + 38.5 * 0.9 - 3 * (B - 2) + 10 * np.log10(N) - 20 * \
-           np.log10(100)
+    return 83.4 + 15.3 * np.log10(p_max / 1000 / N) - 20 * np.log10(D) + 38.5 * 0.9 - 3 * (B - 2) + 10 * np.log10(N) - 20 * \
+           np.log10(2500)
 
 
 # Design efficiency#
@@ -159,8 +159,9 @@ def tool(cd_0, A, e, W, rho, rho_sealevel, S, specific_energy, m_energy, m, L_ov
           f"Cruise speed                    = {round(v_cruise, 2)} [m/s] \n"
           f"Loitering speed                    = {round(v_end, 2)} [m/s] \n"
           #f"Required cruise power           = {round(p_cruise, 2)} [Watt] \n"
-          f"Max range without contingencies      = {round(max_range, 2)} [m]"
-          f"Max range with contingencies         = {round(max_range - 2700 * v_end, 2)} [m]")
+          f"Max range without contingencies      = {round(max_range, 2)} [m] \n"
+          f"Max range with contingencies         = {round(max_range - 2700 * v_end, 2)} [m] \n"
+          f"Max range with contingencies and electrical systems = {round(0.9 * (max_range - 2700 * v_end), 2)} [m]")
 
     max_climb_rate, max_climb_gradient = calculate_max_climb_rate_and_gradient(p_max, W, S, cd_0, rho_sealevel, A, e,efficiency_prop)
     #runway_length_takeoff = calculate_runway_length_takeoff(v_final, v_initial, T, W, mu, rho, S, cl_takeoff, cd_0, A, e)
