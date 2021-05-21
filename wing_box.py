@@ -1,11 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-class wingbox:
-    def __init__(self):
-        pass
-
-
 
 class crosssection:
     def __init__(self, skins):
@@ -93,6 +88,25 @@ class wingbox:
         self.density = material_density
         self.length = length
         self.weight = self.cross_section.area * self.length * self.density
+
+    def displacement(self, E, l1, l2, w_wing, w_engine, y):
+        I = crosssection.I_xx
+        Ra = -w_wing * l1 + w_engine
+        M0 = (w_engine * l1) - (w_wing * (l1 ** 2) / 2)
+        v = (-1 / (E * I)) * ((1 / 6 * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + (w_wing / 24 * (y ** 4)) - (
+                    w_wing / 24 * (Macaulay(y, l1, 4))) - w_engine / 6 * Macaulay(y, l1, 3))
+        # v = (-1 / (E * I)) * ((1 / 6 * Ra * y ** 3)  - (w_engine / 6 * Macaulay(y, l1, 3)))
+        return v
+
+    def graphdisplacement(self, E, l1, l2, w_wing, w_engine):
+        x = np.arange(0, l2, 0.1)
+        lst = []
+        for i in range(len(x)):
+            lst.append(self.displacement(E, l1, l2, w_wing, w_engine, x[i]))
+        plt.plot(x, lst)
+        return lst
+
+
 def Macaulay(x, x_point, power):
     if (x-x_point) < 0:
         return 0
@@ -101,20 +115,10 @@ def Macaulay(x, x_point, power):
     else:
         return ((x-x_point)**power)
 
-def displacement(E,I,l1,l2,w_wing,w_engine,y):
-    Ra=-w_wing*l1+w_engine
-    M0=(w_engine*l1)-(w_wing*(l1**2)/2)
-    v = (-1/(E*I))*((1/6*Ra*(y**3))+(1/2*M0*(y**2))+(w_wing/24*(y**4))-(w_wing/24*(Macaulay(y,l1,4)))-w_engine/6*Macaulay(y,l1,3))
-    #v = (-1 / (E * I)) * ((1 / 6 * Ra * y ** 3)  - (w_engine / 6 * Macaulay(y, l1, 3)))
-    return v
-def graphdisplacement(E,I,l1,l2,w_wing,w_engine):
-    x = np.arange(0,l2,0.1)
-    lst=[]
-    for i in range(len(x)):
-        lst.append(displacement(E, I, l1, l2, w_wing,w_engine, x[i]))
-    plt.plot(x, lst)
-    return lst
 
+
+#skin(height, width, x_coordinate, z_coordinate)
+#coordinates are the bottom left point of the skin
 skin_top = skin(0.003, 0.3, 0, 0.1)
 skin_bottom = skin(0.003, 0.3, 0 ,0)
 skin_left = skin(0.1, 0.003, 0, 0)
@@ -122,7 +126,8 @@ skin_right = skin(0.1, 0.003, 0.3, 0)
 skins = [skin_top, skin_bottom, skin_left, skin_right]
 crosssection = crosssection(skins)
 crosssection.plot()
-print(crosssection.I_zz)
+plt.show()
+
 
 density_AL = 2712 #kg/m3, density of aluminium
 wingbox = wingbox(crosssection, 10, density_AL)
@@ -133,7 +138,7 @@ print(wingbox.weight)
 l2=10
 E=70 * 10 **9
 
-graphdisplacement(E,8.127179999999999e-05,5,l2,1000,1000)
+wingbox.graphdisplacement(E,5,l2,1000,1000)
 #graphdisplacement(E,8.127179999999999e-05,8,l2,1000,1000)
 #graphdisplacement(E,8.127179999999999e-05,9,l2,1000,1000)
 
