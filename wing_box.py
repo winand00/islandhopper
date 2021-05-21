@@ -13,7 +13,7 @@ class crosssection:
         self.x_centroid = self.centroid_x()
         self.z_centroid = self.centroid_z()
         self.I_xx = self.I_xx()
-        self.I_yy = self.I_yy()
+        self.I_zz = self.I_zz()
 
     def area(self):
         area = 0
@@ -37,17 +37,19 @@ class crosssection:
 
     def I_xx(self):
         I_xx = 0
-        for skin in skins:
+        for skin in self.skins:
             I_xx += skin.I_xx
-            I_xx += skin.area * (skin.z + skin.h/2) ** 2
+
+            print((skin.z + skin.h/2 - self.z_centroid))
+            I_xx += skin.area * (skin.z + skin.h/2 - self.z_centroid) ** 2
         return I_xx
 
-    def I_yy(self):
-        I_yy = 0
-        for skin in skins:
-            I_yy += skin.I_yy
-            I_yy += skin.area * (skin.x + skin.b/2) ** 2
-        return I_yy
+    def I_zz(self):
+        I_zz = 0
+        for skin in self.skins:
+            I_zz += skin.I_zz
+            I_zz += skin.area * (skin.x + skin.b/2 -self.x_centroid) ** 2
+        return I_zz
 
     def plot(self):
         for skin in self.skins:
@@ -76,12 +78,12 @@ class skin:
         self.z = z
         self.area = h * b
         self.I_xx = self.I_xx()
-        self.I_yy = self.I_yy()
+        self.I_zz = self.I_zz()
 
     def I_xx(self):
         return self.b*self.h**3/12
 
-    def I_yy(self):
+    def I_zz(self):
         return self.h*self.b**3/12
 
 class wingbox:
@@ -101,7 +103,7 @@ skin_right = skin(0.1, 0.003, 0.3, 0)
 skins = [skin_top, skin_bottom, skin_left, skin_right]
 crosssection = crosssection(skins)
 crosssection.plot()
-print(crosssection.I_yy)
+print(crosssection.I_zz)
 
 density_AL = 2712 #kg/m3, density of aluminium
 wingbox = wingbox(crosssection, 10, density_AL)
