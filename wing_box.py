@@ -35,6 +35,8 @@ class crosssection:
         I_xx = 0
         for skin in self.skins:
             I_xx += skin.I_xx
+
+            print((skin.z + skin.h/2 - self.z_centroid))
             I_xx += skin.area * (skin.z + skin.h/2 - self.z_centroid) ** 2
         return I_xx
 
@@ -86,12 +88,26 @@ class wingbox:
         self.density = material_density
         self.length = length
         self.weight = self.cross_section.area * self.length * self.density
-
-    def displacement(self, E, l1, l2, w_wing, w_engine, y):
-        I = crosssection.I_xx
+    def moment(self, l1, l2, w_wing, w_engine, y):
+        I = self.cross_section.I_xx
         Ra = -w_wing * l2 + w_engine
-        M0 = (w_engine * l1) - (w_wing * (l2 ** 2) / 2)
-        v = (-1 / (E * I)) * ((1 / 6 * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + (w_wing / 24 * (y ** 4)) - (w_engine / 6 * Macaulay(y, l1, 3)))
+        M0 = -(w_engine * l1) + (w_wing * (l2 ** 2) / 2)
+        M = -(Ra*y+M0+(w_wing/2)*y**2-(w_engine*Macaulay(y,l1,1)))
+        return M
+    def graphmoment(self, l1, l2, w_wing, w_engine):
+        x = np.arange(0, l2, 0.1)
+        lst = []
+        for i in range(len(x)):
+            lst.append(self.moment(l1, l2, w_wing, w_engine, x[i]))
+        plt.plot(x, lst)
+        return lst
+    def bendingstress(self):
+    def displacement(self, E, l1, l2, w_wing, w_engine, y):
+        I = self.cross_section.I_xx
+
+        Ra = -w_wing * l2 + w_engine
+        M0 = -(w_engine * l1) + (w_wing * (l2 ** 2) / 2)
+        v = -((-1 / (E * I)) * ((1 / 6 * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + (w_wing / 24 * (y ** 4)) - (w_engine / 6 * Macaulay(y, l1, 3))))
         # v = (-1 / (E * I)) * ((1 / 6 * Ra * y ** 3)  - (w_engine / 6 * Macaulay(y, l1, 3)))
         return v
 
@@ -127,16 +143,16 @@ plt.show()
 
 
 density_AL = 2712 #kg/m3, density of aluminium
-wingbox = wingbox(crosssection, 10, density_AL)
+wingbox = wingbox(crosssection, 2, density_AL)
 print(wingbox.weight)
 
 
 # Test values for deflection
-l2=10
+l2=2
 E=70 * 10 **9
 
-wingbox.graphdisplacement(E,5,l2,1000,1000)
-#graphdisplacement(E,8.127179999999999e-05,8,l2,1000,1000)
+wingbox.graphdisplacement(E,1,l2,1000,1000)
+#wingbox.graphmoment(1,l2,1000,1000)
 #graphdisplacement(E,8.127179999999999e-05,9,l2,1000,1000)
 
 
