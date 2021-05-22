@@ -35,8 +35,6 @@ class crosssection:
         I_xx = 0
         for skin in self.skins:
             I_xx += skin.I_xx
-
-            print((skin.z + skin.h/2 - self.z_centroid))
             I_xx += skin.area * (skin.z + skin.h/2 - self.z_centroid) ** 2
         return I_xx
 
@@ -93,7 +91,7 @@ class wingbox:
         I = crosssection.I_xx
         Ra = -w_wing * l2 + w_engine
         M0 = (w_engine * l1) - (w_wing * (l2 ** 2) / 2)
-        v = (-1 / (E * I)) * ((1 / 6 * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + (w_wing / 24 * (y ** 4)) - (w_engine / 6 * Macaulay(y, l1, 3))
+        v = (-1 / (E * I)) * ((1 / 6 * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + (w_wing / 24 * (y ** 4)) - (w_engine / 6 * Macaulay(y, l1, 3)))
         # v = (-1 / (E * I)) * ((1 / 6 * Ra * y ** 3)  - (w_engine / 6 * Macaulay(y, l1, 3)))
         return v
 
