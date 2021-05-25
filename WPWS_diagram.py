@@ -160,7 +160,7 @@ class flyingwing:
         # Change these engine variables as you wish
         self.D = 2.275 #Propellor diameter
         self.B = 4 #number of blader per propellor
-        self.N = 4 #Number of engines
+        self.N = 2 #Number of engines
         self.efficiency_r = 0.1 #Fraction of total used energy that is recovered for other systems
 
         self.rho0 = 1.225
@@ -472,13 +472,15 @@ x = np.arange(1, 3000)
 def wpws_plot(a, option=-1):
     # Turn of the options you dont need.
 
+
+
     # Stall load and landing constraints
     #plt.vlines(Stallload(a), 0, 1, label="Stall load", color='red')
     plt.vlines(Landing(a), 0, 1, label="Landing", color='dimgray')
 
     # Take-off constraints, varying CL_max
-    plt.plot(x, takeoff(a), label="Take-off - C_L = " + str(a.C_L), color='C0')
-    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.3), label="Take-off - C_L = " + str(a.C_L - 0.3), color='C1')
+    plt.plot(x, takeoff(a), label="Take-off - C_L = " + str(round(a.C_L,2)), color='C0')
+    plt.plot(x, takeoff(a, CL_value=a.C_L - 0.3), label="Take-off - C_L = " + str(round((a.C_L - 0.3),2)), color='C1')
     plt.plot(x, takeoff(a, CL_value=a.C_L - 0.5), label="Take-off - C_L = " + str(a.C_L - 0.5), color='C2')
 
     # Cruise constraints, varying A
@@ -542,6 +544,11 @@ def design_point(a, WS, WP):
 
 def Tool(a,WS, WP):
     print("Diameter =", a.D)
+
+    plt.rc('axes', titlesize=15)  # fontsize of the axes title
+    plt.rc('axes', labelsize=15)  # fontsize of the x and y labels
+    plt.rc('legend', fontsize=15)  # legend fontsize
+
     plt.scatter(WS,WP)
     wpws_plot(a)
     design_point(a,WS, WP)
@@ -558,7 +565,7 @@ def Tool(a,WS, WP):
 
 WS = 1863
 WP = 0.0653
-Tool(hydrogen(),WS,WP)
+#Tool(hydrogen(),WS,WP)
 #wpws_plot(hydrogen())
 
 
