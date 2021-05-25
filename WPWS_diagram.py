@@ -326,12 +326,12 @@ class distributed:
 class claimthisname4:
     def __init__(self):
         # Change these 5 as you wish
-        self.C_D_0 = 0.02
+        self.C_D_0 = 0.0376
         self.C_L = 2.0
         self.e = 0.8
-        self.A = 7
-        self.h_cruise = 10000*0.3048
-        self.m_energy = 2000  # [kg]
+        self.A = 10
+        self.h_cruise = 7620*0.3048
+        self.m_energy = 1483  # [kg]
         self.battery = False  # Aircraft on batteries
 
         # Change these engine variables as you wish
@@ -351,12 +351,12 @@ class claimthisname4:
         self.V = 90  # Cruise speed
 
         self.sigma = 1  #
-        self.S_to = 750  # Take-off distance
-        self.S_l = 750  # Landing distance
+        self.S_to = 1380  # Take-off distance
+        self.S_l = 1240  # Landing distance
         self.f = 1  # take-off vs landing max weight
         self.power_setting = 0.9
         self.cruise_fraction = 1
-        self.W = 8618.255*9.80655  # N
+        self.W = 6950*9.80655  # N
 
         self.S = 0  # Wing surface area
         self.specific_energy = 46200000  # Specific energy of fuel [J/kg]
@@ -585,8 +585,12 @@ WS = 1863.9
 WP = 0.04749
 #Tool(conc_batteries(),WS,WP)
 
+WS = 2568
+WP = 0.050785 #0.06226
 
-
+#WS = 2313
+#WP = 0.06917
+Tool(claimthisname4(),WS,WP)
 
 #WS = 1863
 #WP = 0.0545

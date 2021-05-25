@@ -29,8 +29,8 @@ T_air = 298.15
 T_h2 = 20
 dT = T_air - T_h2
 
-proof_pressure = 1
-safety_factor = 1
+proof_pressure = 4 * 10**5
+safety_factor = 1.5
 
 
 class Material:
@@ -42,13 +42,13 @@ class Material:
 
 aluminium_2219 = Material(172.4*10**6, 73.8 * 10 ** 9, 2825)
 
-6061-T6
-
-2024-T4
-2219-T87
-
-5052-H38
-5083-H38
+# 6061-T6
+#
+# 2024-T4
+# 2219-T87
+#
+# 5052-H38
+# 5083-H38
 
 #https://www.gasparini.com/en/blog/metals-and-materials-for-low-temperatures/#:~:text=These%20are%20mainly%20quenched%20and,be%20used%20at%20these%20temperatures.
 
@@ -102,10 +102,11 @@ def tank_sizing(range, mass, rho_h2, eta_storage, rho_type, cooling):
     return mass_h2, mass_tank_hydrogen, volume_tank, length_tank, mass_total
     '''
 
-def thickness():
+def thickness(material):
 
-    rightside = proof_pressure * ( (a+c)/2*s_w) * (1 + 2*(1 + 3.6*proof_pressure/
-                                              material.E*((a+c)/2*s_w)**3)*((a-c)/(a+c))+1/2)
+
+    rightside = proof_pressure * ((a + c) / (2 * s_w)) * (1 + 2 * (1 + 3.6 * (proof_pressure /
+                                              material.E) * ((a + c) / 2 * s_w)**3)*((a - c) / (a + c))+ (1 / 2))
 
     leftside = material.K/safety_factor
 
