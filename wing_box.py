@@ -92,7 +92,6 @@ class crosssection:
             I_xx += skin.I_xx()
             I_xx += skin.area * (skin.z + skin.h/2 - self.z_centroid) ** 2
         for stri in self.stringers['top']:
-            print(stri.area)
             I_xx += stri.area * (self.local_height - self.z_centroid)**2
         for stri in self.stringers['bottom']:
             I_xx += stri.area * self.z_centroid**2
@@ -201,17 +200,31 @@ class wingbox:
         return crosssection(self.stringers, self.skins, self.taper, y, self.length)
 
 
-    def moment(self, l1, l2, w_wing, w_engine, y):
-        Ra = -w_wing * l2 + w_engine
-        M0 = -(w_engine * l1) + (w_wing * (l2 ** 2) / 2)
-        M = -(Ra*y+M0+(w_wing/2)*y**2-(w_engine*Macaulay(y,l1,1)))
+    def moment(self, l1, w_wing, w_engine, y):
+        Ra = -w_wing * self.length + w_engine
+        M0 = -(w_engine * l1) + (w_wing * (self.length ** 2) / 2)
+        M = (Ra*y+M0+(w_wing/2)*y**2-(w_engine*Macaulay(y,l1,1)))
         return M
 
-    def graphmoment(self, l1, l2, w_wing, w_engine):
-        x = np.arange(0, l2, 0.1)
+    def moment2(self, l1, wlst,ylst, w_engine, y):
+        lift=[]
+        liftmoment=[]
+        for i in range(len(ylst)-1):
+            lift.append(wlst[i]*(ylst[i+1]-ylst[i]))
+            liftmoment.append(wlst[i]*((ylst[i+1]-ylst[i])**2)/2)
+        Ra = w_engine-sum(lift)
+        M0 = -(w_engine * l1) +sum(liftmoment)
+        liftmacauley=[]
+        for i in range(len(wlst)-1):
+            liftmacauley.append((wlst[i+1]-wlst[i])/2*(Macaulay(y,ylst[i+1],2)))
+        M = (M0+Ra*y+(wlst[0]/2)*y**2-(w_engine*Macaulay(y,l1,1)))-sum(liftmacauley)
+        return M
+
+    def graphmoment(self, l1, w_wing, w_engine):
+        x = np.arange(0, self.length, 0.1)
         lst = []
         for i in range(len(x)):
-            lst.append(self.moment(l1, l2, w_wing, w_engine, x[i]))
+            lst.append(self.moment(l1, w_wing, w_engine, x[i]))
         plt.plot(x, lst)
         return lst
 
@@ -222,7 +235,14 @@ class wingbox:
         I = self.local_crosssection(y).I_xx
         Ra = -w_wing * self.length + w_engine
         M0 = -(w_engine * l1) + (w_wing * (self.length ** 2) / 2)
-        v = -((-1 / (E * I)) * ((1 / 6 * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + (w_wing / 24 * (y ** 4)) - (w_engine / 6 * Macaulay(y, l1, 3))))
+        v = ((-1 / (E * I)) * (((1 / 6) * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + ((w_wing / 24) * (y ** 4)) - (w_engine / 6 * Macaulay(y, l1, 3))))
+        # v = (-1 / (E * I)) * ((1 / 6 * Ra * y ** 3)  - (w_engine / 6 * Macaulay(y, l1, 3)))
+        return v
+    def displacement2(self, E, l1, w_wing, w_engine, y):
+        I = self.local_crosssection(y).I_xx
+        Ra = -w_wing * self.length + w_engine
+        M0 = -(w_engine * l1) + (w_wing * (self.length ** 2) / 2)
+        v = ((-1 / (E * I)) * (((1 / 6) * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + ((w_wing / 24) * (y ** 4)) - (w_engine / 6 * Macaulay(y, l1, 3))))
         # v = (-1 / (E * I)) * ((1 / 6 * Ra * y ** 3)  - (w_engine / 6 * Macaulay(y, l1, 3)))
         return v
 
@@ -248,9 +268,7 @@ def Macaulay(x, x_point, power):
     else:
         return ((x-x_point)**power)
 
-#Inputs from flight dynamics:
-taper = 0.4 #taper ratio of the wingbox
-t_c = 0.17
+
 
 #skin(height, width, x_coordinate, z_coordinate)
 #coordinates are the bottom left point of the skin
@@ -259,8 +277,8 @@ skin_bottom = skin(0.003, 0.3, 0 ,0)
 skin_left = skin(0.1, 0.003, 0, 0)
 skin_right = skin(0.1, 0.003, 0.3, 0)
 skins = [skin_top, skin_bottom, skin_left, skin_right]
-
-l_w = 2 #length of the wingbox
+taper = 0.5 #taper ratio of the wingbox
+l_w = 3 #length of the wingbox
 y_e = 1 #location of the engine
 
 #crosssection.plot()
@@ -285,15 +303,19 @@ stringer_list['bottom'] = bottom_stringer_list
 root_crosssection = crosssection(stringer_list, skins)
 density_AL = 2712 #kg/m3, density of aluminium
 wingbox = wingbox(stringer_list, root_crosssection, l_w, taper, density_AL)
-wingbox.plot_crosssection(2)
+#wingbox.plot_crosssection(0)
 
-print(wingbox.local_crosssection(0).I_zz)
+#print(wingbox.local_crosssection(0).I_zz)
 # Test values for deflection
 
 E=70 * 10 **9
+l1=1
 
-#wingbox.graphdisplacement(E, y_e,1000,1000)
-#wingbox.graphmoment(1,l2,1000,1000)
-wingbox.graphdisplacement(E, y_e,1000,1000)
+w_engine=500
+w_wing=1000
+
+wingbox.graphmoment(l1,w_wing,w_engine)
+#wingbox.graphdisplacement(E,l1,w_wing,w_engine)
+
 plt.show()
 
