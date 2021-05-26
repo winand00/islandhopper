@@ -130,6 +130,11 @@ def multi_cell(m,n,p, R, d, R_fillet, s, k_overlap, t_junction):
     # sigma_allowable = ?  They use reference [4] and [5] to find it
     t_ply = 0.00014 #[m] #Table 4-3
 
+    dH_vap = 446.1 * 1000 # [J/kg] https://link.springer.com/referenceworkentry/10.1007%2F978-90-481-2642-2_327#:~:text=The%20heat%20of%20vaporization%20of,boiling%20point%20under%20standard%20pressure.
+    h_out = 30 #[W/m2 K] p.117
+    k_comp = 1
+    k_ins = 1
+
 
     N_cells = m*n*p
     V_spheres = N_cells * 4/3 * np.pi * R**3
@@ -197,6 +202,11 @@ def multi_cell(m,n,p, R, d, R_fillet, s, k_overlap, t_junction):
     return(V,S)
 
 multi_cell(2,2,1, 0.145, 0.200, 0.029, 0.06047, 0.75, 0.00397)
+
+
+
+
+
 
 
 # print("Pressure, max payload", tank_sizing(payload_range, mass_max_payload, rho_pressure, eta_storage_pressure, rho_comp, False))
