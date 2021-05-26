@@ -248,7 +248,9 @@ def Macaulay(x, x_point, power):
     else:
         return ((x-x_point)**power)
 
-
+#Inputs from flight dynamics:
+taper = 0.4 #taper ratio of the wingbox
+t_c = 0.17
 
 #skin(height, width, x_coordinate, z_coordinate)
 #coordinates are the bottom left point of the skin
@@ -257,7 +259,7 @@ skin_bottom = skin(0.003, 0.3, 0 ,0)
 skin_left = skin(0.1, 0.003, 0, 0)
 skin_right = skin(0.1, 0.003, 0.3, 0)
 skins = [skin_top, skin_bottom, skin_left, skin_right]
-taper = 0.5 #taper ratio of the wingbox
+
 l_w = 2 #length of the wingbox
 y_e = 1 #location of the engine
 
@@ -283,7 +285,7 @@ stringer_list['bottom'] = bottom_stringer_list
 root_crosssection = crosssection(stringer_list, skins)
 density_AL = 2712 #kg/m3, density of aluminium
 wingbox = wingbox(stringer_list, root_crosssection, l_w, taper, density_AL)
-wingbox.plot_crosssection(0)
+wingbox.plot_crosssection(2)
 
 print(wingbox.local_crosssection(0).I_zz)
 # Test values for deflection
@@ -292,6 +294,6 @@ E=70 * 10 **9
 
 #wingbox.graphdisplacement(E, y_e,1000,1000)
 #wingbox.graphmoment(1,l2,1000,1000)
-#graphdisplacement(E,8.127179999999999e-05,9,l2,1000,1000)
+wingbox.graphdisplacement(E, y_e,1000,1000)
 plt.show()
 
