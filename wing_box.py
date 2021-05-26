@@ -199,6 +199,18 @@ class wingbox:
     def local_crosssection(self, y):
         return crosssection(self.stringers, self.skins, self.taper, y, self.length)
 
+    def lift(self, y):
+        return 1000 - y * 10
+
+    def w_steps(self, nr_steps):
+        stepsize = self.length / nr_steps
+        steps_starts = np.arange(0, self.length, self.length / nr_steps)
+        l_w = []
+        for i in range(0, len(steps_starts)):
+            step = steps_starts[i]
+            l_w.append(self.lift(step + stepsize / 2))
+        return steps_starts, l_w
+
 
     def moment(self, l1, w_wing, w_engine, y):
         Ra = -w_wing * self.length + w_engine
@@ -206,7 +218,8 @@ class wingbox:
         M = (Ra*y+M0+(w_wing/2)*y**2-(w_engine*Macaulay(y,l1,1)))
         return M
 
-    def moment2(self, l1, wlst,ylst, w_engine, y):
+    def moment2(self, l1, w_wing, w_engine, y):
+        ylst, wlst = self.w_steps(10)
         lift=[]
         liftmoment=[]
         for i in range(len(ylst)-1):
@@ -224,7 +237,7 @@ class wingbox:
         x = np.arange(0, self.length, 0.1)
         lst = []
         for i in range(len(x)):
-            lst.append(self.moment(l1, w_wing, w_engine, x[i]))
+            lst.append(self.moment2(l1, w_wing, w_engine, x[i]))
         plt.plot(x, lst)
         return lst
 
