@@ -32,6 +32,8 @@ dT = T_air - T_h2
 proof_pressure = 4 * 10**5
 safety_factor = 1.5
 
+a = c = 0.9
+
 
 class Material:
     def __init__(self, K, E, rho):
@@ -110,10 +112,57 @@ def thickness(material):
 
     leftside = material.K/safety_factor
 
-
-
-
     pass
+
+
+
+
+def volume_multi(m,n,p, R, d, r, s, k_overlap, t_junction):
+    # m,n,p are number of cells in 3 directions
+    # R is desired ratio
+    # d = y*R, choose y value
+    # !!r = cant find it, if not found, choose value for R_fillet
+    # !!s, cant find it
+    # k_overlap = 0.75 #Used in thesis
+    # t_junction is dependent on y
+
+    N_cells = m*n*p
+    V_spheres = N_cells * 4/3 * np.pi * R**3
+
+    N_junctions = (n*(m-1) + m*(n-1)) * p + m*n*(p-1)
+    N_centers = ((m-1)*(n-1))*p + (p-1)*(n-1)
+
+    V_lensjunction = (np.pi*(2*R-d)**2*(d**2+4*d*R))/(12*d)
+    V_lenses = N_junctions*V_lensjunction
+
+    R_fillet = R*r
+
+    theta_1 = np.arcsin((d/2)/(R+R_fillet)) # e1 4.42
+    h_inter = R_fillet*np.sin(theta_1)
+    R_ring = np.sqrt(R**2 - (d/2)**2) #eq 4.41
+
+
+    R_ringfinal = R_ring + ((R*np.cos(theta_1)-R_ring)-(h_inter*np.tan(theta_1/2)))
+    V_centerlens = (np.pi*(2*R_ringfinal - d)**2*(d**2+4*d*R_ringfinal))/(12*d)
+    V_centers = N_centers * V_centerlens
+
+    h_center = (2*R - d*2**0.5)/2
+    r_cyl = max((4*s*k_overlap)/2/np.pi , 2*t_junction, h_center)
+    l_cyl = np.sqrt(R_ringfinal ** 2 - (d / 2 - r_cyl) ** 2)
+    V_cylinder = np.pi * r_cyl**2 * l_cyl
+    V_cylinders = N_centers * V_cylinder
+
+    A_triangle = ((2*R_fillet*np.sin(theta_1))*(R*np.cos(theta_1)-R_ring))/2
+    A_cap = R_fillet**2/2*(2*theta_1-np.sin(2*theta_1))
+    V_fillet = (A_triangle - A_cap)*(2*np.pi*R_ring)
+    V_fillets = N_junctions * V_fillet
+
+    V = V_spheres + V_centers + V_fillets - V_lenses - V_cylinders
+
+    return(V)
+
+print(volume_multi(2,2,1,10,5,0.08,10,10,1,0.5,0.05))
+
 
 # print("Pressure, max payload", tank_sizing(payload_range, mass_max_payload, rho_pressure, eta_storage_pressure, rho_comp, False))
 # print("Liquid, max payload", tank_sizing(payload_range, mass_max_payload, rho_liquid, eta_storage_liquid, rho_cool, True))
