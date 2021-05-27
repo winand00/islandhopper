@@ -209,6 +209,7 @@ class wingbox:
         for i in range(0, len(steps_starts)):
             step = steps_starts[i]
             l_w.append(self.lift(step + stepsize / 2))
+        steps_starts = np.append(steps_starts, self.length)
         return steps_starts, l_w
 
     def shearz(self, l1, w_wing, w_engine, y):
@@ -249,8 +250,10 @@ class wingbox:
         M = (Ra*y+M0-(w_wing*(1/L_D)/2)*y**2+(T_engine*Macaulay(y,l1,1)))
         return M
 
-    def moment2(self, l1, w_wing, w_engine, y):
-        ylst, wlst = self.w_steps(10)
+    def moment2(self, l1, w_engine, y):
+        ylst, wlst = self.w_steps(3)
+        print(ylst)
+        print(wlst)
         lift=[]
         liftmoment=[]
         for i in range(len(ylst)-1):
@@ -279,6 +282,13 @@ class wingbox:
         plt.plot(x, lst,label='Moment in z direction')
         return lst
 
+    def graphmoment2(self, l1, w_engine):
+        x = np.arange(0, self.length, 0.1)
+        lst = []
+        for i in range(len(x)):
+            lst.append(self.moment2(l1, w_engine, x[i]))
+        plt.plot(x, lst)
+        return lst
     def bendingstress(self):
         pass
 
@@ -290,12 +300,20 @@ class wingbox:
                     (self.local_crosssection(self.length / 2).area * self.density * self.g * self.length) ** 2 / 2)
         v = ((-1 / (E * I)) * (((1 / 6) * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + ((w_wing / 24) * (y ** 4)) - (w_engine / 6 * Macaulay(y, l1, 3))-(((self.local_crosssection(self.length / 2).area * self.density * self.g * self.length) / 24) * (y ** 4))))
         return v
-    def displacement2(self, E, l1, w_wing, w_engine, y):
+    def displacement2(self, E, l1, w_engine, y):
         I = self.local_crosssection(y).I_xx
-        Ra = -w_wing * self.length + w_engine
-        M0 = -(w_engine * l1) + (w_wing * (self.length ** 2) / 2)
-        v = ((-1 / (E * I)) * (((1 / 6) * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + ((w_wing / 24) * (y ** 4)) - (w_engine / 6 * Macaulay(y, l1, 3))))
-        # v = (-1 / (E * I)) * ((1 / 6 * Ra * y ** 3)  - (w_engine / 6 * Macaulay(y, l1, 3)))
+        ylst, wlst = self.w_steps(3)
+        lift=[]
+        liftmoment=[]
+        for i in range(len(ylst)-1):
+            lift.append(wlst[i]*(ylst[i+1]-ylst[i]))
+            liftmoment.append(wlst[i]*((ylst[i+1]-ylst[i])**2)/2)
+        Ra = w_engine-sum(lift)
+        M0 = -(w_engine * l1) +sum(liftmoment)
+        liftmacauley=[]
+        for i in range(len(wlst)-1):
+            liftmacauley.append((wlst[i+1]-wlst[i])/24*(Macaulay(y,ylst[i+1],4)))
+        v = (-1 / (E * I)) * ((1/2*M0*(y**2))+(Ra/6*(y**3))-(w_engine/6*Macaulay(y,l1,3))+(wlst[0]/24*(y**4))-sum(liftmacauley))
         return v
 
     def graphdisplacementz(self, E, l1, w_wing, w_engine):
@@ -305,7 +323,13 @@ class wingbox:
             lst.append(self.displacementz(E, l1, w_wing, w_engine, x[i]))
         plt.plot(x, lst,label='Displacement in z direction')
         return lst
-
+    def graphdisplacement2(self, E, l1, w_engine):
+        x = np.arange(0, self.length, 0.1)
+        lst = []
+        for i in range(len(x)):
+            lst.append(self.displacement2(E, l1, w_engine, x[i]))
+        plt.plot(x, lst)
+        return lst
     def plot_crosssection(self, y):
         return self.local_crosssection(y).plot()
 
