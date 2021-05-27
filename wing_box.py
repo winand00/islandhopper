@@ -17,6 +17,7 @@ class crosssection:
 
         self.local_width = max([x.b for x in self.local_skins])
         self.local_height = max([x.h for x in self.local_skins])
+        self.local_t = max([x.t for x in self.local_skins])
         self.area = self.area()
         self.x_centroid = self.centroid_x()
         self.z_centroid = self.centroid_z()
@@ -304,8 +305,9 @@ class wingbox:
 
     def shear_torque(self, y):
         A = self.local_crosssection(y).local_height * self.local_crosssection(y).local_width
-
-        return
+        T = self.torsion(y)
+        t = self.local_crosssection(y).local_t
+        return T/(2*t*A)
 
     def displacementz(self, E, l1, w_wing, w_engine, y):
         I = self.local_crosssection(y).I_xx
