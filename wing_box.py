@@ -338,6 +338,19 @@ class wingbox:
             lst.append(self.displacement2(E, l1, w_engine, x[i]))
         plt.plot(x, lst)
         return lst
+
+    def Torsiony(self,ly_e,lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el,y):
+        Ta = T_engine*lz_e-F_el*lx_el-F_hld*lx_hld
+        T = Ta+F_hld*lx_hld*Macaulay(y,ly_hld,0)-T_engine*lz_e*Macaulay(y,ly_e,0)+F_el*lx_el*Macaulay(y,ly_el,0)
+        return T
+    def graphtorsiony(self,ly_e,lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el):
+        x = np.arange(0, self.length, 0.001)
+        lst = []
+        for i in range(len(x)):
+            lst.append(self.Torsiony(ly_e,lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el,x[i]))
+        plt.plot(x,lst,label='Torsion in y direction')
+        return lst
+
     def plot_crosssection(self, y):
         return self.local_crosssection(y).plot()
 
@@ -393,18 +406,28 @@ wingbox = wingbox(stringer_list, root_crosssection, l_w, taper, density_AL)
 # Test values for deflection
 
 E=70 * 10 **9
-l1=1.5
 
-w_engine=2500
-w_wing=300
-T_engine=2500
-L_D=1
+ly_e=1.5
+lz_e=0.4
+ly_hld = 0.5
+lx_hld=0.4
+ly_el = 2.5
+lx_el = 0.4
 
-wingbox.graphmomentx(l1,w_wing,w_engine)
-wingbox.graphmomentz(l1,w_wing,T_engine,L_D)
-wingbox.graphshearz(l1,w_wing,w_engine)
-wingbox.graphshearx(l1,w_wing,T_engine,L_D)
-wingbox.graphdisplacementz(E,l1,w_wing,w_engine)
+
+w_engine=10000
+w_wing=2500
+T_engine=0
+F_el=0
+F_hld = 0
+L_D=15
+
+#wingbox.graphmomentx(ly_e,w_wing,w_engine)
+wingbox.graphmomentz(ly_e,w_wing,T_engine,L_D)
+#wingbox.graphshearz(ly_e,w_wing,w_engine)
+#wingbox.graphshearx(ly_e,w_wing,T_engine,L_D)
+#wingbox.graphdisplacementz(E,ly_e,w_wing,w_engine)
+#wingbox.graphtorsiony(ly_e,lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el)
 plt.legend()
 plt.show()
 
