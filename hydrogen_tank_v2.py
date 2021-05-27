@@ -17,7 +17,7 @@ i_ratio = 2.5             #(fig 4.23b)   [ratio between 0 degrees fibers and phi
 k_overlap = 0.75          #(fig 5.5)
 
 def multi_cell_v(m, n, p, R):
-    """"Function to calculate multi cell volume."""
+    """"Function to calculate multi cell volume in L."""
     d = y * R
     R_fillet = r * R
     s = s_over_R * R
@@ -53,10 +53,11 @@ def multi_cell_v(m, n, p, R):
     V_fillet = (A_triangle - A_cap) * (2 * np.pi * R_ring)
     V_fillets = N_junctions * V_fillet
 
-    V = V_spheres + V_centers + V_fillets - V_lenses - V_cylinders
+    V = (V_spheres + V_centers + V_fillets - V_lenses - V_cylinders) * 1000
     return V
 
 def multi_cell_s(m, n, p, R):
+    """"Function to calculate multi cell surface area in m2."""
     d = y * R
     R_fillet = r * R
     s = s_over_R * R
@@ -99,6 +100,7 @@ def multi_cell_s(m, n, p, R):
 
 
 def multi_cell_m_incl_insulation(m,n,p, R, t_ins):
+    """"Function to calculate multi cell mass in kg."""
     S, M_structural = multi_cell_s(m,n,p, R)
     S_cryo, M_throwaway = multi_cell_s(m,n,p, R - t_ins)
 
