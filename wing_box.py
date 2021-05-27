@@ -229,6 +229,7 @@ class wingbox:
             lst.append(self.shearz(l1, w_wing, w_engine, x[i]))
         plt.plot(x, lst,label='Shear in z direction')
         return lst
+
     def graphshearx(self, l1, w_wing, w_engine,L_D):
         x = np.arange(0, self.length, 0.001)
         lst = []
@@ -289,8 +290,15 @@ class wingbox:
             lst.append(self.moment2(l1, w_engine, x[i]))
         plt.plot(x, lst)
         return lst
-    def bendingstress(self):
-        pass
+
+    def bendingstress(self, x, y, z):
+        Mx = self.momentx(l1, w_wing, w_engine)
+        Mz = self.momentz(l1, w_wing, T_engine, L_D, y)
+        x_centroid = self.local_crosssection(y).x_centroid
+        z_centroid = self.local_crosssection(y).z_centroid
+        Ixx = self.local_crosssection(y).I_xx()
+        Izz = self.local_crosssection(y).I_zz()
+        return Mx * (z - z_centroid) / Ixx + Mz * (x - x_centroid) / Izz
 
     def displacementz(self, E, l1, w_wing, w_engine, y):
         I = self.local_crosssection(y).I_xx
