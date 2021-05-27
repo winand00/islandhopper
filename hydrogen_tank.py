@@ -51,7 +51,7 @@ def tank_sizing(range, mass, rho_h2, eta_storage, rho_type, cooling):
     mass_h2 = energy_margin * range/(eta_total*LD*E_h2)*mass*g
     if cooling:
         mass_h2 *= cooling_fraction
-        maximum_power += cooling_power()
+        maximum_power += cooling_power
     volume_tank = mass_h2 / (rho_h2 * 0.5)
     length_tank = cylinder_length(volume_tank)
     mass_tank_hydrogen = mass_h2 / eta_storage
