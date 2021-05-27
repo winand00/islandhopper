@@ -12,16 +12,16 @@ plot: single or combined (input as a string)
 
 def loading_diagram(aircraft):
     # Define RJ85 input parameters
-    if aircraft=='RJ85':
+    if aircraft=='Hopper':
         MTOW                    = 8618.25503                                             # [kg]
-        MAC                     = 3.17    #??                                          # [m]
-        MAC_start               = 10.60   # ??                                          # [m]
-        OEW                     = 0.6*MTOW                                              # [kg]
+        MAC                     = 2    #??                                          # [m]
+        MAC_start               = 7   # ??                                          # [m]
+        OEW                     = 0.6*MTOW    # ??                                          # [kg]
         X_oew                   = 0.3569                                           # [percentage of MAC] Still Assumed!
         M_fuel                  = 6350                                              # To not exceed the MTOW, a fuel weight of 6249 [kg] is used!!!
         M_payload               = 1748   #??                                            # [kg] both cargo and passengers
         N_pax                   = 19                                               # [-]
-        M_pax                   = 77+15                                               # [kg]
+        M_pax                   = 77                                               # [kg]
         N_seat_abreast          = 3                                                 # [-]
         N_rows                  = 6
         seat_pitch              = 0.762     #??
@@ -32,17 +32,18 @@ def loading_diagram(aircraft):
         cabin_start             = nosecone_length
         cabin_start_relative    = (nosecone_length-MAC_start)/MAC
         cabin_end_relative      = (nosecone_length+cabin_length-MAC_start)/MAC
-        effective_cabin_length  = cabin_length-17*seat_pitch
+        effective_cabin_length  = cabin_length-7*seat_pitch
         galley_length           = (cabin_length-effective_cabin_length)/2
         X_fuel_absolute         = MAC/2                                             # Schatting, nog niet uitgerekend!!!!!!!!
         X_fuel                  = 0.6                              # [percentage of the MAC]
         X_tank                  = 0.4                                               # [percentage of the MAC]
-        M_front_cargo           = 0     # No cargo spaces                  # [kg]
-        M_rear_cargo            = 0                       # [kg]
-        x_front_cargo_absolute  = 0
+        M_front_cargo           = 285    # No cargo spaces                  # [kg]
+        M_rear_cargo            = 0                      # [kg]
+        x_front_cargo_absolute  = 2    # ??
         x_rear_cargo_absolute   = 0
         X_front_cargo           = (x_front_cargo_absolute - MAC_start)/MAC 
         X_rear_cargo            = (x_rear_cargo_absolute - MAC_start)/MAC
+        emergency_space         = 0.2    # ??   # [m]
     # ____________________________________________________________________________
 
     # Define RJXX input parameters
@@ -86,7 +87,8 @@ def loading_diagram(aircraft):
         x_front_cargo_absolute  = 6.8
         x_rear_cargo_absolute   = 17.92
         X_front_cargo           = (x_front_cargo_absolute - MAC_start)/MAC 
-        X_rear_cargo            = (x_rear_cargo_absolute - MAC_start)/MAC 
+        X_rear_cargo            = (x_rear_cargo_absolute - MAC_start)/MAC
+        emergency_space = 0.2  # ??   # [m]
     # ____________________________________________________________________________
 
 
@@ -111,28 +113,35 @@ def loading_diagram(aircraft):
 
 
     #First load the passengers from the front, 2 window rows first
-    for i in range(7):
+    for i in range(4):
         print(i)
         if i>0: #Otherwise it also takes into account an extra 2 passengers when i=0
-        New_mass, New_cg = cg_calc(weight_front_load[-1],cg_pos_front_load[-1],2*M_pax,((nosecone_length+i*seat_pitch-MAC_start)/MAC))
-        cg_pos_front_load.append(New_cg)
-        weight_front_load.append(New_mass)
+            New_mass, New_cg = cg_calc(weight_front_load[-1],cg_pos_front_load[-1],2*M_pax,((nosecone_length+i*seat_pitch-MAC_start)/MAC))
+            cg_pos_front_load.append(New_cg)
+            weight_front_load.append(New_mass)
 
     #Load the passengers from the front, 1 middle row seaters now
-    for i in range(7):
+    for i in range(4):
         if i>0: #Otherwise it also takes into account an extra 2 passengers when i=0
             New_mass, New_cg = cg_calc(weight_front_load[-1],cg_pos_front_load[-1],1*M_pax,((nosecone_length+i*seat_pitch-MAC_start)/MAC))
             cg_pos_front_load.append(New_cg)
             weight_front_load.append(New_mass)
 
-    #Load the passengers from the front, 2 last rows only 1 person since row configuration is 2-3 here instead of 3-3
-    for i in range(18):
-        if i>15: #Otherwise it also takes into account an extra passenger when i=0
-            New_mass, New_cg = cg_calc(weight_front_load[-1],cg_pos_front_load[-1],M_pax,((nosecone_length+i*seat_pitch-MAC_start)/MAC))
+    # Load the passengers from the front, 1 middle row seaters now
+    for i in range(7):
+        if i > 3:  # Otherwise it also takes into account an extra 2 passengers when i=0
+            New_mass, New_cg = cg_calc(weight_front_load[-1], cg_pos_front_load[-1], 1 * M_pax,
+                                       ((nosecone_length + i * seat_pitch + emergency_space - MAC_start) / MAC))
+            cg_pos_front_load.append(New_cg)
+            weight_front_load.append(New_mass)
+
+    #Load the passengers from the front, Last row only 1 person extra
+    for i in range(8):
+        if i>6: #Otherwise it also takes into account an extra passenger when i=0
+            New_mass, New_cg = cg_calc(weight_front_load[-1],cg_pos_front_load[-1],1*M_pax,((nosecone_length+i*seat_pitch+emergency_space-MAC_start)/MAC))
             cg_pos_front_load.append(New_cg)
             weight_front_load.append(New_mass)
     # ____________________________________________________________________________
-
 
     cg_pos_rear_load  = [X_oew]
     weight_rear_load = [OEW]
@@ -145,35 +154,27 @@ def loading_diagram(aircraft):
     cg_pos_rear_load.append(New_cg)
     weight_rear_load.append(New_mass)
 
+    # Load the passengers from the rear, Last row only 1 person extra
+    for i in range(8):
+        if i > 6:  # Otherwise it also takes into account an extra passenger when i=0
+            New_mass, New_cg = cg_calc(weight_front_load[-1], cg_pos_front_load[-1], 1 * M_pax,
+                                       ((nosecone_length + i * seat_pitch + emergency_space - MAC_start) / MAC))
+            cg_pos_front_load.append(New_cg)
+            weight_front_load.append(New_mass)
 
-    #First load the passengers from the rear, 2 window rows first
-    for i in range(18):
-        if i>0: #Otherwise it also takes into account an extra 2 passengers when i=0
-            New_mass, New_cg = cg_calc(weight_rear_load[-1],cg_pos_rear_load[-1],2*M_pax,((nosecone_length+(18-i)*seat_pitch-MAC_start)/MAC))
-            cg_pos_rear_load.append(New_cg)
-            weight_rear_load.append(New_mass)
+    # Load passengers from rear, row 4-6
+    for i in range(6, 3, -1):
+        New_mass, New_cg = cg_calc(weight_front_load[-1], cg_pos_front_load[-1], 1 * M_pax,
+                                   ((nosecone_length + i * seat_pitch + emergency_space - MAC_start) / MAC))
+        cg_pos_front_load.append(New_cg)
+        weight_front_load.append(New_mass)
 
-    #Load the passengers from the rear, 2 middle row seaters now
-    for i in range(18):
-        if i>0: #Otherwise it also takes into account an extra 2 passengers when i=0
-            New_mass, New_cg = cg_calc(weight_rear_load[-1],cg_pos_rear_load[-1],2*M_pax,((nosecone_length+(18-i)*seat_pitch-MAC_start)/MAC))
-            cg_pos_rear_load.append(New_cg)
-            weight_rear_load.append(New_mass)
-            #print(((nosecone_length+cabin_length-i*seat_pitch-MAC_start)/MAC))
-
-    #Load the passengers from the rear, 2 first rows only 1 person since row configuration is 2-3 here instead of 3-3
-    for i in range(3):
-        if i>0: #Otherwise it also takes into account an extra passenger when i=0
-            New_mass, New_cg = cg_calc(weight_rear_load[-1],cg_pos_rear_load[-1],M_pax,((nosecone_length+(18-i)*seat_pitch-MAC_start)/MAC))
-            cg_pos_rear_load.append(New_cg)
-            weight_rear_load.append(New_mass)
-
-    #Load the passengers from the rear, 2 aisle seaters now
-    for i in range(18):
-        if i>2: #Otherwise it also takes into account an extra 2 passengers when i=0
-            New_mass, New_cg = cg_calc(weight_rear_load[-1],cg_pos_rear_load[-1],2*M_pax,((nosecone_length+(18-i)*seat_pitch-MAC_start)/MAC))
-            cg_pos_rear_load.append(New_cg)
-            weight_rear_load.append(New_mass)
+    # Load the passengers from the rear, row 1-3
+    for i in range(3, 0, -1):
+        New_mass, New_cg = cg_calc(weight_front_load[-1], cg_pos_front_load[-1], 1 * M_pax,
+                                   ((nosecone_length + i * seat_pitch - MAC_start) / MAC))
+        cg_pos_front_load.append(New_cg)
+        weight_front_load.append(New_mass)
     # ____________________________________________________________________________
 
     # Tanking the fuel, since there is only one way to do this it is both from the front and rear
@@ -191,9 +192,9 @@ def loading_diagram(aircraft):
     return [cg_pos_front_load, weight_front_load, cg_pos_rear_load, weight_rear_load]
 
 
-min_xcg_RJ85 = min(loading_diagram('RJ85')[0]) - 0.02
+min_xcg_RJ85 = min(loading_diagram('Hopper')[0]) - 0.02
 min_xcg_RJXX = min(loading_diagram('RJXX')[0]) - 0.02
-max_xcg_RJ85 = max(loading_diagram('RJ85')[2]) + 0.02
+max_xcg_RJ85 = max(loading_diagram('Hopper')[2]) + 0.02
 max_xcg_RJXX = max(loading_diagram('RJXX')[2]) + 0.02
 
 '''
@@ -205,7 +206,7 @@ Function inputs:
 def plot_loadings(aircraft):
     MTOW = 42184
 
-    if aircraft=='RJ85':
+    if aircraft=='Hopper':
         fig, ax = plt.subplots()
         plt.plot(loading_diagram(aircraft)[0][0:3]  , loading_diagram(aircraft)[1][0:3]  , label = 'Cargo', color='b')
         plt.plot(loading_diagram(aircraft)[0][2:20] , loading_diagram(aircraft)[1][2:20] , label = 'Window seats', color='r')
@@ -220,8 +221,8 @@ def plot_loadings(aircraft):
         plt.title('Loading Diagram Bae AVRO RJ-85')
         plt.xlabel(r'$X_{cg}/MAC$ [-]')
         plt.ylabel('Weight [kg]')
-        plt.ylim((20000,45000))
-        plt.xlim(0.15,0.55)
+        plt.ylim((5000,9000))
+        plt.xlim(0.05,0.9)
         plt.xticks(np.arange(0.20,0.70,0.05))
         ax.set(facecolor='w')
         plt.axvline(min_xcg_RJ85, ymin=0, ymax=1, color='black', linestyle='-')
@@ -308,6 +309,6 @@ print('Maximum x_cg RJXX:', max_xcg_RJXX)
 
 
 
-plot_loadings('RJ85')
+plot_loadings('Hopper')
 plot_loadings('RJXX')
 plot_loadings('Both')
