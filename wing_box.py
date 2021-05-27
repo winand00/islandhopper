@@ -396,7 +396,7 @@ y_e = 1 #location of the engine
 #crosssection.plot()
 #plt.show()
 
-#Creating stringers
+#Creating stringerss
 number_top_stringers = 2
 number_bottom_stringers = 2
 stringer_width = 0.01
