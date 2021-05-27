@@ -1,13 +1,5 @@
 import numpy as np
 
-class Material:
-    def __init__(self, K, E, rho):
-        self.K = K      # [MPa]
-        self.E = E      # [GPa]
-        self.rho = rho  # [kg/m^3]
-
-aluminium_2219 = Material(172.4*10**6, 73.8 * 10 ** 9, 2825)
-
 # CONSTANTS
 k_overlap = 0.75      #Used in thesis
 P = 5.7
@@ -15,10 +7,22 @@ sigma_allowable = 1
 t_ply = 0.00014       #[m] #Table 4-3
 rho_comp = 1
 rho_ins = 1
+y = 1.4
+R_over_t = 130
+s_over_R = 0.35           #(fig 4.22)
+r = 0.1                   #(fig 4.23a) [R_fillet/R]
+t_junction_over_R = 0.027 #(fig 4.23d)
+phi = 24                  #degrees (fig 4.23b) [layup angle]
+i_ratio = 2.5             #(fig 4.23b)   [ratio between 0 degrees fibers and phi degrees fibres]
+k_overlap = 0.75          #(fig 5.5)
 
-
-def multi_cell_v(m, n, p, R, d, R_fillet, s, k_overlap, t_junction):
+def multi_cell_v(m, n, p, R):
     """"Function to calculate multi cell volume."""
+    d = y * R
+    R_fillet = r * R
+    s = s_over_R * R
+    t_junction = t_junction_over_R * R
+
     N_cells = m * n * p
     V_spheres = N_cells * 4 / 3 * np.pi * R ** 3
 
@@ -40,10 +44,6 @@ def multi_cell_v(m, n, p, R, d, R_fillet, s, k_overlap, t_junction):
 
     h_center = (2 * R - d * 2 ** 0.5) / 2
     r_cyl = max((4 * s * k_overlap) / 2 / np.pi, 2 * t_junction, h_center)
-    print(R_ringfinal ** 2 - (d / 2 - r_cyl) ** 2)
-    print('r final:', R_ringfinal)
-    print('d: ', d)
-    print('r cyl: ', r_cyl)
     l_cyl = np.sqrt(R_ringfinal ** 2 - (d / 2 - r_cyl) ** 2)
     V_cylinder = np.pi * r_cyl ** 2 * l_cyl
     V_cylinders = N_centers * V_cylinder
@@ -56,7 +56,12 @@ def multi_cell_v(m, n, p, R, d, R_fillet, s, k_overlap, t_junction):
     V = V_spheres + V_centers + V_fillets - V_lenses - V_cylinders
     return V
 
-def multi_cell_s(m,n,p, R, d, R_fillet, s, k_overlap, t_junction):
+def multi_cell_s(m, n, p, R):
+    d = y * R
+    R_fillet = r * R
+    s = s_over_R * R
+    t_junction = t_junction_over_R * R
+
     N_cells = m * n * p
     theta_1 = np.arcsin((d / 2) / (R + R_fillet))  # e1 4.42
     h_inter = R_fillet * np.sin(theta_1)
@@ -87,29 +92,40 @@ def multi_cell_s(m,n,p, R, d, R_fillet, s, k_overlap, t_junction):
 
     S = S_spheres + S_fillets + S_cylinders + S_centers - S_lenses - S_spheresfillets
 
-    t = max(P * R / (2 * sigma_allowable), 6 * t_ply)
+    t = max(R / 130, 6 * t_ply)
     M_structural = rho_comp * t * (S_spheres + S_centers - S_lenses - S_spheresfillets) + rho_comp * t_junction * \
                    (S_fillets + S_cylinders)
     return S, M_structural
 
 
-def multi_cell_m_incl_insulation(m,n,p, R, d, R_fillet, s, k_overlap, t_junction, t_ins):
-    S, M_structural = multi_cell_s(m,n,p, R, d, R_fillet, s, k_overlap, t_junction)
-    S_cryo, M_throwaway = multi_cell_s(m,n,p, R - t_ins, d, R_fillet, s, k_overlap, t_junction)
+def multi_cell_m_incl_insulation(m,n,p, R, t_ins):
+    S, M_structural = multi_cell_s(m,n,p, R)
+    S_cryo, M_throwaway = multi_cell_s(m,n,p, R - t_ins)
 
     M_insulation = rho_ins * t_ins * S_cryo
     M_total = M_structural + M_insulation
     return M_total, M_structural, M_insulation, S, S_cryo
 
 
-class Tank:
-    def __init__(self, m, n, p, R, d, R_fillet, s, k_overlap, t_junction, t_ins):
-        self.mass_total = multi_cell_m_incl_insulation(m, n, p, R, d, R_fillet, s, k_overlap, t_junction, t_ins)[0]
-        self.mass_tank = multi_cell_m_incl_insulation(m,n,p, R, d, R_fillet, s, k_overlap, t_junction, t_ins)[1]
-        self.mass_insulation = multi_cell_m_incl_insulation(m,n,p, R, d, R_fillet, s, k_overlap, t_junction, t_ins)[2]
-        self.volume = multi_cell_v(m,n,p, R - t_ins, d, R_fillet, s, k_overlap, t_junction)
+class Material:
+    def __init__(self, K, E, rho):
+        self.K = K      # [MPa]
+        self.E = E      # [GPa]
+        self.rho = rho  # [kg/m^3]
 
-a  = Tank(2, 2, 1, 0.6, 0.200 * 4, 0.029 * 4, 0.06047 * 4, 0.75, 0.00397, 0.037)
+aluminium_2219 = Material(172.4*10**6, 73.8 * 10 ** 9, 2825)
+
+class Tank:
+    def __init__(self, m, n, p, R, t_ins):
+        self.mass_total = multi_cell_m_incl_insulation(m, n, p, R, t_ins)[0]
+        self.mass_tank = multi_cell_m_incl_insulation(m, n, p, R, t_ins)[1]
+        self.mass_insulation = multi_cell_m_incl_insulation(m, n, p, R, t_ins)[2]
+        self.surface_outside = multi_cell_m_incl_insulation(m, n, p, R, t_ins)[3]
+        self.surface_inside_insulation = multi_cell_m_incl_insulation(m, n, p, R, t_ins)[4]
+        self.volume = multi_cell_v(m, n, p, R - t_ins)
+
+
+a  = Tank(2, 2, 1, 0.6, 0.037)
 
 print('v:', a.volume)
 
