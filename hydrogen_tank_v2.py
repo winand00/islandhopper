@@ -18,6 +18,7 @@ t_junction_over_R = 0.027 #(fig 4.23d)
 phi = 24                  #degrees (fig 4.23b) [layup angle]
 i_ratio = 2.5             #(fig 4.23b)   [ratio between 0 degrees fibers and phi degrees fibres]
 k_overlap = 0.75          #(fig 5.5)
+BOR = 0.016
 
 rho_hydr = 70 # [kg/m3]
 
