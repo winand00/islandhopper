@@ -363,6 +363,8 @@ class wingbox:
         Ta = T_engine*lz_e-F_el*lx_el-F_hld*lx_hld
         T = Ta+F_hld*lx_hld*Macaulay(y,ly_hld,0)-T_engine*lz_e*Macaulay(y,ly_e,0)+F_el*lx_el*Macaulay(y,ly_el,0)
         return T
+
+
     def graphtorsiony(self,ly_e,lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el):
         x = np.arange(0, self.length, 0.001)
         lst = []
