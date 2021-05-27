@@ -17,7 +17,7 @@ class crosssection:
 
         self.local_width = max([x.b for x in self.local_skins])
         self.local_height = max([x.h for x in self.local_skins])
-        self.local_t = max([x.t for x in self.local_skins])
+        self.local_t = min([x.h for x in self.local_skins])
         self.area = self.area()
         self.x_centroid = self.centroid_x()
         self.z_centroid = self.centroid_z()
@@ -197,6 +197,7 @@ class wingbox:
         self.skins = self.cross_section.root_skins
         self.taper = taper
         self.g= 9.80665
+
     def local_crosssection(self, y):
         return crosssection(self.stringers, self.skins, self.taper, y, self.length)
 
@@ -293,8 +294,10 @@ class wingbox:
         plt.plot(x, lst)
         return lst
 
-    def bendingstress(self,x, y, z):
-        Mx = self.momentx(l1, w_wing, w_engine)
+    def bendingstress(self,y, l1, w_wing, w_engine, T_engine,L_D):
+        x = self.local_crosssection(y).local_width
+        z = self.local_crosssection(y).local_height
+        Mx = self.momentx(l1, w_wing, w_engine, y)
         Mz = self.momentz(l1, w_wing, T_engine,L_D, y)
         x_centroid = self.local_crosssection(y).x_centroid
         z_centroid = self.local_crosssection(y).z_centroid
@@ -306,13 +309,13 @@ class wingbox:
         x = np.arange(0, self.length, 0.1)
         lst = []
         for i in range(len(x)):
-            lst.append(self.bendingstress_comp(x[i], l1, w_wing, w_engine, T_engine, L_D))
+            lst.append(self.bendingstress(x[i], l1, w_wing, w_engine, T_engine, L_D))
         plt.plot(x, lst,label='Compression stress in top right corner')
         return lst
 
     def shear_torque(self, y):
         A = self.local_crosssection(y).local_height * self.local_crosssection(y).local_width
-        T = self.torsion(y)
+        T = self.Torsiony(y)
         t = self.local_crosssection(y).local_t
         return T/(2*t*A)
 
@@ -445,7 +448,7 @@ wingbox.graphmomentz(ly_e,w_wing,T_engine,L_D)
 #wingbox.graphshearx(ly_e,w_wing,T_engine,L_D)
 #wingbox.graphdisplacementz(E,ly_e,w_wing,w_engine)
 #wingbox.graphtorsiony(ly_e,lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el)
-wingbox.graph_compr(l1,w_wing,w_engine,T_engine,L_D)
+wingbox.graph_compr(ly_e ,w_wing,w_engine,T_engine,L_D)
 plt.legend()
 plt.show()
 
