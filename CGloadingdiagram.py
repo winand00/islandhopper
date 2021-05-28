@@ -181,8 +181,9 @@ def plot_loadings():
     plt.grid(axis='y')
     plt.show()
 
-print('Minimum x_cg Hopper:', min_xcg_Hopper)
-print('Maximum x_cg Hopper:', max_xcg_Hopper)
-print()
+if __name__ == "__main__":
+    print('Minimum x_cg Hopper:', min_xcg_Hopper)
+    print('Maximum x_cg Hopper:', max_xcg_Hopper)
+    print()
 
-plot_loadings()
+    plot_loadings()
