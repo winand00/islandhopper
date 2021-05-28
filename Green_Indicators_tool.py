@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 # GI1: Design efficiency #
 
-class Parameters:
+class Parameters1:
     def __init__(self):
         #General Parameters
         self.MTOW = 8618        # Maximum Take-off Weight [kg]
@@ -36,8 +36,22 @@ class Parameters:
         self.N = 2              #Number of propellers [-]
         self.r = 350            #Distance to observer [m]
 
+class Material:
+    def __init__(self, M, RC, n_rc):
+        #Recycling Parameters
+        self.M = M      # Part weight [kg]
+        self.RC = RC      # Recyclability percentage [-]
+        self.n_rc = n_rc     # Recycling energy usage / virgin production energy usage [-]
+        #self.n_m = n_m     # Material scarcity index (Only relevant for batteries)
 
+carbon = Material(100, 0.4, 0.5)
+alluminium = Material(600, 0.8, 0.2)
 
+def recycle(list):
+    GI_1 = 1
+    return GI_1
+
+recycle([carbon, alluminium])
 
 
 def Efficiency(a):
@@ -51,6 +65,7 @@ def Noise(a):
     M_t = a.n_p * pi * D_p / (60*a.c)
     SPL_max = 83.4 + 15.3 * log10(P_br/1000) - 20 * log10(D_p) + 38.5 * M_t - 3 * (a.B-2) + 10 * log10(N) - 20 * log(a.r)
     return SPL_max
+
 def Recyclability(a):
     RC = 1
     return RC
