@@ -159,8 +159,8 @@ class Stress:
         y4 = np.arange(0, self.h + self.h/N, self.h/N)
         x4 = np.zeros(y4.shape)
 
-        x = np.hstack((x1,np.flip(x3),np.flip(x2),x4))
-        ys = np.hstack((y1,np.flip(y3),np.flip(y2),y4))
+        x = np.hstack((x1,np.flip(x3,0),np.flip(x2,0),x4))
+        ys = np.hstack((y1,np.flip(y3,0),np.flip(y2,0),y4))
         return x, ys
         
 
