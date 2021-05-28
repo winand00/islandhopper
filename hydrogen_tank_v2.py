@@ -28,7 +28,7 @@ d_T = 293.15 # temp diff between 20 K and 40 C
 h_out = 30 #[W/m2K]
 
 def multi_cell_v(m, n, p, R):
-    """"Function to calculate multi cell volume in L."""
+    """"Function to calculate multi cell volume in m3."""
     d = y * R
     R_fillet = r * R
     s = s_over_R * R
@@ -110,31 +110,32 @@ def multi_cell_s(m, n, p, R):
     return S, M_structural, t
 
 
-def multi_cell_m_incl_insulation(m,n,p, R, t_ins, Mass):
+def multi_cell_m_incl_insulation(m, n, p, R, Mass):
     """"Function to calculate multi cell mass in kg."""
-    S, M_structural, t = multi_cell_s(m,n,p, R)
+    S, M_structural, t = multi_cell_s(m, n, p, R)
 
-    volume = multi_cell_v(m, n, p, R )
-    tanks_needed = math.ceil( Mass/(volume * rho_hydr))
+    volume = multi_cell_v(m, n, p, R)
+    tanks_needed = math.ceil(Mass/(volume * rho_hydr))
 
     width = m * R * 2 - (m-1) * (y * R)
     length = n * R * 2 - (n-1) * (y * R)
     height = p * R * 2 - (p-1) * (y * R)
 
-    dimensions = [width,length,height]
+    dimensions = [width, length, height]
 
-    thick = True
+    optimum = False
     t_ins = 0.01
-    time = 0
-    while thick:
-        S_cryo, M_throwaway, t_throwaway = multi_cell_s(m,n,p, R - t_ins)
+    threshold = 0.00001
+    while not optimum:
+        t_old = t_ins
+        S_cryo, M_throwaway, t_throwaway = multi_cell_s(m, n, p, R - t_ins)
         Q = (Mass * (1+BOR_percentage) - Mass)  * d_H_vap
         U = Q / S_cryo / d_T
         t_ins = (1 / U - t / k_comp + 1 / h_out) * k_ins
-        time = time +1
+        delta_t = abs(t_old - t_ins)
 
-        if time > 10:
-            thick = False
+        if delta_t < threshold:
+            optimum = True
 
     M_insulation = rho_ins * t_ins * S_cryo
     M_total = M_structural + M_insulation
@@ -152,28 +153,42 @@ class Material:
 aluminium_2219 = Material(172.4*10**6, 73.8 * 10 ** 9, 2825)
 
 class Tank:
-    def __init__(self, m, n, p, R, t_ins, Mass):
-        self.mass_total = multi_cell_m_incl_insulation(m, n, p, R, t_ins, Mass)[0]
-        self.mass_tank = multi_cell_m_incl_insulation(m, n, p, R, t_ins, Mass)[1]
-        self.mass_insulation = multi_cell_m_incl_insulation(m, n, p, R, t_ins, Mass)[2]
-        self.surface_outside = multi_cell_m_incl_insulation(m, n, p, R, t_ins, Mass)[3]
-        self.surface_inside_insulation = multi_cell_m_incl_insulation(m, n, p, R, t_ins, Mass)[4]
-        self.volume = multi_cell_v(m, n, p, R - multi_cell_m_incl_insulation(m, n, p, R, t_ins, Mass)[5]) * 1000
-        self.number = multi_cell_m_incl_insulation(m, n, p, R, t_ins, Mass)[6]
-        self.dimensions = multi_cell_m_incl_insulation(m, n, p, R, t_ins, Mass)[7]
+    def __init__(self, m, n, p, R, Mass):
+        self.mass_total = multi_cell_m_incl_insulation(m, n, p, R, Mass)[0]
+        self.mass_tank = multi_cell_m_incl_insulation(m, n, p, R, Mass)[1]
+        self.mass_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[2]
+        self.surface_outside = multi_cell_m_incl_insulation(m, n, p, R, Mass)[3]
+        self.surface_inside_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[4]
+        self.volume = multi_cell_v(m, n, p, R - multi_cell_m_incl_insulation(m, n, p, R, Mass)[5]) # * 1000
+        self.number = multi_cell_m_incl_insulation(m, n, p, R, Mass)[6]
+        self.dimensions = multi_cell_m_incl_insulation(m, n, p, R, Mass)[7]
+
+    def properties(self):
+        print(f"*****TANK***** \n"
+              f"Mass single tank [kg] = {self.mass_tank} \n"
+              f"Mass insulation single tank [kg] = {self.mass_insulation} \n"
+              f"---------------------------+ \n"
+              f"Mass total single tank [kg] = {self.mass_total} \n"
+              f"Volume single tank [m3] = {self.volume} \n"
+              f"\n"
+              f"Number of tanks [-] = {self.number} \n"
+              f"Mass all tanks [kg] = {self.number * self.mass_total} \n"
+              f"Volume all tanks [m3] = {self.number * self.volume} \n"
+              f"Dimensions (w * h * l) [m] = {self.dimensions}")
 
 
+if __name__ == "__main__":
+    a  = Tank(2, 2, 1, 0.6, 111)
+    a.properties()
 
-a  = Tank(2, 2, 1, 0.1, 0 , 100)
-
-print('v:', a.volume)
-print('m_tank:', a.mass_tank)
-print('m_ins:', a.mass_insulation)
-print('m_tot:', a.mass_total)
-print('number of tanks:', a.number)
-print('v_total_all:', a.number*a.volume)
-print('M_total_all:', a.number*a.mass_total)
-print('Dimensions:', a.dimensions)
+# print('v:', a.volume)
+# print('m_tank:', a.mass_tank)
+# print('m_ins:', a.mass_insulation)
+# print('m_tot:', a.mass_total)
+# print('number of tanks:', a.number)
+# print('v_total_all:', a.number*a.volume)
+# print('M_total_all:', a.number*a.mass_total)
+# print('Dimensions:', a.dimensions)
 
 
 #b = multi_cell_v(2, 2, 1, 0.145, 0.200, 0.029, 0.06047, 0.75, 0.00397)
