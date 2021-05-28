@@ -1,3 +1,5 @@
+import numpy as np
+x = np.arange(1, 20)
+print(x)
+print(x[-2:])
 
-for i in range(6, 3, -1):
-    print(i)
