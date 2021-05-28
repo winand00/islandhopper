@@ -30,15 +30,8 @@ def loading_diagram():
     cabin_length            = 7.366  #Jetstream                                           # [m]
     length                  = 16.38  #Jetstream + 2 [m]
     tailcone_length         = 4.2084                                             #3/5*(length-2m-cabin_length)
-    nosecone_length         = 2.8056                                             #2/5*(length-2m-cabin_length)
-    cabin_start             = nosecone_length
-    cabin_start_relative    = (nosecone_length-MAC_start)/MAC
-    cabin_end_relative      = (nosecone_length+cabin_length-MAC_start)/MAC
-    effective_cabin_length  = cabin_length-7*seat_pitch
-    galley_length           = (cabin_length-effective_cabin_length)/2
-    X_fuel_absolute         = MAC/2                                             # Schatting, nog niet uitgerekend!!!!!!!!
-    X_fuel                  = 13                                                   # [m] location of cg fuel
-    X_tank                  = 13                                              # [m] location of cg tank
+    nosecone_length         = 2.8056                                             #2/5*(length-2m-cabin_length)                                          # Schatting, nog niet uitgerekend!!!!!!!!
+    X_fuel                  = 13                                                   # [m] location of cg fuel                                            # [m] location of cg tank
     M_front_cargo           = 285    # No cargo spaces                  # [kg]
     M_rear_cargo            = 0                      # [kg]
     x_front_cargo_absolute  = 2    # ??
