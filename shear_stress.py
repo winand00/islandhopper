@@ -27,7 +27,14 @@ class Stress:
         self.z_centroid = z_centroid
 
     def von_mises(self, x ,z):
-        return np.sqrt(self.bendingstress_xz(x, z) ** 2 + 3 * self.shear_total(x, z))
+        return np.sqrt(self.bendingstress_xz(x, z) ** 2 + 3 * self.shear_total(x, z) **2)
+    
+    def max_von_mises(self):
+        stresses = []
+        x, z = self.get_xz(10)
+        for i in range(len(x)):
+            stresses.append(self.von_mises(x[i],z[i]))
+        return max(stresses)
 
     def bendingstress_x(self,x, z):
         return self.Mx*(z-self.z_centroid)/self.Ixx
@@ -135,16 +142,8 @@ class Stress:
 
     def plot_bending_stress_xz(self, y):
         self.plot(y, self.bendingstress_xz)
-
-
-
-    def plot(self, y, function):
-        N = 50
-        print(self.h)
-        print(self.w)
-        # Here are many sets of y to plot vs. x
-
-        #Top skin
+        
+    def get_xz(self, N):
         x1 = np.arange(0, self.w + self.w /N, self.w /N)
         y1 = np.ones(x1.shape) * self.h
 
@@ -162,10 +161,24 @@ class Stress:
 
         x = np.hstack((x1,np.flip(x3),np.flip(x2),x4))
         ys = np.hstack((y1,np.flip(y3),np.flip(y2),y4))
+        return x, ys
+        
+
+
+
+    def plot(self, y, function):
+        N = 50
+        print(self.h)
+        print(self.w)
+        # Here are many sets of y to plot vs. x
+
+        x, ys = self.get_xz(N)
+
+        
         # We need to set the plot limits, they will not autoscale
         fig, ax = plt.subplots()
-        ax.set_xlim(np.min(x) - 0.1, np.max(x) +0.1)
-        ax.set_ylim(np.min(ys)-0.1, np.max(ys)+0.1)
+        ax.set_xlim(np.min(x) - 0.2*self.w, np.max(x) +0.2*self.w)
+        ax.set_ylim(np.min(ys)-0.2*self.h, np.max(ys)+0.2*self.h)
 
         z = np.array([function(x[i], ys[i]) for i in range(len(ys))])
         points_for_stack = np.array([x, ys]).T.reshape(-1, 1, 2)
@@ -177,6 +190,7 @@ class Stress:
         axcb.set_label('Shear stress')
         ax.set_title('Shear stress over the wing box cross section')
         plt.gca().add_collection(line_segments)  # This allows interactive changing of the colormap.
+        
         plt.show()
 
 #stress = Stress(h, w, Izz, Ixx, t, Vx, Vz, Y)
