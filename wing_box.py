@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from shear_stress import Stress
 
 
 class crosssection:
@@ -188,15 +189,29 @@ class stringer:
 
 
 class wingbox:
-    def __init__(self, stringers, cross_section, length, taper, material_density):
+    def __init__(self, stringers, cross_section, length, taper, material_density, E, ly_e, w_wing, w_engine, L_D,
+                 lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el):
         self.stringers = stringers
         self.cross_section = cross_section
         self.density = material_density
+        self.E = E
         self.length = length
         #self.weight = self.cross_section.area * self.length * self.density
         self.skins = self.cross_section.root_skins
         self.taper = taper
         self.g= 9.80665
+        self.ly_e = ly_e
+        self.w_wing = w_wing
+        self.w_engine = w_engine
+        self.L_D = L_D
+        self.lz_e = lz_e
+        self.ly_hld = ly_hld
+        self.lx_hld = lx_hld
+        self.ly_el = ly_el
+        self.lx_el = lx_el
+        self.T_engine = T_engine
+        self.F_hld = F_hld
+        self.F_el = F_el
 
     def local_crosssection(self, y):
         return crosssection(self.stringers, self.skins, self.taper, y, self.length)
@@ -214,46 +229,46 @@ class wingbox:
         steps_starts = np.append(steps_starts, self.length)
         return steps_starts, l_w
 
-    def shearz(self, l1, w_wing, w_engine, y):
-        Ra = -w_wing * self.length + w_engine + self.local_crosssection(self.length / 2).area * self.density * self.g * self.length
-        P = (Ra+(w_wing)*y-(w_engine*Macaulay(y,l1,0))-(self.local_crosssection(self.length / 2).area * self.density * self.g * self.length)*y)
+    def shearz(self, y):
+        Ra = -self.w_wing * self.length + self.w_engine + self.local_crosssection(self.length / 2).area * self.density * self.g * self.length
+        P = (Ra+(self.w_wing)*y-(self.w_engine*Macaulay(y,self.ly_e,0))-(self.local_crosssection(self.length / 2).area * self.density * self.g * self.length)*y)
         return P
 
-    def shearx(self, l1, w_wing, T_engine,L_D, y):
-        Ra = w_wing*(1/L_D) * self.length - T_engine
-        M = (Ra-(w_wing*(1/L_D))*y+(T_engine*Macaulay(y,l1,0)))
+    def shearx(self, y):
+        Ra = self.w_wing*(1/self.L_D) * self.length - self.T_engine
+        M = (Ra-(self.w_wing*(1/self.L_D))*y+(self.T_engine*Macaulay(y,self.ly_e,0)))
         return M
 
-    def graphshearz(self, l1, w_wing, w_engine):
+    def graphshearz(self):
         x = np.arange(0, self.length, 0.001)
         lst = []
         for i in range(len(x)):
-            lst.append(self.shearz(l1, w_wing, w_engine, x[i]))
+            lst.append(self.shearz(x[i]))
         plt.plot(x, lst,label='Shear in z direction')
         return lst
 
-    def graphshearx(self, l1, w_wing, w_engine,L_D):
+    def graphshearx(self):
         x = np.arange(0, self.length, 0.001)
         lst = []
         for i in range(len(x)):
-            lst.append(self.shearx(l1, w_wing, w_engine, L_D, x[i]))
+            lst.append(self.shearx(x[i]))
         plt.plot(x, lst,label='Shear in x direction')
         return lst
 
-    def momentx(self, l1, w_wing, w_engine, y):
-        Ra = -w_wing * self.length + w_engine + self.local_crosssection(self.length/2).area*self.density*self.g*self.length
-        M0 = -(w_engine * l1) + (w_wing * (self.length ** 2) / 2)-(self.local_crosssection(self.length/2).area*self.density*self.g*self.length**2/2)
-        M = (Ra*y+M0+(w_wing/2)*y**2-(self.local_crosssection(self.length/2).area*self.density*self.g/2)*y**2-(w_engine*Macaulay(y,l1,1)))
+    def momentx(self, y):
+        Ra = -self.w_wing * self.length + self.w_engine + self.local_crosssection(self.length/2).area*self.density*self.g*self.length
+        M0 = -(self.w_engine * self.ly_e) + (self.w_wing * (self.length ** 2) / 2)-(self.local_crosssection(self.length/2).area*self.density*self.g*self.length**2/2)
+        M = (Ra*y+M0+(self.w_wing/2)*y**2-(self.local_crosssection(self.length/2).area*self.density*self.g/2)*y**2-(self.w_engine*Macaulay(y,self.ly_e,1)))
         return M
 
 
-    def momentz(self, l1, w_wing, T_engine,L_D, y):
-        Ra = w_wing*(1/L_D) * self.length - T_engine
-        M0 = (T_engine * l1) - (w_wing*(1/L_D) * (self.length ** 2) / 2)
-        M = (Ra*y+M0-(w_wing*(1/L_D)/2)*y**2+(T_engine*Macaulay(y,l1,1)))
+    def momentz(self, y):
+        Ra = self.w_wing*(1/self.L_D) * self.length - self.T_engine
+        M0 = (self.T_engine * self.ly_e) - (self.w_wing*(1/self.L_D) * (self.length ** 2) / 2)
+        M = (Ra*y+M0-(self.w_wing*(1/self.L_D)/2)*y**2+(self.T_engine*Macaulay(y,self.ly_e,1)))
         return M
 
-    def moment2(self, l1, w_engine, y):
+    def moment2(self, w_engine, y):
         ylst, wlst = self.w_steps(3)
         print(ylst)
         print(wlst)
@@ -263,69 +278,65 @@ class wingbox:
             lift.append(wlst[i]*(ylst[i+1]-ylst[i]))
             liftmoment.append(wlst[i]*((ylst[i+1]-ylst[i])**2)/2)
         Ra = w_engine-sum(lift)
-        M0 = -(w_engine * l1) +sum(liftmoment)
+        M0 = -(w_engine * self.ly_e) +sum(liftmoment)
         liftmacauley=[]
         for i in range(len(wlst)-1):
             liftmacauley.append((wlst[i+1]-wlst[i])/2*(Macaulay(y,ylst[i+1],2)))
-        M = (M0+Ra*y+(wlst[0]/2)*y**2-(w_engine*Macaulay(y,l1,1)))-sum(liftmacauley)
+        M = (M0+Ra*y+(wlst[0]/2)*y**2-(w_engine*Macaulay(y,self.ly_e,1)))-sum(liftmacauley)
         return M
 
-    def graphmomentx(self, l1, w_wing, w_engine):
+    def graphmomentx(self):
         x = np.arange(0, self.length, 0.001)
         lst = []
         for i in range(len(x)):
-            lst.append(self.momentx(l1, w_wing, w_engine, x[i]))
+            lst.append(self.momentx(x[i]))
         plt.plot(x, lst,label='Moment in x direction')
         return lst
 
-    def graphmomentz(self, l1, w_wing, w_engine,L_D):
+    def graphmomentz(self):
         x = np.arange(0, self.length, 0.001)
         lst = []
         for i in range(len(x)):
-            lst.append(self.momentz(l1, w_wing, w_engine, L_D, x[i]))
+            lst.append(self.momentz(x[i]))
         plt.plot(x, lst,label='Moment in z direction')
         return lst
 
-    def graphmoment2(self, l1, w_engine):
+    def graphmoment2(self, w_engine):
         x = np.arange(0, self.length, 0.1)
         lst = []
         for i in range(len(x)):
-            lst.append(self.moment2(l1, w_engine, x[i]))
+            lst.append(self.moment2(w_engine, x[i]))
         plt.plot(x, lst)
         return lst
 
-    def bendingstress(self,y, l1, w_wing, w_engine, T_engine,L_D):
+    def bendingstress(self,y):
         x = self.local_crosssection(y).local_width
         z = self.local_crosssection(y).local_height
-        Mx = self.momentx(l1, w_wing, w_engine, y)
-        Mz = self.momentz(l1, w_wing, T_engine,L_D, y)
+        Mx = self.momentx(y)
+        Mz = self.momentz(y)
         x_centroid = self.local_crosssection(y).x_centroid
         z_centroid = self.local_crosssection(y).z_centroid
         Ixx = self.local_crosssection(y).I_xx
         Izz = self.local_crosssection(y).I_zz
         return Mx*(z-z_centroid)/Ixx + -Mz*(x-x_centroid)/Izz
 
-    def graph_compr(self, l1, w_wing, w_engine, T_engine, L_D):
+    def graph_compr(self):
         x = np.arange(0, self.length, 0.1)
         lst = []
         for i in range(len(x)):
-            lst.append(self.bendingstress(x[i], l1, w_wing, w_engine, T_engine, L_D))
+            lst.append(self.bendingstress(x[i]))
         plt.plot(x, lst,label='Compression stress in top right corner')
         return lst
 
-    def shear_torque(self, y):
-        A = self.local_crosssection(y).local_height * self.local_crosssection(y).local_width
-        T = self.Torsiony(y)
-        t = self.local_crosssection(y).local_t
-        return T/(2*t*A)
 
-    def displacementz(self, E, l1, w_wing, w_engine, y):
+
+    def displacementz(self, y):
         I = self.local_crosssection(y).I_xx
-        Ra = -w_wing * self.length + w_engine + self.local_crosssection(
+        Ra = -self.w_wing * self.length + self.w_engine + self.local_crosssection(
             self.length / 2).area * self.density * self.g * self.length
-        M0 = -(w_engine * l1) + (w_wing * (self.length ** 2) / 2) - (
+        M0 = -(self.w_engine * self.ly_e) + (self.w_wing * (self.length ** 2) / 2) - (
                     (self.local_crosssection(self.length / 2).area * self.density * self.g * self.length) ** 2 / 2)
-        v = ((-1 / (E * I)) * (((1 / 6) * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + ((w_wing / 24) * (y ** 4)) - (w_engine / 6 * Macaulay(y, l1, 3))-(((self.local_crosssection(self.length / 2).area * self.density * self.g * self.length) / 24) * (y ** 4))))
+        v = ((-1 / (self.E * I)) * (((1 / 6) * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + ((self.w_wing / 24) * (y ** 4)) - (self.w_engine / 6 * Macaulay(y, self.ly_e, 3))-(((self.local_crosssection(self.length / 2).area * self.density * self.g * self.length) / 24) * (y ** 4))))
         return v
 
     def displacement2(self, E, l1, w_wing, w_engine, y):
@@ -344,13 +355,14 @@ class wingbox:
         v = (-1 / (E * I)) * ((1/2*M0*(y**2))+(Ra/6*(y**3))-(w_engine/6*Macaulay(y,l1,3))+(wlst[0]/24*(y**4))-sum(liftmacauley))
         return v
 
-    def graphdisplacementz(self, E, l1, w_wing, w_engine):
+    def graphdisplacementz(self):
         x = np.arange(0, self.length, 0.1)
         lst = []
         for i in range(len(x)):
-            lst.append(self.displacementz(E, l1, w_wing, w_engine, x[i]))
+            lst.append(self.displacementz(x[i]))
         plt.plot(x, lst,label='Displacement in z direction')
         return lst
+
     def graphdisplacement2(self, E, l1, w_engine):
         x = np.arange(0, self.length, 0.1)
         lst = []
@@ -359,20 +371,42 @@ class wingbox:
         plt.plot(x, lst)
         return lst
 
-    def Torsiony(self,ly_e,lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el,y):
-        Ta = T_engine*lz_e-F_el*lx_el-F_hld*lx_hld
-        T = Ta+F_hld*lx_hld*Macaulay(y,ly_hld,0)-T_engine*lz_e*Macaulay(y,ly_e,0)+F_el*lx_el*Macaulay(y,ly_el,0)
+    def Torsiony(self,y):
+        Ta = self.T_engine*self.lz_e-self.F_el*self.lx_el-self.F_hld*self.lx_hld
+        T = Ta+self.F_hld*self.lx_hld*Macaulay(y,self.ly_hld,0)-self.T_engine*self.lz_e*Macaulay(y,self.ly_e,0)+\
+            self.F_el*self.lx_el*Macaulay(y,self.ly_el,0)
         return T
-    def graphtorsiony(self,ly_e,lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el):
+
+
+    def graphtorsiony(self):
         x = np.arange(0, self.length, 0.001)
         lst = []
         for i in range(len(x)):
-            lst.append(self.Torsiony(ly_e,lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el,x[i]))
+            lst.append(self.Torsiony(x[i]))
         plt.plot(x,lst,label='Torsion in y direction')
         return lst
 
     def plot_crosssection(self, y):
         return self.local_crosssection(y).plot()
+
+    def graph_shear(self, y):
+        Vx = self.shearx(y)
+        Vz = self.shearz(y)
+        Mx = self.momentx(y)
+        Mz = self.momentz(y)
+        t = self.local_crosssection(y).local_t
+        w = self.local_crosssection(y).local_width
+        h = self.local_crosssection(y).local_height
+        Ixx = self.local_crosssection(y).I_xx
+        Izz = self.local_crosssection(y).I_zz
+        T =  self.Torsiony(y)
+        x_centroid = self.local_crosssection(y).x_centroid
+        z_centroid = self.local_crosssection(y).z_centroid
+        stress = Stress(h, w, Izz, Ixx, t, Vx, Vz,Mx, Mz, T, x_centroid, z_centroid)
+        print(Vz)
+
+        stress.plot_von_mises(y)
+
 
 
 
@@ -419,10 +453,7 @@ stringer_list['bottom'] = bottom_stringer_list
 
 root_crosssection = crosssection(stringer_list, skins)
 density_AL = 2712 #kg/m3, density of aluminium
-wingbox = wingbox(stringer_list, root_crosssection, l_w, taper, density_AL)
-#wingbox.plot_crosssection(0)
 
-#print(wingbox.local_crosssection(0).I_zz)
 # Test values for deflection
 
 E=70 * 10 **9
@@ -442,13 +473,20 @@ F_el=0
 F_hld = 0
 L_D=15
 
+wingbox = wingbox(stringer_list, root_crosssection, l_w, taper, density_AL, E, ly_e, w_wing, w_engine, L_D,
+                  lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el)
+#wingbox.plot_crosssection(0)
+
+#print(wingbox.local_crosssection(0).I_zz)
+
 #wingbox.graphmomentx(ly_e,w_wing,w_engine)
-wingbox.graphmomentz(ly_e,w_wing,T_engine,L_D)
-#wingbox.graphshearz(ly_e,w_wing,w_engine)
-#wingbox.graphshearx(ly_e,w_wing,T_engine,L_D)
-#wingbox.graphdisplacementz(E,ly_e,w_wing,w_engine)
-#wingbox.graphtorsiony(ly_e,lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el)
-wingbox.graph_compr(ly_e ,w_wing,w_engine,T_engine,L_D)
+wingbox.graphmomentz()
+wingbox.graphshearz()
+wingbox.graphshearx()
+wingbox.graphdisplacementz()
+wingbox.graphtorsiony()
+wingbox.graph_compr()
 plt.legend()
 plt.show()
+wingbox.graph_shear(1)
 

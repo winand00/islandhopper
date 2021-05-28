@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from CGloadingdiagram import cgboundaries
 
 
 #Define functions
@@ -26,7 +27,7 @@ def controllability_line(xbar_ac, cbar, Cl_h, Cl_Ah, l_h, VhV, Cm_ac):
 
 
 if __name__ == '__main__':
-    # Set RJ85 values
+    # Set Hopper values
     xbar_ac = 0.1038
     cbar = 3.17
     l_h = 12.35
@@ -41,9 +42,8 @@ if __name__ == '__main__':
     # True ShS
     ShS_true = 15.61 / 77.3
 
-    # Cg locations RJ85 from loading diagram
-    min_x_cg = 0.2908579272411666
-    max_x_cg = 0.4842262602070433
+    # Cg locations Hopper from loading diagram
+    min_x_cg, max_x_cg = cgboundaries()
 
     stab = stability_line(Cl_alpha_h, Cl_alpha_Ah, dedalpha, l_h, cbar, VhV, xbar_ac)
     contr = controllability_line(xbar_ac, cbar, Cl_h, Cl_Ah, l_h, VhV, Cm_ac)
@@ -51,9 +51,9 @@ if __name__ == '__main__':
     plt.plot([point[0] for point in stab], [point[1] for point in stab], label='Stability limit')
     plt.plot([point[0] for point in contr], [point[1] for point in contr], label='Controllability limit')
     plt.plot([point[0] - 0.05 for point in stab], [point[1] for point in stab], 'r--', label='Safety margin')
-    plt.plot(np.linspace(min_x_cg, max_x_cg, 10), [ShS_true] * len(np.linspace(min_x_cg, max_x_cg, 10)), '--', label='RJ-85')
+    plt.plot(np.linspace(min_x_cg, max_x_cg, 10), [ShS_true] * len(np.linspace(min_x_cg, max_x_cg, 10)), '--', label='Hopper')
 
-    plt.title('Scissor plot RJ85', weight='bold')
+    plt.title('Scissor plot Hopper', weight='bold')
     plt.legend(loc='best')
     plt.grid(b=True, which='major', axis='y')
     plt.xticks(np.linspace(0, 1, 11))
@@ -61,38 +61,5 @@ if __name__ == '__main__':
     plt.xlabel('$x_{cg}/MAC$ [-]')
     plt.ylabel('$S_{h}/S$ [-]')
     plt.show()
-
-    # Set RJXX values
-    xbar_ac = 0.1307
-    Cl_alpha_Ah = 6.5949
-    dedalpha = 0.30745
-    Cm_ac = -0.919099
-    Cl_Ah = 5.4285
-
-    # True ShS
-    ShS_true = 15.61 / 77.3
-
-    # Cg locations RJXX from loading diagram
-    min_x_cg = 0.006657003223463721
-    max_x_cg = 0.3324739509679991
-
-    stab = stability_line(Cl_alpha_h, Cl_alpha_Ah, dedalpha, l_h, cbar, VhV, xbar_ac)
-    contr = controllability_line(xbar_ac, cbar, Cl_h, Cl_Ah, l_h, VhV, Cm_ac)
-
-    plt.plot([point[0] for point in stab], [point[1] for point in stab], label='Stability limit')
-    plt.plot([point[0] for point in contr], [point[1] for point in contr], label='Controllability limit')
-    plt.plot([point[0] - 0.05 for point in stab], [point[1] for point in stab], 'r--', label='Safety margin')
-    plt.plot(np.linspace(min_x_cg, max_x_cg, 10), [ShS_true] * len(np.linspace(min_x_cg, max_x_cg, 10)), '--',
-             label='RJ-XX')
-
-    plt.title('Scissor plot RJXX', weight='bold')
-    plt.legend(loc='best')
-    plt.grid(b=True, which='major', axis='y')
-    plt.xticks(np.linspace(0, 1, 11))
-    plt.xlabel('$x_{cg}/MAC$ [-]')
-    plt.ylabel('$S_{h}/S$ [-]')
-    plt.show()
-
-
 
 
