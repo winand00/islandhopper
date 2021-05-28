@@ -51,7 +51,7 @@ if __name__ == '__main__':
     plt.plot([point[0] for point in stab], [point[1] for point in stab], label='Stability limit')
     plt.plot([point[0] for point in contr], [point[1] for point in contr], label='Controllability limit')
     plt.plot([point[0] - 0.05 for point in stab], [point[1] for point in stab], 'r--', label='Safety margin')
-    plt.plot(np.linspace(min_x_cg, max_x_cg, 10), [ShS_true] * len(np.linspace(min_x_cg, max_x_cg, 10)), '--', label='RJ-85')
+    plt.plot(np.linspace(min_x_cg, max_x_cg, 10), [ShS_true] * len(np.linspace(min_x_cg, max_x_cg, 10)), '--', label='Hopper')
 
     plt.title('Scissor plot Hopper', weight='bold')
     plt.legend(loc='best')
