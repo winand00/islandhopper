@@ -135,7 +135,6 @@ def multi_cell_m_incl_insulation(m,n,p, R, t_ins, Mass):
 
         if time > 10:
             thick = False
-            print("t_ins",t_ins)
 
     M_insulation = rho_ins * t_ins * S_cryo
     M_total = M_structural + M_insulation
@@ -165,7 +164,7 @@ class Tank:
 
 
 
-a  = Tank(8, 4, 2, 0.2, 0 , 100)
+a  = Tank(2, 2, 1, 0.1, 0 , 100)
 
 print('v:', a.volume)
 print('m_tank:', a.mass_tank)
