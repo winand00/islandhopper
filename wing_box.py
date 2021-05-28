@@ -403,9 +403,31 @@ class wingbox:
         x_centroid = self.local_crosssection(y).x_centroid
         z_centroid = self.local_crosssection(y).z_centroid
         stress = Stress(h, w, Izz, Ixx, t, Vx, Vz,Mx, Mz, T, x_centroid, z_centroid)
-        print(Vz)
-
         stress.plot_von_mises(y)
+        
+    def get_max_stress(self):
+        stresses = []
+        y = np.arange(0, self.length, 1)
+        lst = []
+        for i in range(len(y)):
+            Vx = self.shearx(i)
+            Vz = self.shearz(i)
+            Mx = self.momentx(i)
+            Mz = self.momentz(i)
+            t = self.local_crosssection(i).local_t
+            w = self.local_crosssection(i).local_width
+            h = self.local_crosssection(i).local_height
+            Ixx = self.local_crosssection(i).I_xx
+            Izz = self.local_crosssection(i).I_zz
+            T =  self.Torsiony(i)
+            x_centroid = self.local_crosssection(i).x_centroid
+            z_centroid = self.local_crosssection(i).z_centroid
+            stress = Stress(h, w, Izz, Ixx, t, Vx, Vz,Mx, Mz, T, x_centroid, z_centroid)
+            stresses.append(stress.max_von_mises())
+        return stresses
+            
+        
+        
 
 
 
@@ -420,26 +442,33 @@ def Macaulay(x, x_point, power):
         return ((x-x_point)**power)
 
 
+b = 20
+n = 3.8
+w_ac = 	84516
+
+t_skin = 0.006
+h_box = 0.4
+w_box = 1.5
 
 #skin(height, width, x_coordinate, z_coordinate)
 #coordinates are the bottom left point of the skin
-skin_top = skin(0.003, 0.3, 0, 0.1)
-skin_bottom = skin(0.003, 0.3, 0 ,0)
-skin_left = skin(0.1, 0.003, 0, 0)
-skin_right = skin(0.1, 0.003, 0.3, 0)
+skin_top = skin(t_skin, w_box, 0, h_box)
+skin_bottom = skin(t_skin, w_box, 0 ,0)
+skin_left = skin(h_box, t_skin, 0, 0)
+skin_right = skin(h_box, t_skin, w_box, 0)
 skins = [skin_top, skin_bottom, skin_left, skin_right]
 taper = 0.5 #taper ratio of the wingbox
-l_w = 3 #length of the wingbox
+l_w = b/2 #length of the wingbox
 y_e = 1 #location of the engine
 
 #crosssection.plot()
 #plt.show()
 
 #Creating stringerss
-number_top_stringers = 2
-number_bottom_stringers = 2
-stringer_width = 0.01
-stringer_height = 0.01
+number_top_stringers = 16
+number_bottom_stringers = 4
+stringer_width = 0.05
+stringer_height = 0.05
 stringer_t = 0.005
 stringer_list = {}
 top_stringer_list = []
@@ -458,35 +487,36 @@ density_AL = 2712 #kg/m3, density of aluminium
 
 E=70 * 10 **9
 
-ly_e=1.5
-lz_e=0.4
+
+#Variavle from oher departments
+ly_e= b/6
+lz_e= h_box/2
 ly_hld = 0.5
-lx_hld=0.4
+lx_hld= w_box/2
 ly_el = 2.5
-lx_el = 0.4
-
-
-w_engine=10000
-w_wing=2500
-T_engine=0
-F_el=0
-F_hld = 0
-L_D=15
+lx_el = w_box/2
+w_engine= 200 * 9.81
+w_wing= w_ac / b * n
+T_engine= 1300*1000 / 90
+F_el=  0
+F_hld = 15000
+L_D= 12
 
 wingbox = wingbox(stringer_list, root_crosssection, l_w, taper, density_AL, E, ly_e, w_wing, w_engine, L_D,
                   lz_e,ly_hld,lx_hld,ly_el,lx_el,T_engine,F_hld,F_el)
 #wingbox.plot_crosssection(0)
-
+#plt.show()
 #print(wingbox.local_crosssection(0).I_zz)
 
 #wingbox.graphmomentx(ly_e,w_wing,w_engine)
-wingbox.graphmomentz()
-wingbox.graphshearz()
-wingbox.graphshearx()
-wingbox.graphdisplacementz()
-wingbox.graphtorsiony()
-wingbox.graph_compr()
-plt.legend()
-plt.show()
-wingbox.graph_shear(1)
+#wingbox.graphmomentz()
+#wingbox.graphshearz()
+#wingbox.graphshearx()
+#wingbox.graphdisplacementz()
+#wingbox.graphtorsiony()
+#wingbox.graph_compr()
+#plt.legend()
+#plt.show()
+wingbox.graph_shear(0)
+print(wingbox.get_max_stress())
 
