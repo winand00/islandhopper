@@ -37,12 +37,20 @@ class Parameters:
         self.r = 350            #Distance to observer [m]
 
 
+
+
+
 def Efficiency(a):
     C_D = a.C_D_0 + (a.CL ** 2) / (pi * a.A* a.e)
     GI1 = a.CL / C_D * 1/(a.MTOW + a.dW * a.G) * a.n_prop * a.n_engine * a.n_pmad * a.n_cooling * a.n_fuelcell
     print("Efficiency indicator =", GI1)
     return GI1
 
+def Noise(a):
+    P_br = a.P_TO / a.n_prop
+    M_t = a.n_p * pi * D_p / (60*a.c)
+    SPL_max = 83.4 + 15.3 * log10(P_br/1000) - 20 * log10(D_p) + 38.5 * M_t - 3 * (a.B-2) + 10 * log10(N) - 20 * log(a.r)
+    return SPL_max
 def Recyclability(a):
     RC = 1
     return RC
