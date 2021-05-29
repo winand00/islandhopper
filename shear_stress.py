@@ -53,46 +53,46 @@ class Stress:
     def shearstress_x(self, x, z):
         if x == 0: #Left skin
             if x < self.h / 2:
-                return -self.q1_x(self.h/2 - z)
+                return -self.q1_x(self.h/2 - z)/self.t
             else:
-                return self.q1_x(z-self.h/2)
+                return self.q1_x(z-self.h/2)/self.t
         if z == 0: #bottom skin
             if x < self.w/2:
-                return -self.q2_x(x)
+                return -self.q2_x(x)/self.t
             else:
-                return -self.q2_x(x)
+                return -self.q2_x(x)/self.t
         if x >= self.w: #right skins
             if x < self.h / 2:
-                return -self.q1_x(self.h/2-z)
+                return -self.q1_x(self.h/2-z)/self.t
             else:
-                return self.q3_x(self.h -z)
+                return self.q3_x(self.h -z)/self.t
         if z >= self.h: #top skin
             if x < self.w / 2:
-                return self.q2_x(x)
+                return self.q2_x(x)/self.t
             else:
-                return self.q2_x(x)
+                return self.q2_x(x)/self.t
 
     def shearstress_z(self, x, z):
         if x == 0: #Left skin
             if x < self.h / 2:
-                return -self.q2_z(z)
+                return -self.q2_z(z)/self.t
             else:
-                return -self.q2_z(z)
+                return -self.q2_z(z)/self.t
         if z == 0: #bottom skin
             if x < self.w/2:
-                return -self.q1_z(self.w/2-x)
+                return -self.q1_z(self.w/2-x)/self.t
             else:
-                return self.q3_z(self.w-x)
+                return self.q3_z(self.w-x)/self.t
         if x >= self.w: #right skins
             if x < self.h / 2:
-                return self.q2_z(self.h-z)
+                return self.q2_z(self.h-z)/self.t
             else:
-                return self.q2_z(self.h-z)
+                return self.q2_z(self.h-z)/self.t
         if z >= self.h: #top skin
             if x < self.w / 2:
-                return -self.q3_z(x)
+                return -self.q3_z(x)/self.t
             else:
-                return self.q1_z(x-self.w/2)
+                return self.q1_z(x-self.w/2)/self.t
 
     def shearstress_xz(self, x, z):
         return self.shearstress_x(x, z) + self.shearstress_z(x, z)
@@ -119,29 +119,32 @@ class Stress:
     def q3_x(self, s):
         return self.q2_x(self.w) - self.Vx / self.Izz * self.t * s * self.w / 2
 
-    def plot_von_mises(self, y):
-        self.plot(y, self.von_mises)
+    def plot_von_mises(self, fig, ax, title):
+        self.plot(self.von_mises, fig, ax, title)
 
-    def plot_shear_x(self, y):
-        self.plot(y, self.shearstress_x)
+    def plot_shear_x(self, fig, ax, title):
+        self.plot(self.shearstress_x, fig, ax, title)
 
-    def plot_shear_z(self, y):
-        self.plot(y, self.shearstress_z)
+    def plot_shear_z(self, fig, ax, title):
+        self.plot(self.shearstress_z, fig, ax, title)
 
-    def plot_shear_xz(self, y):
-        self.plot(y, self.shearstress_xz)
+    def plot_shear_xz(self, fig, ax, title):
+        self.plot(self.shearstress_xz, fig, ax, title)
 
-    def plot_shear_T(self, y):
-        self.plot(y, self.shear_torque)
+    def plot_shear_T(self, fig, ax, title):
+        self.plot(self.shear_torque, fig, ax, title)
 
-    def plot_bending_stress_x(self, y):
-        self.plot(y, self.bendingstress_x)
+    def plot_shear_total(self, fig, ax, title):
+        self.plot(self.shear_total, fig, ax, title)
 
-    def plot_bending_stress_z(self, y):
-        self.plot(y, self.bendingstress_z)
+    def plot_bending_stress_x(self, fig, ax, title):
+        self.plot(self.bendingstress_x, fig, ax, title)
+
+    def plot_bending_stress_z(self, fig, ax, title):
+        self.plot(self.bendingstress_z, fig, ax, title)
 
     def plot_bending_stress_xz(self, y):
-        self.plot(y, self.bendingstress_xz)
+        self.plot(self.bendingstress_xz, fig, ax, title)
         
     def get_xz(self, N):
         x1 = np.arange(0, self.w + self.w /N, self.w /N)
@@ -166,7 +169,7 @@ class Stress:
 
 
 
-    def plot(self, y, function):
+    def plot(self, function, fig, ax, title):
         N = 50
         print(self.h)
         print(self.w)
@@ -176,7 +179,7 @@ class Stress:
 
         
         # We need to set the plot limits, they will not autoscale
-        fig, ax = plt.subplots()
+
         ax.set_xlim(np.min(x) - 0.2*self.w, np.max(x) +0.2*self.w)
         ax.set_ylim(np.min(ys)-0.2*self.h, np.max(ys)+0.2*self.h)
 
@@ -185,13 +188,15 @@ class Stress:
         segments_for_coloring = np.concatenate([points_for_stack[:-1], points_for_stack[1:]], axis=1)
         line_segments = LineCollection(segments_for_coloring,  cmap=plt.get_cmap('jet'), norm=plt.Normalize(z.min(), z.max()))
         line_segments.set_array(z)
-        ax.add_collection(line_segments)
-        axcb = fig.colorbar(line_segments)
-        axcb.set_label('Shear stress')
-        ax.set_title('Shear stress over the wing box cross section')
-        plt.gca().add_collection(line_segments)  # This allows interactive changing of the colormap.
-        
-        plt.show()
+        ax.set_title(title)
+        axcb = fig.colorbar(line_segments, ax = ax)
+        #axcb.set_label('Shear stress')
+        bp = ax.add_collection(line_segments)
+
+
+        #bp = plt.gca().add_collection(line_segments)  # This allows interactive changing of the colormap.
+        return bp
+
 
 #stress = Stress(h, w, Izz, Ixx, t, Vx, Vz, Y)
 #stress.plot_shear_z(1)
