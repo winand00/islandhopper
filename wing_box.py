@@ -236,7 +236,7 @@ class wingbox:
         self.length = length
         self.skins = self.cross_section.root_skins
         self.taper = taper
-        self.weight = self.local_crosssection(self.length / 2).area * self.length * self.density
+        self.weight = self.get_weight()
         self.g= 9.80665
         self.ly_e = ly_e
         self.w_wing = w_wing
@@ -253,6 +253,15 @@ class wingbox:
 
     def local_crosssection(self, y):
         return crosssection(self.stringers, self.skins, self.taper, y, self.length)
+
+    def get_weight(self):
+        weight = self.local_crosssection(self.length / 2).area * self.length * self.density
+        for stri in self.stringers['top']:
+            weight -= (self.length - stri.y_end) * stri.area * self.density
+        for stri in self.stringers['bottom']:
+            weight -= (self.length - stri.y_end) * stri.area * self.density
+        return weight
+
 
     def local_area(self, y):
         cross_section = self.local_crosssection(y)
@@ -303,8 +312,6 @@ class wingbox:
 
     def moment2(self, y):
         ylst, wlst = self.w_steps(3)
-        print(ylst)
-        print(wlst)
         lift=[]
         liftmoment=[]
         for i in range(len(ylst)-1):
@@ -456,7 +463,6 @@ y_e = 1  # location of the engine
 # plt.show()
 
 # Creating stringerss
-number_top_stringers = 16
 
 # Y_end position, number of stringers
 y_stringers_stop_top = [(0.2 * l_w, 4),
@@ -464,7 +470,7 @@ y_stringers_stop_top = [(0.2 * l_w, 4),
                         (0.6 * l_w, 4),
                         (0.8 * l_w, 2),
                         (1.0 * l_w, 2)]
-number_bottom_stringers = 4
+
 # Y_end position, number of stringers
 y_stringers_stop_bot = [(0.2 * l_w, 0),
                         (0.4 * l_w, 0),
@@ -511,7 +517,7 @@ L_D = 12
 
 wingbox = wingbox(stringer_list, root_crosssection, l_w, taper, density_AL, E, ly_e, w_wing, w_engine, L_D,
                   lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el)
-
+print(wingbox.weight)
 wingbox.plot_crosssection(5)
 plt.show()
 

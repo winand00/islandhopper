@@ -171,8 +171,6 @@ class Stress:
 
     def plot(self, function, fig, ax, title):
         N = 50
-        print(self.h)
-        print(self.w)
         # Here are many sets of y to plot vs. x
 
         x, ys = self.get_xz(N)
