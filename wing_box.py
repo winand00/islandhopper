@@ -13,10 +13,11 @@ class crosssection:
         self.root_width = max([x.b for x in self.root_skins])
         self.root_height = max([x.h for x in self.root_skins])
         if y is not None:
+            self.local_stringers = self.get_local_stringers(y)
             self.local_skins = self.get_local_skins()
         else:
             self.local_skins = self.root_skins
-
+            self.local_stringers = self.stringers
         self.local_width = max([x.b for x in self.local_skins])
         self.local_height = max([x.h for x in self.local_skins])
         self.local_t = min([x.h for x in self.local_skins])
@@ -28,11 +29,25 @@ class crosssection:
 
     def get_stringer_spacing(self):
         width = self.local_width
-        top_stringers = len(self.stringers['top'])
+        top_stringers = len(self.local_stringers['top'])
         top_spacing = width/(top_stringers+1)
-        bottom_stringers = len(self.stringers['bottom'])
+        bottom_stringers = len(self.local_stringers['bottom'])
         bottom_spacing = width/(bottom_stringers+1)
         return top_spacing, bottom_spacing
+
+    def get_local_stringers(self, y):
+        new_stringers = {}
+        top_stringers = []
+        for stri in self.stringers['top']:
+            if stri.is_present(y):
+                top_stringers.append(stri)
+        bottom_stringers = []
+        for stri in self.stringers['bottom']:
+            if stri.is_present(y):
+                bottom_stringers.append(stri)
+        new_stringers['top'] = top_stringers
+        new_stringers['bottom'] = bottom_stringers
+        return new_stringers
 
     def get_local_skins(self):
         skins_ = []
@@ -67,9 +82,9 @@ class crosssection:
         area = 0
         for sk in self.local_skins:
             area += sk.area
-        for stri in self.stringers['top']:
+        for stri in self.local_stringers['top']:
             area += stri.area
-        for stri in self.stringers['bottom']:
+        for stri in self.local_stringers['bottom']:
             area += stri.area
         return area
 
@@ -79,11 +94,11 @@ class crosssection:
             area_distance += (sk.x + sk.b/2) * sk.area
         top_spacing, bottom_spacing = self.get_stringer_spacing()
         x = 0
-        for stri in self.stringers['top']:
+        for stri in self.local_stringers['top']:
             x += top_spacing
             area_distance += x * stri.area
         x = 0
-        for stri in self.stringers['bottom']:
+        for stri in self.local_stringers['bottom']:
             x += bottom_spacing
             area_distance += x * stri.area
         x_centroid = area_distance/self.area
@@ -93,7 +108,7 @@ class crosssection:
         area_distance = 0
         for sk in self.local_skins:
             area_distance += (sk.z + sk.h/2) * sk.area
-        for stri in self.stringers['top']:
+        for stri in self.local_stringers['top']:
             area_distance += self.local_height * stri.area
         z_centroid = area_distance/self.area
         return z_centroid
@@ -103,9 +118,9 @@ class crosssection:
         for skin in self.local_skins:
             I_xx += skin.I_xx()
             I_xx += skin.area * (skin.z + skin.h/2 - self.z_centroid) ** 2
-        for stri in self.stringers['top']:
+        for stri in self.local_stringers['top']:
             I_xx += stri.area * (self.local_height - self.z_centroid)**2
-        for stri in self.stringers['bottom']:
+        for stri in self.local_stringers['bottom']:
             I_xx += stri.area * self.z_centroid**2
         return I_xx
 
@@ -117,11 +132,11 @@ class crosssection:
 
         top_spacing, bottom_spacing = self.get_stringer_spacing()
         x = 0
-        for stri in self.stringers['top']:
+        for stri in self.local_stringers['top']:
             x += top_spacing
             I_zz += stri.area * (x-self.x_centroid)**2
         x = 0
-        for stri in self.stringers['bottom']:
+        for stri in self.local_stringers['bottom']:
             x += top_spacing
             I_zz += stri.area * (x-self.x_centroid)**2
 
@@ -146,34 +161,34 @@ class crosssection:
         x_coord = 0
         for skin in self.local_skins:
             if skin.b > skin.h:
-                t = skin.h *1500
+                t = min(skin.h *750, 5)
                 x = [skin.x, skin.x + skin.b]
                 y = [skin.z, skin.z]
             else:
-                t = skin.b *1500
+                t = min(skin.b *750, 5)
                 x = [skin.x, skin.x]
                 y = [skin.z, skin.z + skin.h]
             plt.plot(x, y, 'black', linewidth= t)
 
-        for stri in self.stringers['top']:
+        for stri in self.local_stringers['top']:
             x_coord += stringer_spacing_top
-            t = stri.t * 1500
+            t = min(stri.t * 750, 5)
             x = [x_coord, x_coord + stri.b]
-            y = [self.local_height - stri.t/2, self.local_height- stri.t/2]
+            y = [self.local_height - stri.t, self.local_height- stri.t]
             plt.plot(x, y, 'black', linewidth=t)
             x = [x_coord, x_coord]
-            y = [self.local_height- stri.t/2, self.local_height - stri.h- stri.t/2]
+            y = [self.local_height- stri.t, self.local_height - stri.h- stri.t]
             plt.plot(x, y, 'black', linewidth=t)
 
         x_coord = 0
-        for stri in self.stringers['bottom']:
+        for stri in self.local_stringers['bottom']:
             x_coord += stringer_spacing_bottom
-            t = stri.t * 1500
+            t = min(stri.t * 750, 5)
             x = [x_coord, x_coord + stri.b]
-            y = [stri.t/2, stri.t/2 ]
+            y = [stri.t, stri.t ]
             plt.plot(x, y, 'black', linewidth=t)
             x = [x_coord, x_coord]
-            y = [stri.t/2 , stri.h + stri.t/2 ]
+            y = [stri.t , stri.h + stri.t ]
             plt.plot(x, y, 'black', linewidth=t)
 
         plt.plot(self.centroid_x(), self.centroid_z(), 'X')
@@ -197,11 +212,15 @@ class skin:
 
 
 class stringer:
-    def __init__(self, b, h, t):
+    def __init__(self, b, h, t, y_end):
         self.b = b
         self.h = h
         self.t = t
         self.area = self.area()
+        self.y_end = y_end
+
+    def is_present(self, y):
+        return y <= self.y_end
 
     def area(self):
         return (self.b + self.h - self.t)*self.t
@@ -438,18 +457,34 @@ y_e = 1  # location of the engine
 
 # Creating stringerss
 number_top_stringers = 16
+
+# Y_end position, number of stringers
+y_stringers_stop_top = [(0.2 * l_w, 4),
+                        (0.4 * l_w, 4),
+                        (0.6 * l_w, 4),
+                        (0.8 * l_w, 2),
+                        (1.0 * l_w, 2)]
 number_bottom_stringers = 4
+# Y_end position, number of stringers
+y_stringers_stop_bot = [(0.2 * l_w, 0),
+                        (0.4 * l_w, 0),
+                        (0.6 * l_w, 2),
+                        (0.8 * l_w, 0),
+                        (1.0 * l_w, 2)]
+
 stringer_width = 0.05
 stringer_height = 0.05
 stringer_t = 0.005
 stringer_list = {}
 top_stringer_list = []
 bottom_stringer_list = []
-for i in range(number_top_stringers):
-    top_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t))
+for i in y_stringers_stop_top:
+    for j in range(i[1]):
+        top_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t, i[0]))
 stringer_list['top'] = top_stringer_list
-for i in range(number_bottom_stringers):
-    bottom_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t))
+for i in y_stringers_stop_bot:
+    for j in range(i[1]):
+        bottom_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t, i[0]))
 stringer_list['bottom'] = bottom_stringer_list
 
 root_crosssection = crosssection(stringer_list, skins)
@@ -476,25 +511,13 @@ L_D = 12
 
 wingbox = wingbox(stringer_list, root_crosssection, l_w, taper, density_AL, E, ly_e, w_wing, w_engine, L_D,
                   lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el)
-# wingbox.plot_crosssection(10)
-# plt.show()
-# print(wingbox.local_crosssection(0).I_zz)
 
-# wingbox.graphmomentx(ly_e,w_wing,w_engine)
-# wingbox.graphmomentz()
-# wingbox.graphshearz()
-# wingbox.graphshearx()
-# wingbox.graphdisplacementz()
-# wingbox.graphtorsiony()
-# wingbox.graph_compr()
-# plt.legend()
-# plt.show()
-# wingbox.graph_shear(10)
+wingbox.plot_crosssection(5)
+plt.show()
 
 y_max, max_stress = wingbox.get_max_stress()
 print(f'{max_stress/(10**6)} MPa, at y = {y_max} m')
 print(wingbox.weight, 'kg')
 wingbox.graph_stress(y_max)
 wingbox.graphs()
-
 wingbox.graph_properties()
