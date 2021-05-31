@@ -382,7 +382,7 @@ class wingbox:
 
     def total_displacement_z(self, y):
         total_v = 0
-        step = 0.05
+        step = 0.1
         y = np.arange(0, y, step)
         for i in y:
             total_v += self.new_displacementz(i, step)
@@ -390,7 +390,7 @@ class wingbox:
 
     def total_displacement_x(self, y):
         total_v = 0
-        step = 0.05
+        step = 0.1
         y = np.arange(0, y, step)
         for i in y:
             total_v += self.new_displacementx(i, step)
@@ -430,7 +430,7 @@ class wingbox:
 
     def total_twist(self, y):
         total_v = 0
-        step = 0.05
+        step = 0.1
         y = np.arange(0, y, step)
         for i in y:
             total_v += self.twist(i, step)
@@ -595,9 +595,13 @@ wingbox = wingbox(stringer_list, root_crosssection, l_w, taper, density_AL, E, G
 wingbox.plot_crosssection(5)
 plt.show()
 
+wingbox.graph_properties()
+
+wingbox.graphs()
+
 y_max, max_stress = wingbox.get_max_stress()
 print(f'{max_stress/(10**6)} MPa, at y = {y_max} m')
 print(wingbox.weight, 'kg')
 wingbox.graph_stress(y_max)
-wingbox.graphs()
-wingbox.graph_properties()
+
+
