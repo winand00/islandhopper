@@ -116,4 +116,5 @@ D = Noise(design2)
 carbon = Material(100, 0.4, 0.5)
 alluminium = Material(600, 0.8, 0.2)
 
-recycle([carbon, alluminium])
+Option1 = recycle([carbon, alluminium])
+Option2 =
