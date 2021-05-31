@@ -7,17 +7,18 @@ import matplotlib.pyplot as plt
 
 # -- Definitions -- #
 class Material:
-    def __init__(self, M, RC, n_rc):
+    def __init__(self, M, RC, n_rc, E_p):
         #Recycling Parameters
-        self.M = M      # Part weight [kg]
-        self.RC = RC      # Recyclability percentage [-]
-        self.n_rc = n_rc     # Recycling energy usage / virgin production energy usage [-]
+        self.M = M          # Part weight [kg]
+        self.RC = RC        # Recyclability percentage [-]
+        self.n_rc = n_rc    # Recycling energy usage / virgin production energy usage [-]
+        self.E_p = E_p      # Production energy [J/kg]
         #self.n_m = n_m     # Material scarcity index (Only relevant for batteries)
 
 def recycle(list):
     GI_1 = 0
     for i in range(0, len(list), 1):
-        GIsub = (list[i].M*list[i].RC*list[i].n_rc+(1-list[i].RC)*list[i].M)/MTOW
+        GIsub = (list[i].M*list[i].RC*list[i].n_rc+(1-list[i].RC)*list[i].M)*list[i].E_p
         GI_1 = GI_1 + GIsub
     print(GI_1)
     return GI_1
@@ -38,7 +39,6 @@ def Noise(a):
 
 # -- Parameter List -- #
 
-MTOW = 8618
 
 # Efficiency and Noise inputs #
 class Parameters1:
@@ -54,7 +54,7 @@ class Parameters1:
         self.CD0_fl = 0.01      #CD0 fuselage [-]
         self.A = 10             #Aspect ratio [-]
         self.e = 0.8            #Oswald effiency [-]
-        self.dW = 1             #Extra added weight [kg] (use negative value for weight reduction)
+        self.dW = -200             #Extra added weight [kg] (use negative value for weight reduction)
         self.G = 4.73           #Weight Growth Factor [-] (Get this value from the Iteration_Method_tool.xcl file)
         self.n_prop = 0.95      #Propeller efficiency [-]
         self.n_engine = 0.93    #Engine efficiency [-]
@@ -84,7 +84,7 @@ class Parameters2:
         self.CD0_fl = 0.01  # CD0 fuselage [-]
         self.A = 10             #Aspect ratio [-]
         self.e = 0.8            #Oswald effiency [-]
-        self.dW = 1             #Extra added weight [kg] (use negative value for weight reduction)
+        self.dW = 0             #Extra added weight [kg] (use negative value for weight reduction)
         self.G = 4.73           #Weight Growth Factor [-] (Get this value from the Iteration_Method_tool.xcl file)
         self.n_prop = 0.95      #Propeller efficiency [-]
         self.n_engine = 0.93    #Engine efficiency [-]
@@ -113,8 +113,11 @@ C = Noise(design)
 D = Noise(design2)
 
 # Recyclability inputs #
-carbon = Material(100, 0.4, 0.5)
-alluminium = Material(600, 0.8, 0.2)
+carbon2 = Material(100, 0.4, 0.5, 20000)
+alluminium2 = Material(600, 0.8, 0.2, 1500)
 
-Option1 = recycle([carbon, alluminium])
-Option2 =
+carbon1 = Material(400, 0.4, 0.5, 20000)
+alluminium1 = Material(100, 0.8, 0.2, 1500)
+
+Option1 = recycle([carbon1, alluminium1])
+Option2 = recycle([carbon2, alluminium2])
