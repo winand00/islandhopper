@@ -20,23 +20,36 @@ def recycle(list):
     for i in range(0, len(list), 1):
         GIsub = (list[i].M*list[i].RC*list[i].n_rc+(1-list[i].RC)*list[i].M)*list[i].E_p
         GI_1 = GI_1 + GIsub
-    print(GI_1)
     return GI_1
 
 def Efficiency(a):
     C_D_0 = a.CD0_wing + a.CD0_tail + a.CD0_fl + a.CD0_lg
     C_D = C_D_0 + (a.CL ** 2) / (pi * a.A* a.e)
     GI_2 = a.CL / C_D * 1/(a.MTOW + a.dW * a.G) * a.n_prop * a.n_engine * a.n_pmad * a.n_cooling * a.n_fuelcell
-    print("Efficiency indicator =", GI_2)
     return GI_2
 
 def Noise(a):
     P_br = a.Pto / a.n_prop
     M_t = a.nrpm * pi * a.Dp / (60*a.c)
     GI_3 = 83.4 + 15.3 * log10(P_br/1000) - 20 * log10(a.Dp) + 38.5 * M_t - 3 * (a.B-2) + 10 * log10(a.N) - 20 * log(a.r)
-    print("Noise indicator =", GI_3, "[dB]")
     return GI_3
 
+def tool(a, b, c, d):
+    print("----- Comparison between design options -----")
+    print("G1 Recyclability indicator:")
+    print("Option 1 = ", recycle(b), "[J]")
+    print("Option 2 = ", recycle(d), "[J]")
+    print("Option 1 is ", recycle(b)/recycle(d), "relative to Option 2")
+    print("")
+    print("G2 Efficiency indicator:")
+    print("Option 1 = ", Efficiency(a))
+    print("Option 2 = ", Efficiency(c))
+    print("Option 1 is ", Efficiency(a) / Efficiency(c), "relative to Option 2")
+    print("")
+    print("G3 Noise indicator: ")
+    print("Option 1 = ", Noise(a), "[dB]")
+    print("Option 2 = ", Noise(c), "[dB]")
+    print("Option 1 is ", Noise(a) / Noise(c), "relative to Option 2")
 # -- Parameter List -- #
 
 
@@ -101,16 +114,10 @@ class Parameters2:
         self.N = 2              #Number of propellers [-]
         self.r = 350            #Distance to observer [m]
 
-design = Parameters1()
+design1 = Parameters1()
 design2 = Parameters2()
 
-#Effiency comparison
-A = Efficiency(design)
-B = Efficiency(design2)
 
-#Noise comparison
-C = Noise(design)
-D = Noise(design2)
 
 # Recyclability inputs #
 carbon2 = Material(100, 0.4, 0.5, 20000)
@@ -119,5 +126,7 @@ alluminium2 = Material(600, 0.8, 0.2, 1500)
 carbon1 = Material(400, 0.4, 0.5, 20000)
 alluminium1 = Material(100, 0.8, 0.2, 1500)
 
-Option1 = recycle([carbon1, alluminium1])
-Option2 = recycle([carbon2, alluminium2])
+Option1 = [carbon1, alluminium1]
+Option2 = [carbon2, alluminium2]
+
+tool(design1, Option1, design2, Option2)
