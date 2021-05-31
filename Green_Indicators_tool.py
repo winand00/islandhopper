@@ -149,7 +149,6 @@ design1 = Parameters1()
 design2 = Parameters2()
 
 
-
 # Recyclability inputs #
 carbon2 = Material(100, 0.4, 0.5, 20000)
 alluminium2 = Material(600, 0.8, 0.2, 1500)
