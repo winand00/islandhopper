@@ -15,10 +15,10 @@ class Material:
         self.E_p = E_p      # Production energy [J/kg]
         #self.n_m = n_m     # Material scarcity index (Only relevant for batteries)
 
-def recycle(list):
+def recycle(a):
     GI_1 = 0
-    for i in range(0, len(list), 1):
-        GIsub = (list[i].M*list[i].RC*list[i].n_rc+(1-list[i].RC)*list[i].M)*list[i].E_p
+    for i in range(0, len(a), 1):
+        GIsub = (a[i].M*a[i].RC*a[i].n_rc+(1-a[i].RC)*a[i].M)*a[i].E_p
         GI_1 = GI_1 + GIsub
     return GI_1
 
@@ -38,6 +38,7 @@ def Noise(a):
     return GI_3
 
 def tool(a, b, c, d):
+    print("")
     print("----- Comparison between design options -----")
     print("G1 Recyclability indicator:")
     print("Option 1 = ", recycle(b), "[J]")

@@ -178,7 +178,7 @@ class Tank:
 
 
 if __name__ == "__main__":
-    a  = Tank(2, 2, 1, 0.6, 111)
+    a  = Tank(2, 2, 4, 0.345, 150)
     a.properties()
 
 # print('v:', a.volume)
