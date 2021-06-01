@@ -53,6 +53,7 @@ def design_loads():
     print('At VB:')
     print('n_pos = ', n_pos_B)
     print('n_neg = ', n_neg_B)
+    return n_pos_C, n_pos_B, n_pos_D
 
 if __name__ == "__main__":
     design_loads()
