@@ -12,7 +12,7 @@ class Material:
         self.M = M          # Part weight [kg]
         self.RC = RC        # Recyclability percentage [-]
         self.n_rc = n_rc    # Recycling energy usage / virgin production energy usage [-]
-        self.E_p = E_p      # Production energy [J/kg]
+        self.E_p = E_p      # Virgin production energy [J/kg]
         #self.n_m = n_m     # Material scarcity index (Only relevant for batteries)
 
 def recycle(a):
@@ -25,7 +25,7 @@ def recycle(a):
 def Efficiency(a):
     S = a.S_wing + a.S_tail + a.S_fl + a.S_lg
     CL = (a.CL_wing * a.S_wing + a.CL_tail * a.S_tail + a.CL_fl * a.S_fl/2) / (S - a.S_lg - a.S_fl)
-    C_D_0 = (a.CD0_wing * 2*1.07*(a.S_wing - (45/35.18)*(2.07*2.07)) + a.CD0_tail * 1.05*2*(a.S_tail - (45/35.18) * 0.595) + a.CD0_fl * a.S_fl_wet + a.CD0_lg * a.S_lg_wet) / a.S_wing  #Adsee Lift & Drag Estimation slides
+    C_D_0 = 1.1* (a.CD0_wing * 2*1.07*(a.S_wing - (45/35.18)*(2.07*2.07)) + a.CD0_tail * 1.05*2*(a.S_tail - (45/35.18) * 0.595) + a.CD0_fl * a.S_fl_wet + a.CD0_lg * a.S_lg_wet) / a.S_wing  #Adsee Lift & Drag Estimation slides
     C_D_i = ( a.S_wing*(a.CL_wing ** 2) / (pi * a.A_wing* a.e_wing) + a.S_tail * (a.CL_tail ** 2) / (pi * a.A_tail* a.e_tail))/(S - a.S_lg - a.S_fl)
     C_D = C_D_0 + C_D_i
     GI_2 = CL / C_D * 1/(a.MTOW + a.dW * a.G) * a.n_prop * a.n_engine * a.n_pmad * a.n_cooling * a.n_fuelcell
