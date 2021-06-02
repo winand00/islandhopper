@@ -130,7 +130,7 @@ class Parameters2:
         # Landing Gear option 2
         self.CD0_lg = 0.35  # CD0 landing gear [-] (!!Set to 0 when not designing for takeoff!!) (0.35 from literature)
         self.S_lg = 2  # Surface area landing gear  [m^2]
-        self.S_lg_wet = 1  # Wetted fuselage surface area (frontal area) [m^2]
+        self.S_lg_wet = 1  # Wetted landing surface area (frontal area) [m^2]
 
         # General Parameters option 2
         self.MTOW = 8618  # Maximum Take-off Weight [kg]
