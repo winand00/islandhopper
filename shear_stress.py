@@ -45,7 +45,13 @@ class Stress:
     def bendingstress_xz(self, x, z):
         return self.Mx*(z-self.z_centroid)/self.Ixx - self.Mz * (x - self.x_centroid) / self.Izz
 
-
+    def max_bending_xz(self):
+        stresses = []
+        x, z = self.get_xz(10)
+        for i in range(len(x)):
+            stresses.append(self.bendingstress_xz(x[i],z[i]))
+        return max(stresses)
+        
     def shear_torque(self, x, z):
         A = self.h * self.w
         return self.T/(2*self.t*A)
@@ -96,9 +102,18 @@ class Stress:
 
     def shearstress_xz(self, x, z):
         return self.shearstress_x(x, z) + self.shearstress_z(x, z)
+    
 
     def shear_total(self, x, z):
         return self.shearstress_xz(x, z) + self.shear_torque(x, z)
+       
+    def max_shear_total(self):
+        stresses = []
+        x, z = self.get_xz(10)
+        for i in range(len(x)):
+            stresses.append(abs(self.shear_total(x[i],z[i])))
+        return max(stresses)
+        
 
     def q1_z(self, s):
         return -self.Vz/self.Ixx * self.t * s * self.h/2
