@@ -767,10 +767,10 @@ def make_wingbox(t_skin, n_str, str_size, material, n):
 
 
 if __name__ == "__main__":
-    wingbox = make_wingbox(t_skin, n_str, size_str, AL7040, n_ult_pos)
+    wingbox = make_wingbox(0.004, 10, 0.03, AL7040, n_ult_pos)
     # wingbox.plot_crosssection(5)
     # plt.show()
-
+    print(wingbox.get_max_stress())
     # wingbox.graph_properties()
 
     wingbox.graphs()
