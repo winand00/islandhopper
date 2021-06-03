@@ -20,7 +20,7 @@ W_apu=	80
 W_instruments = (4.509 * K_r * K_tp * N_c ** 0.541 * N_en * (L_f + B_w)**0.5) /2.2
 W_electrical = (7.291 * R_kva**0.782 * L_a ** 0.346 * N_gen**0.1)/2.2
 W_avionics = (1.73 * W_uav**0.983)/2.2
-W_furnishings = (0.0577 * N_c**0.1 * W_c ** 0.393 * S_f * 0.75)/2.2
+W_furnishings = (0.0577 * N_c**0.1 * W_c ** 0.393 * S_f ** 0.75)/2.2
 W_airconditioning = (62.36 * N_p**0.25 * (V_pr/1000)**0.604 * W_uav**0.10)/2.2
 W_apuins = (2.2 * W_apu)/2.2
 
