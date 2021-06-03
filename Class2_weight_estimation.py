@@ -114,7 +114,6 @@ def get_weight_flight_controls(N_f,N_m,S_csw,B_w,L_fuselage_whole,W_dg,R_z):
     S_csw = S_csw * m2_to_ft2
     I_y = I_y * kgm2_to_lbft2
     W_flightcon = 145.9 * N_f**(0.554) * (1 + N_m/N_f)**(-1) * S_csw**(0.2) * (I_y*10**(-6))*0.07
-    print(I_y, "=i_y")
     return W_flightcon
 
 
@@ -176,7 +175,7 @@ S_e = 1            #Elevator area [m^2]
 
 #Inputs engine control
 N_en = 2        #Is number of engines
-L_ec = 4.7         #length from engine front to cockpit-total if multiengine, [m]
+L_ec = 2*4.7         #length from engine front to cockpit-total if multiengine total distance, [m]
 
 #Inputs furnishing
 N_c = 2         #Number of crew members
@@ -240,10 +239,10 @@ print("Weight hydrogen tank and fuell cells and hydrogen =", weight_all_hydrogen
 print("Weight engines =", weight_engines, "   % of MTOW:", 100*weight_engines/W_dg)
 
 print("\n Calculated weights Class 2:")
-print("Weight wing =", weight_wing, "   % of MTOW:", 100*weight_wing/W_dg)
-print("Weight avionics =", weight_avionics, "   % of MTOW:", 100*weight_avionics/W_dg)
-print("Weight Landing gear =", weight_landing_gear, "   % of MTOW:", 100*weight_landing_gear/W_dg)
-print("Weight fuselage = ", weight_fuselage, "   % of MTOW:", 100*weight_fuselage/W_dg)
+print("Weight wing =", weight_wing, ",   % of MTOW:", 100*weight_wing/W_dg)
+print("Weight avionics =", weight_avionics, ",   % of MTOW:", 100*weight_avionics/W_dg)
+print("Weight Landing gear =", weight_landing_gear, ",   % of MTOW:", 100*weight_landing_gear/W_dg)
+print("Weight fuselage = ", weight_fuselage, ",   % of MTOW:", 100*weight_fuselage/W_dg)
 print("Weight vertical tail = ", weight_vertical_tail, ",   % of MTOW:", 100*weight_vertical_tail/W_dg)
 print("Weight horizontal tail = ", weight_horizontal_tail, ",   % of MTOW:", 100*weight_horizontal_tail/W_dg)
 print("Weight engine control =", weight_engine_control, ",   % of MTOW:", 100*weight_engine_control/W_dg)
