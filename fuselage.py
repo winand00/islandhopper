@@ -3,10 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Stringer:
-    def __init__(self, t, w, h, angle=0, D=0):
+    def __init__(self, t, w, h, rho, angle=0, D=0):
         self.t = t
         self.w = w
         self.h = h
+        self.rho = rho
         self.y = np.sin(angle) * D/2
         self.z = np.cos(angle) * D/2
         self.area = self.area()
@@ -21,7 +22,7 @@ class Stringer:
 
 
 class Fuselage:
-    def __init__(self, stringer, n_str, length, t, D, weight_dist, x_w, F_w, x_t, F_t):
+    def __init__(self, stringer, n_str, length, t, D, weight_dist, x_w, F_w, x_t, F_t, rho):
         self.weight_dist = weight_dist
         self.x_w = x_w
         self.F_w = F_w
@@ -32,10 +33,22 @@ class Fuselage:
         self.D = D
         self.stringers = self.make_stringers(stringer, int(n_str))
         self.Iyy = self.Iyy()
-        self.max_Vz = 2.6 * 10 **5
-        self.max_My = 1.4*10**6
-        self.max_T = 1 *10**5
+        self.max_Vz = self.max_Vz() # 2.6 * 10 **5
+        self.max_My = self.max_My() # 1.4*10**6
+        self.max_T = 1 *10**4
         self.J = np.pi*self.t*self.D**3/4
+        self.rho = rho
+        self.skin_area = self.skin_area()
+        self.weight = self.get_weight()
+
+    def skin_area(self):
+        return np.pi * self.D * self.t
+
+    def get_weight(self):
+        stringer_weight = 0
+        for stri in self.stringers:
+            stringer_weight += stri.area * self.length * stri.rho
+        return stringer_weight + self.skin_area * self.length * self.rho
 
     def make_stringers(self, stringer, n_str):
         t = stringer.t
@@ -47,18 +60,34 @@ class Fuselage:
         for i in range(4):
             for j in range(n_str//4):
                 angle += str_angle
-                stringers.append(Stringer(t, w, h, angle, D))
+                stringers.append(Stringer(t, w, h, angle, self.D))
             angle += str_angle
         return stringers
 
     def V_z(self, x):
-        V = -self.weight_dist * x  + self.F_w * Macaulay(x, self.x_w, 0) - self.F_t * Macaulay(x, self.x_t, 0)
+        V = -self.weight_dist * x + self.F_w * Macaulay(x, self.x_w, 0) - self.F_t * Macaulay(x, self.x_t, 0)
         return V
-
+    
+    def max_Vz(self):
+        x = np.arange(0, self.length, 0.1)
+        lst = []
+        for i in range(len(x)):
+            lst.append(self.V_z(x[i]))
+        return max(lst)
+        
     def My(self, x):
-        M0 = self.weight_dist*self.x_w**2/2 -self.F_t * (self.x_t-self.x_w) - self.weight_dist*(self.length-x_w)**2/2
-        M = M0 * Macaulay(x, self.x_w, 0) -self.weight_dist * x ** 2 /2 + self.F_w * Macaulay(x, self.x_w, 1) - self.F_t * Macaulay(x, self.x_t, 1)
+        R0 = -(-self.weight_dist*self.length -self.F_t +self.F_w)
+        M0 = self.weight_dist*self.x_w**2/2 - self.F_t * (self.x_t-self.x_w) - self.weight_dist*(self.length-self.x_w)**2/2
+        print(M0)
+        M = R0 * Macaulay(x, self.x_w, 1) - M0 * Macaulay(x, self.x_w, 0) - self.weight_dist * x ** 2 /2  - self.F_t * Macaulay(x, self.x_t, 1)#+ self.F_w * Macaulay(x, self.x_w, 1)
         return M
+    
+    def max_My(self):
+        x = np.arange(0, self.length, 0.1)
+        lst = []
+        for i in range(len(x)):
+            lst.append(self.My(x[i]))
+        return max(lst)
 
     def Iyy(self):
         Iyy = 0
@@ -68,7 +97,7 @@ class Fuselage:
         return Iyy
 
     def bending_stress(self, theta):
-        z = np.cos(theta)
+        z = np.cos(theta) * self.D/2
         return self.max_My*z/self.Iyy
 
     def q(self, theta):
@@ -120,29 +149,39 @@ class Fuselage:
         #self.graph(self.Torsiony, 'Torsional moment around the y-axis', axs[1, 2])
         #self.graph(self.total_twist, 'Twist around the y-axis', axs[2, 2])
         plt.show()
-weight_ac = 84516
-n = 2.93 * 1.5
-length = 30
-weight_wing = 1000
-weight_dist = (weight_ac - weight_wing) /length * n
-t = 0.003
-D = 2
-x_t = length - 0.1
-F_t = weight_ac * n / 5
-x_w = 15
-F_w = weight_ac * n - weight_wing + F_t
+        
+def create_fuselage():
+    weight_ac = 84516
+    n = 2.93 * 1.5
+    length = 15
+    weight_wing = 1000 * 9.81
+    weight_dist = (weight_ac - weight_wing) /length #* n
+    t = 0.003/2
+    D = 2
+    x_t = length - 0.1
+    F_t = weight_ac * n / 5
+    x_w = 15/2
+    F_w = weight_ac - weight_wing + F_t
 
-#Material
+    
+    # Material
+    rho_str = 2820
+    rho_sk = 2820
+    
+    # Make stringer
+    t_str = 0.005
+    w_str = 0.1
+    h_str = 0.1
+
+    stringer = Stringer(t_str, w_str, h_str, rho_str)
+    n_str = 8 # Has to be a multiple of 4
+    
+    fuselage = Fuselage(stringer, n_str, length, t, D, weight_dist, x_w, F_w, x_t, F_t, rho_sk)
+    return fuselage
 
 
-#Make stringer
-t_str = 0.005
-w_str = 0.05
-h_str = 0.05
-stringer = Stringer(t_str, w_str, h_str)
-
-n_str = 16 #Has to be a multiple of 4
-
-fuselage = Fuselage(stringer, n_str, length, t, D, weight_dist, x_w, F_w, x_t, F_t)
-fuselage.graphs()
-print(fuselage.max_von_mises())
+if __name__ == "__main__":
+    fuselage = create_fuselage()
+    fuselage.graphs()
+    print(fuselage.max_von_mises())
+    print(fuselage.weight)
