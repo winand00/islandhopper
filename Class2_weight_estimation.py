@@ -4,7 +4,7 @@ m2_to_ft2 = 10.7639104
 m3_to_ft3 = 35.3146667
 kg_to_lbs = 2.20462262
 m_to_in = 39.3700787
-
+kgm2_to_lbft2 = 23.73025
 
 
 def get_weight_wing(W_dg,N_z,S_w,A,t_c_root,Lambda,Sweep_angle,S_csw):
@@ -107,7 +107,21 @@ def get_weight_hydraulics(N_f,L_fuselage_whole,B_w):
     W_hydraulics = 0.2673 * N_f *(L_fuselage_whole + B_w)**(0.937)
     return W_hydraulics/kg_to_lbs
 
-# -----------------Inputs-----------------------
+def get_weight_flight_controls(N_f,N_m,S_csw,B_w,L_fuselage_whole,W_dg,R_z):
+    R_z = R_z * m_to_ft
+    e = (B_w + L_fuselage_whole)/2
+    I_y = (e**(2) * W_dg * R_z**(2))/(4*9.81)
+    S_csw = S_csw * m2_to_ft2
+    I_y = I_y * kgm2_to_lbft2
+    W_flightcon = 145.9 * N_f**(0.554) * (1 + N_m/N_f)**(-1) * S_csw**(0.2) * (I_y*10**(-6))*0.07
+    return W_flightcon
+
+
+#Flight control inputs
+N_m = 2      #number of mechanical functions
+R_z = 0.497      #Radius of gyration about the z axis [m]
+
+# -----------------Class 2 Inputs----------------------- Always in SI units!
 L_t =  3     #Tail length [m]
 W_dg = 8618             #Design gross weight [kg]
 N_z = 4.3913             #Ultimate load factor (1.5* limit load factor)
@@ -118,7 +132,7 @@ S_w = 45             #Wing surface [m^2]
 A = 9                #Aspect ratio
 t_c_root =   0.16       #Thickness to chord ratio at root [m]
 Lambda =  0.5          #Wing taper ratio
-Sweep_angle = 0.0      #Sweep angle at 25% MAC [rad]
+Sweep_angle = 0      #Sweep angle at 25% MAC [rad]
 S_csw = 2.54           #Control surface area [m^2]
 
 #Avionics inputs
@@ -161,7 +175,7 @@ S_e = 1            #Elevator area [m^2]
 
 #Inputs engine control
 N_en = 2        #Is number of engines
-L_ec = 4.7         #length from engine front to cockpit-total if multiengine, [m]
+L_ec = 2*4.7         #length from engine front to cockpit-total if multiengine total distance, [m]
 
 #Inputs furnishing
 N_c = 2         #Number of crew members
@@ -185,14 +199,22 @@ N_gen = 2       #number of generators (typically = N_en)
 W_APU_uninstalled = 36      #Weight uninstalled auxiliary power unit
 
 #Starter inputs
-W_en =  250        #Engine weight [kg]
+W_en =  133        #Engine weight [kg] (without naccele and 4 inverters)
 
 #Inputs hydraulics
 N_f = 5     #Number of control surfaces (2x aileron, 2x elevator, 1x rudder)
 
+#---------------Input weights-----------------
+#hydrogen:
+fuell_cell = 300 #(wing)
+hydrogen = 110 # in tank
+hydrogen_tank = 200 # cg ask to structures
+batteries = 150 #in the wing
+cooling_system_etc = 500 #tried in the wing
 
-
-
+weight_engines = 2 * (133 + 4 * 12 + 70)        #2 times: 1 engine, 4 inverters, 70kg of nacelle)
+weight_all_hydrogen_systems = hydrogen_tank + batteries + cooling_system_etc + fuell_cell #Hydrogen + Hydrogen tank + fuel cells + etc
+#------------------Class 2 weights------------------
 weight_wing = get_weight_wing(W_dg,N_z,S_w,A,t_c_root,Lambda,Sweep_angle,S_csw)
 weight_avionics = get_weight_avionics(W_uav)
 weight_landing_gear = get_weight_landing_gear(K_mp,K_np,N_l,W_l,L_m,L_n,N_mw,N_nw,N_mss,V_stall)
@@ -208,11 +230,19 @@ weight_electrical = get_weight_electrical(R_kva,L_a,N_gen)
 weight_APUins = get_weight_apuinstalled(W_APU_uninstalled)
 weight_starter = get_weight_starter(N_en,W_en)
 weight_hydraulics = get_weight_hydraulics(N_f,L_fuselage_whole,B_w)
+weight_flight_controls = get_weight_flight_controls(N_f,N_m,S_csw,B_w,L_fuselage_whole,W_dg,R_z)
 
-print("Weight wing =", weight_wing, "   % of MTOW:", 100*weight_wing/W_dg)
-print("Weight avionics =", weight_avionics, "   % of MTOW:", 100*weight_avionics/W_dg)
-print("Weight Landing gear =", weight_landing_gear, "   % of MTOW:", 100*weight_landing_gear/W_dg)
-print("Weight fuselage = ", weight_fuselage, "   % of MTOW:", 100*weight_fuselage/W_dg)
+
+
+print("Inputted weights:")
+print("Weight hydrogen tank and fuell cells and hydrogen =", weight_all_hydrogen_systems, "   % of MTOW:", 100*weight_all_hydrogen_systems/W_dg)
+print("Weight engines =", weight_engines, "   % of MTOW:", 100*weight_engines/W_dg)
+
+print("\n Calculated weights Class 2:")
+print("Weight wing =", weight_wing, ",   % of MTOW:", 100*weight_wing/W_dg)
+print("Weight avionics =", weight_avionics, ",   % of MTOW:", 100*weight_avionics/W_dg)
+print("Weight Landing gear =", weight_landing_gear, ",   % of MTOW:", 100*weight_landing_gear/W_dg)
+print("Weight fuselage = ", weight_fuselage, ",   % of MTOW:", 100*weight_fuselage/W_dg)
 print("Weight vertical tail = ", weight_vertical_tail, ",   % of MTOW:", 100*weight_vertical_tail/W_dg)
 print("Weight horizontal tail = ", weight_horizontal_tail, ",   % of MTOW:", 100*weight_horizontal_tail/W_dg)
 print("Weight engine control =", weight_engine_control, ",   % of MTOW:", 100*weight_engine_control/W_dg)
@@ -224,4 +254,5 @@ print("Weight electrical =", weight_electrical, ",   % of MTOW:", 100*weight_ele
 print("Weight installed Auxiliary power unit=", weight_APUins, ",   % of MTOW:", 100*weight_APUins/W_dg)
 print("Weight starter (pneumatic) =", weight_starter, ",   % of MTOW:", 100*weight_starter/W_dg)
 print("Weight hydraulics =", weight_hydraulics, ",   % of MTOW:", 100*weight_hydraulics/W_dg)
-print("\n Total weight of subsystems:", weight_wing + weight_avionics + weight_landing_gear + weight_fuselage + weight_vertical_tail + weight_horizontal_tail + weight_engine_control + weight_furnishing + weight_handling_gear + weight_instruments + weight_airconditioning + weight_electrical + weight_APUins + weight_starter + weight_hydraulics)
+print("Weight flight controls =", weight_flight_controls, ",   % of MTOW:", 100*weight_flight_controls/W_dg)
+print("\n Total weight of subsystems:", weight_all_hydrogen_systems + weight_engines + weight_wing + weight_avionics + weight_landing_gear + weight_fuselage + weight_vertical_tail + weight_horizontal_tail + weight_engine_control + weight_furnishing + weight_handling_gear + weight_instruments + weight_airconditioning + weight_electrical + weight_APUins + weight_starter + weight_hydraulics + weight_flight_controls)
