@@ -37,7 +37,53 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         h_box = 0.1
         w_box = 0.5
 
+    #wing parameters
+    w_ly_e = 0.2 * b / 2
+    w_lz_e = h_box / 2
+    w_w_engine = 200 * 9.81
+    w_T_engine = 1300 * 1000 / 90
+    w_ly_hld = 0.3 * b / 2
+    w_lx_hld = w_box / 2
+    w_F_hld = 0  # 15000
+    w_ly_el = 0.8 * b / 2
+    w_lx_el = w_box / 2
+    w_F_el = 0
+    w_w_wing = w_ac / b * n
+    w_L_D = 12
+    w_Mh = 0
+    w_lz_h = 0
 
+    #horizontal tail parameters
+    h_ly_e = 0
+    h_lz_e = 0
+    h_w_engine = 0
+    h_T_engine = 0
+    h_ly_hld = 0
+    h_lx_hld = 0
+    h_F_hld = 0  # 15000
+    h_ly_el = b / 2 / 2  # y position of the elevator
+    h_lx_el = w_box / 2  # x position of the elevator
+    h_F_el = 1000  # elevator force
+    h_w_wing = w_ac / b * n / 5  # Lift of the horizontal tail
+    h_L_D = 12
+    h_Mh = 0
+    h_lz_h = 0
+
+    #vertical tail parameters
+    v_ly_e = 0
+    v_lz_e = 0
+    v_w_engine = 0
+    v_T_engine = 0
+    v_ly_hld = 0
+    v_lx_hld = 0
+    v_F_hld = 0  # 15000
+    v_ly_el = b / 2 / 2  # z position of the rudder
+    v_lx_el = w_box / 2  # x position of the rudder
+    v_F_el = 1000  # elevator force
+    v_w_wing = w_ac / b * n / 5  # Lift of the horizontal tail
+    v_L_D = 12
+    v_Mh = h_F_el * h_lx_el
+    v_lz_h = 0.5
 
     # skin(height, width, x_coordinate, z_coordinate)
     # coordinates are the bottom left point of the skin
@@ -93,57 +139,66 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     sigma_y = material.sigma_y
     poisson = material.poisson
 
+
+
     # Variables from other departments
     if type == 'wing':
-        ly_e = 0.2 * b/2
-        lz_e = h_box/2
-        w_engine = 200 * 9.81
-        T_engine = 1300*1000 / 90
-        ly_hld = 0.3 * b/2
-        lx_hld = w_box/2
-        F_hld = 0#15000
-        ly_el = 0.8 * b/2
-        lx_el = w_box/2
-        F_el = 0
-        w_wing = w_ac / b * n
-        L_D = 12
+        ly_e = w_ly_e
+        lz_e = w_lz_e
+        w_engine = w_w_engine
+        T_engine = w_T_engine
+        ly_hld = w_ly_hld
+        lx_hld = w_lx_hld
+        F_hld = w_F_hld
+        ly_el = w_ly_el
+        lx_el = w_lx_el
+        F_el = w_F_el
+        w_wing = w_w_wing
+        L_D = w_L_D
+        Mh = w_Mh
+        lz_h = w_lz_h
 
     if type == 'horizontal':
-        ly_e = 0
-        lz_e = 0
-        w_engine = 0
-        T_engine = 0
-        ly_hld = 0
-        lx_hld = 0
-        F_hld = 0#15000
-        ly_el = b/2 /2 # y position of the elevator
-        lx_el = w_box/2 # x position of the elevator
-        F_el = 1000 # elevator force
-        w_wing = w_ac / b * n / 5 #Lift of the horizontal tail
-        L_D = 12
+        ly_e = h_ly_e
+        lz_e = h_lz_e
+        w_engine = h_w_engine
+        T_engine = h_T_engine
+        ly_hld = h_ly_hld
+        lx_hld = h_lx_hld
+        F_hld = h_F_hld
+        ly_el = h_ly_el
+        lx_el = h_lx_el
+        F_el = h_F_el
+        w_wing = h_w_wing
+        L_D = h_L_D
+        Mh = h_Mh
+        lz_h = h_lz_h
 
     if type == 'vertical':
-        ly_e = 0
-        lz_e = 0
-        w_engine = 0
-        T_engine = 0
-        ly_hld = 0
-        lx_hld = 0
-        F_hld = 0#15000
-        ly_el = b/2 /2 # z position of the rudder
-        lx_el = w_box/2 # x position of the rudder
-        F_el = 1000 # elevator force
-        w_wing = w_ac / b * n / 5 # Lift of the horizontal tail
-        L_D = 12
+        ly_e = v_ly_e
+        lz_e = v_lz_e
+        w_engine = v_w_engine
+        T_engine = v_T_engine
+        ly_hld = v_ly_hld
+        lx_hld = v_lx_hld
+        F_hld = v_F_hld
+        ly_el = v_ly_el
+        lx_el = v_lx_el
+        F_el = v_F_el
+        w_wing = v_w_wing
+        L_D = v_L_D
+        Mh = v_Mh
+        lz_h = v_lz_h
+
 
 
     return wingbox(stringer_list, root_crosssection, l_w, taper, density_AL, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
-                      lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, n, type)
+                      lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, lz_h, n, type)
 
 
 if __name__ == "__main__":
-    type = 'wing'
-    wingbox = make_wingbox(0.004, 10, 0.03, AL7040, n_ult_pos, type)
+    type = 'vertical'
+    wingbox = make_wingbox(0.004, 0, 0.03, AL7040, n_ult_pos, type)
     # wingbox.plot_crosssection(5)
     # plt.show()
     print(wingbox.get_max_stress())

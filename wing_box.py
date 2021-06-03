@@ -301,7 +301,7 @@ class stringer:
 
 class wingbox:
     def __init__(self, stringers, cross_section, length, taper, material_density, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
-                 lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, n, type):
+                 lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, lz_h, n, type):
         self.type = type
         self.stringers = stringers
         self.cross_section = cross_section
@@ -327,6 +327,8 @@ class wingbox:
         self.T_engine = T_engine
         self.F_hld = F_hld
         self.F_el = F_el
+        self.Mh = Mh
+        self.lz_h = lz_h
         self.n = n
 
     def local_crosssection(self, y):
@@ -389,7 +391,7 @@ class wingbox:
     def momentz(self, y):
         Ra = self.w_wing*(1/self.L_D) * self.length - self.T_engine
         M0 = (self.T_engine * self.ly_e) - (self.w_wing*(1/self.L_D) * (self.length ** 2) / 2) + self.Mh
-        M = (Ra*y+M0-(self.w_wing*(1/self.L_D)/2)*y**2+(self.T_engine*Macaulay(y,self.ly_e,1)))
+        M = (Ra*y+M0-(self.w_wing*(1/self.L_D)/2)*y**2+(self.T_engine*Macaulay(y,self.ly_e,1))) + self.Mh * Macaulay(y,self.lz_h,0)
         return M
 
     def moment2(self, y):
@@ -442,7 +444,7 @@ class wingbox:
     def graph_displacmentz(self, function, label, ax):
         displacements = []
         total_displacements = []
-        step = 0.01
+        step = self.length/100
         y = np.arange(0, self.length, step)
         #displacements.append(0)
         for i in range(len(y)-1):
@@ -456,7 +458,7 @@ class wingbox:
 
     def total_displacement_z(self, y):
         total_v = 0
-        step = 0.1
+        step = self.length/100
         y = np.arange(0, y, step)
         for i in y:
             total_v += self.new_displacementz(i, step)
@@ -464,7 +466,7 @@ class wingbox:
 
     def total_displacement_x(self, y):
         total_v = 0
-        step = 0.1
+        step =self.length/100
         y = np.arange(0, y, step)
         for i in y:
             total_v += self.new_displacementx(i, step)
@@ -501,7 +503,7 @@ class wingbox:
 
     def total_twist(self, y):
         total_v = 0
-        step = 0.1
+        step = self.length/100
         y = np.arange(0, y, step)
         for i in y:
             total_v += self.twist(i, step)
@@ -511,7 +513,7 @@ class wingbox:
         return self.local_crosssection(y).plot()
 
     def graph(self, function, label, ax):
-        x = np.arange(0, self.length, 0.1)
+        x = np.arange(0, self.length, self.length/30)
         lst = []
         for i in range(len(x)):
             lst.append(function(x[i]))
@@ -553,7 +555,7 @@ class wingbox:
     def get_max_stress(self):
         y_max = None
         max_stress = 0
-        y = np.arange(0, self.length, 0.2)
+        y = np.arange(0, self.length, self.length/50)
         for i in y:
             cross_section = self.local_crosssection(i)
             Vx = self.shearx(i)
@@ -618,14 +620,14 @@ class wingbox:
         return min(sigma_panel, sigma_stringer)
     
     def is_crippling(self):
-        y = np.arange(0, self.length, 0.2)
+        y = np.arange(0, self.length, self.length/30)
         for i in y:
             if self.max_bending_stress(i) >= self.crippling(i):
                 return True
         return False
     
     def is_buckling(self):
-        y = np.arange(0, self.length, 0.2)
+        y = np.arange(0, self.length, self.length/30)
         for i in y:
             if self.max_shear_stress(i) >= self.local_crosssection(i).skin_buckling(self.E):
                 return True
