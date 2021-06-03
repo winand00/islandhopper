@@ -99,20 +99,16 @@ def design_loads():
     delta_L_C = kg * Ude_C*3.2808 * VC*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
     delta_L_D = kg * Ude_D*3.2808 * VD*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
 
-    if delta_L_C > delta_L_D:
-        delta_L = delta_L_C
-    else:
-        delta_L = delta_L_D
-
+    delta_L = max(delta_L_F, delta_L_C, delta_L_D)
 
     # Calculate max and minimum load factors
     lf_pos = max(n_pos_C, n_pos_D, n_pos_B, 2.9278)
     lf_neg = min(n_neg_C, n_neg_D, n_neg_B, -1.171)
     lf_pos_flaps = max(n_pos_F, 2)
-    return lf_pos, lf_neg, lf_pos_flaps, delta_L, delta_L_F
+    return lf_pos, lf_neg, lf_pos_flaps, delta_L
 
 def tail_load_elevator():
-    delta_n = 2
+    delta_n = 2             # load factor increment
     M = 8618.25503  # [kg]
     g = 9.80665
     x_cg_ac = 0.5  # ???   # [m] distance from ac to cg
@@ -132,7 +128,7 @@ def tail_load_elevator():
     return delta_P
 
 if __name__ == "__main__":
-    lf_pos, lf_min = design_loads()
+    lf_pos, lf_min, v, b, s = design_loads()
     print(lf_pos, lf_min)
 
 
