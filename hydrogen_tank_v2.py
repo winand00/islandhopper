@@ -128,7 +128,7 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
     threshold = 0.00001
     while not optimum:
         t_old = t_ins
-        S_cryo, M_throwaway, t_throwaway = multi_cell_s(m, n, p, R - t_ins)
+        S_cryo, M_throwaway, t_throwaway = multi_cell_s(m, n, p, R + t_ins)
         Q = (Mass * (1+BOR_percentage) - Mass)  * d_H_vap
         U = Q / S_cryo / d_T
         t_ins = (1 / U - t / k_comp + 1 / h_out) * k_ins
@@ -136,6 +136,8 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
 
         if delta_t < threshold:
             optimum = True
+
+    dimensions = [width +t_ins, length+t_ins, height+t_ins]
 
     M_insulation = rho_ins * t_ins * S_cryo
     M_total = M_structural + M_insulation
@@ -159,7 +161,7 @@ class Tank:
         self.mass_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[2]
         self.surface_outside = multi_cell_m_incl_insulation(m, n, p, R, Mass)[3]
         self.surface_inside_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[4]
-        self.volume = multi_cell_v(m, n, p, R - multi_cell_m_incl_insulation(m, n, p, R, Mass)[5]) # * 1000
+        self.volume = multi_cell_v(m, n, p, R ) # * 1000 #- multi_cell_m_incl_insulation(m, n, p, R, Mass)[5]
         self.number = multi_cell_m_incl_insulation(m, n, p, R, Mass)[6]
         self.dimensions = multi_cell_m_incl_insulation(m, n, p, R, Mass)[7]
 
@@ -178,7 +180,7 @@ class Tank:
 
 
 if __name__ == "__main__":
-    a  = Tank(2, 2, 4, 0.345, 150)
+    a  = Tank(4, 2, 1, 0.25, 111)
     a.properties()
 
 # print('v:', a.volume)
