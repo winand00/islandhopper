@@ -8,6 +8,7 @@ def design_loads():
     MAC = 2.24   # [m]
     Cl_alpha = 4    # ??? Cl_alpha [rad-1]
     CL_clean = 2   # ???
+    CL_flaps = 2.4  # ???
 
     g = 9.80665  # [m/s2]
     W = 8618.25503 * 9.80665  # [N]
@@ -76,9 +77,23 @@ def design_loads():
     print('n_pos = ', n_pos_B)
     print('n_neg = ', n_neg_B)
     """
+
+    # Gust load factor with flaps out
+    VS2 = sqrt(W / (0.5 * rho * S * CL_flaps))  # [m/s]
+    VF_1 = 1.4 * VS1
+    VF_2 = 1.8 * VS2
+    if VF_1 < VF_2:
+        VF = VF_1
+    else:
+        VF = VF_2
+    delta_n_F = (kg * rho_zero * Ude_D * VF * Cl_alpha) / (2 * W / S)
+    n_pos_F = 1 + delta_n_F
+
+    # Calculate max and minimum load factors
     lf_pos = max(n_pos_C, n_pos_D, n_pos_B, 2.9278)
     lf_neg = min(n_neg_C, n_neg_D, n_neg_B, -1.171)
-    return lf_pos, lf_neg
+    lf_pos_flaps = max(n_pos_F, 2)
+    return lf_pos, lf_neg, lf_pos_flaps
 
 
 if __name__ == "__main__":
