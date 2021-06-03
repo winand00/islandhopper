@@ -372,12 +372,12 @@ class wingbox:
 
     def shearz(self, y):
         Ra = -self.w_wing * self.length + self.w_engine + self.local_crosssection(self.length / 2).area * self.density * self.g * self.length
-        Vz = (Ra+(self.w_wing)*y-(self.w_engine*Macaulay(y,self.ly_e,0))-(self.local_crosssection(self.length / 2).area * self.density * self.g * self.length)*y)
+        Vz = Ra+(self.w_wing)*y-(self.w_engine*Macaulay(y,self.ly_e,0))-(self.local_crosssection(self.length / 2).area * self.density * self.g * self.length)*y
         return Vz
 
     def shearx(self, y):
         Ra = self.w_wing*(1/self.L_D) * self.length - self.T_engine
-        Vx = (Ra-(self.w_wing*(1/self.L_D))*y+(self.T_engine*Macaulay(y,self.ly_e,0)))
+        Vx = Ra-(self.w_wing*(1/self.L_D)*y+(self.T_engine*Macaulay(y,self.ly_e,0)))
         return Vx
 
     def momentx(self, y):
@@ -767,13 +767,13 @@ def make_wingbox(t_skin, n_str, str_size, material, n):
 
 
 if __name__ == "__main__":
-    wingbox = make_wingbox(t_skin, n_str, size_str, AL7040, n_ult_pos)
+    wingbox = make_wingbox(0.004, 10, 0.03, AL7040, n_ult_pos)
     # wingbox.plot_crosssection(5)
     # plt.show()
-
+    print(wingbox.get_max_stress())
     # wingbox.graph_properties()
 
-    # wingbox.graphs()
+    wingbox.graphs()
 
     y_max, max_stress = wingbox.get_max_stress()
     print(f'{max_stress/(10**6)} MPa, at y = {y_max} m')
