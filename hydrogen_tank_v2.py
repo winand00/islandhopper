@@ -5,11 +5,18 @@ import math
 k_overlap = 0.75      #Used in thesis
 P = 5.7
 # sigma_allowable = 1
+
 t_ply = 0.00014       #[m] #Table 4-3
+t_metal_liner = 0.001
+t_polyamide_liner = 0.001
+
 rho_comp = 2700
 k_comp = 60
 rho_ins = 200
+rho_metal_liner = 1
+rho_polyamide_liner = 1
 k_ins = 0.025
+
 y = 1.4
 R_over_t = 130
 s_over_R = 0.35           #(fig 4.22)
@@ -26,6 +33,13 @@ d_H_vap = 446100 #J/kg
 BOR_percentage = 0.016 # [-]
 d_T = 293.15 # temp diff between 20 K and 40 C
 h_out = 30 #[W/m2K]
+
+def multi_cell_dimensions(m, n, p, R, t_ins, t_polyamide_liner):
+    width = m * R * 2 - (m-1) * (y * R)
+    length = n * R * 2 - (n-1) * (y * R)
+    height = p * R * 2 - (p-1) * (y * R)
+    dimensions = [width + t_ins + t_polyamide_liner, length + t_ins + t_polyamide_liner, height + t_ins + t_polyamide_liner]
+    return dimensions
 
 def multi_cell_v(m, n, p, R):
     """"Function to calculate multi cell volume in m3."""
@@ -117,12 +131,6 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
     volume = multi_cell_v(m, n, p, R)
     tanks_needed = math.ceil(Mass/(volume * rho_hydr))
 
-    width = m * R * 2 - (m-1) * (y * R)
-    length = n * R * 2 - (n-1) * (y * R)
-    height = p * R * 2 - (p-1) * (y * R)
-
-    dimensions = [width, length, height]
-
     optimum = False
     t_ins = 0.01
     threshold = 0.00001
@@ -137,11 +145,10 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
         if delta_t < threshold:
             optimum = True
 
-    dimensions = [width +t_ins, length+t_ins, height+t_ins]
 
     M_insulation = rho_ins * t_ins * S_cryo
     M_total = M_structural + M_insulation
-    return M_total, M_structural, M_insulation, S, S_cryo, t_ins, tanks_needed, dimensions
+    return M_total, M_structural, M_insulation, S, S_cryo, t_ins, tanks_needed
 
 
 
@@ -156,26 +163,46 @@ aluminium_2219 = Material(172.4*10**6, 73.8 * 10 ** 9, 2825)
 
 class Tank:
     def __init__(self, m, n, p, R, Mass):
-        self.mass_total = multi_cell_m_incl_insulation(m, n, p, R, Mass)[0]
+        self.mass_tank_and_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[0]
         self.mass_tank = multi_cell_m_incl_insulation(m, n, p, R, Mass)[1]
         self.mass_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[2]
-        self.surface_outside = multi_cell_m_incl_insulation(m, n, p, R, Mass)[3]
-        self.surface_inside_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[4]
-        self.volume = multi_cell_v(m, n, p, R ) # * 1000 #- multi_cell_m_incl_insulation(m, n, p, R, Mass)[5]
+
+        self.surface_outer_tank = multi_cell_m_incl_insulation(m, n, p, R, Mass)[3]
+        self.surface_outer_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[4]
+
+        self.thickness_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[5]
+        self.thickness_tank = multi_cell_s(m, n, p, R)[2]
         self.number = multi_cell_m_incl_insulation(m, n, p, R, Mass)[6]
-        self.dimensions = multi_cell_m_incl_insulation(m, n, p, R, Mass)[7]
+
+        self.surface_metal_liner = multi_cell_s(m, n, p, R - t_metal_liner)[0]
+        self.mass_metal_liner = self.surface_metal_liner * rho_metal_liner * t_metal_liner
+
+        self.surface_polyamide_liner = multi_cell_s(m, n, p, R + self.thickness_insulation)[0]
+        self.mass_polyamide_liner = self.surface_polyamide_liner * rho_polyamide_liner * t_polyamide_liner
+
+        self.volume = multi_cell_v(m, n, p, R - t_metal_liner)  # * 1000 #- multi_cell_m_incl_insulation(m, n, p, R, Mass)[5]
+        self.dimensions = multi_cell_dimensions(m, n, p, R, self.thickness_insulation, t_polyamide_liner)
+
 
     def properties(self):
         print(f"*****TANK***** \n"
-              f"Mass single tank [kg] = {self.mass_tank} \n"
-              f"Mass insulation single tank [kg] = {self.mass_insulation} \n"
+              f"Mass metal liner (for 1 tank) [kg] = {self.mass_metal_liner} \n"
+              f"Mass tank (for 1 tank) [kg] = {self.mass_tank} \n"
+              f"Mass insulation (for 1 tank) [kg] = {self.mass_insulation} \n"
+              f"Mass polyamide liner (for 1 tank) [kg] = {self.mass_polyamide_liner} \n"
               f"---------------------------+ \n"
-              f"Mass total single tank [kg] = {self.mass_total} \n"
+              f"Mass total single tank [kg] = {self.mass_metal_liner + self.mass_tank_and_insulation + self.mass_polyamide_liner} \n"
               f"Volume single tank [m3] = {self.volume} \n"
               f"\n"
               f"Number of tanks [-] = {self.number} \n"
-              f"Mass all tanks [kg] = {self.number * self.mass_total} \n"
+              f"Mass all tanks [kg] = {self.number * self.mass_tank_and_insulation} \n"
               f"Volume all tanks [m3] = {self.number * self.volume} \n"
+              f"\n"
+              f"*****TANK DIMENSIONS***** \n"
+              f"Outer surface metal liner: {self.surface_metal_liner}, Thickness: {t_metal_liner} \n"
+              f"Outer surface tank: {self.surface_outer_tank}, Thickness: {self.thickness_tank} \n"
+              f"Outer surface insulation: {self.surface_outer_insulation}, Thickness: {self.thickness_insulation} \n"
+              f"Outer surface polyamide liner: {self.surface_polyamide_liner}, Thickness: {t_polyamide_liner} \n"
               f"Dimensions (w * h * l) [m] = {self.dimensions}")
 
 
