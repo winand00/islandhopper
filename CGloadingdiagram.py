@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math as m
 from matplotlib.colors import *
-from Class2_weight_estimation import cg_OEW,W_OEW
+from Class2_weight_estimation import cg_OEW,W_OEW,cg_wing
 
 '''
 Function 'loading_diagram' can be used to plot the loading diagram of either the RJ85 or the RJXX.
@@ -18,7 +18,7 @@ def cgboundaries():
 def loading_diagram():
     # Define Hopper input parameters
     MAC                     = 2    #??                                          # [m]
-    MAC_start               = 6   # ??                                          # [m]
+    MAC_start               = cg_wing- 0.5*MAC   # ??                                          # [m]
     OEW                     = W_OEW    # ??                                          # from class2 script [kg]
     X_oew_abs               = cg_OEW                                       # absolute value of xcg oew
     X_oew                   = (X_oew_abs - MAC_start) / MAC                # [percentage of MAC] (Still Assumed 0.3569)!
@@ -158,8 +158,8 @@ def plot_loadings():
     plt.xlabel(r'$X_{cg}/MAC$ [-]')
     plt.ylabel('Weight [kg]')
     plt.ylim((5000,8700))
-    plt.xlim(-0.6,0.5)
-    plt.xticks(np.arange(-0.6,0.50,0.05))
+    plt.xlim(0,0.5)
+    plt.xticks(np.arange(0,0.50,0.05))
     ax.set(facecolor='w')
     plt.axvline(min_xcg_Hopper, ymin=0, ymax=1, color='black', linestyle='-')
     plt.axvline(max_xcg_Hopper, ymin=0, ymax=1, color='black', linestyle='-')
