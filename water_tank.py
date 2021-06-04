@@ -9,6 +9,7 @@ def water_tank(power_fc, time_to):
     water_volume = (water_mass / 997) * 1000
     return water_mass, water_volume
 
-water_mass, water_volume = water_tank(1300000, 50)
-print(f"Water mass  : {water_mass} \n"
-      f"Water volume: {water_volume}")
+if __name__ == "__main__":
+    water_mass, water_volume = water_tank(1300000, 50)
+    print(f"Water mass  : {water_mass} \n"
+          f"Water volume: {water_volume}")
