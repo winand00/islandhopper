@@ -66,7 +66,7 @@ class Parameters1:
         self.CD0_wing = 0.006           # CD0 wing [-]
         self.S_wing = 45               # Surface area wing [m^2]
         self.A_wing = 9                # Aspect ratio [-]
-        self.e_wing = 0.8               # Oswald effiency wing [-]
+        self.e_wing = 0.7               # Oswald effiency wing [-]
 
         #Tail option 1
         self.CL_tail = 0.55            # CL  tail [-] (Generally use cruise conditions)
@@ -113,7 +113,7 @@ class Parameters2:
         self.CD0_wing = 0.006  # CD0 wing [-]
         self.S_wing = 45  # Surface area wing [m^2]
         self.A_wing = 9  # Aspect ratio [-]
-        self.e_wing = 0.8  # Oswald effiency wing [-]
+        self.e_wing = 0.7  # Oswald effiency wing [-]
 
         # Tail option 2
         self.CL_tail = 0.55  # CL  tail [-] (Generally use cruise conditions)
