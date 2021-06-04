@@ -77,8 +77,8 @@ class Parameters1:
         #Fuselage option 1
         self.CL_fl = 0.0              # CL fuselage [-] (can be neglected)
         self.CD0_fl = 0.06              # CD0 fuselage [-]
-        self.S_fl = 1.5*pi* 15.07 * (45/35.18)       # Surface area fuselage  [m^2]
-        self.S_fl_wet = pi * (2.08)**2    # Wetted fuselage surface area (frontal area) [m^2]
+        self.S_fl = 72.46  # Surface area fuselage  [m^2]
+        self.S_fl_wet = pi * (1.92) ** 2  # Wetted fuselage surface area (frontal area) [m^2]
 
         #Landing Gear option 1
         self.CD0_lg = 0.35              #CD0 landing gear [-] (!!Set to 0 when not designing for takeoff!!) (0.35 from literature)
@@ -124,8 +124,8 @@ class Parameters2:
         # Fuselage option 2
         self.CL_fl = 0.0  # CL fuselage [-] (can be neglected)
         self.CD0_fl = 0.06  # CD0 fuselage [-]
-        self.S_fl = 1.5 * pi * 15.07 * (45 / 35.18)  # Surface area fuselage  [m^2]
-        self.S_fl_wet = pi * (2.08) ** 2  # Wetted fuselage surface area (frontal area) [m^2]
+        self.S_fl = 72.46  # Surface area fuselage  [m^2]
+        self.S_fl_wet = pi * (1.92) ** 2  # Wetted fuselage surface area (frontal area) [m^2]
 
         # Landing Gear option 2
         self.CD0_lg = 0.35  # CD0 landing gear [-] (!!Set to 0 when not designing for takeoff!!) (0.35 from literature)

@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math as m
 from matplotlib.colors import *
+from Class2_weight_estimation import cg_OEW,W_OEW,cg_wing
+
 '''
 Function 'loading_diagram' can be used to plot the loading diagram of either the RJ85 or the RJXX.
 Inputs of function are:
@@ -15,28 +17,21 @@ def cgboundaries():
 
 def loading_diagram():
     # Define Hopper input parameters
-    MTOW                    = 8618.25503                                             # [kg]
     MAC                     = 2    #??                                          # [m]
-    MAC_start               = 7   # ??                                          # [m]
-    OEW                     = 0.6*MTOW    # ??                                          # [kg]
-    X_oew                   = 0.3569                                           # [percentage of MAC] Still Assumed!
-    M_fuel                  = 1200                                              # To not exceed the MTOW, a fuel weight of 6249 [kg] is used!!!
-    M_payload               = 1748   #??                                            # [kg] both cargo and passengers
-    N_pax                   = 19                                               # [-]
-    M_pax                   = 77                                               # [kg]
-    N_seat_abreast          = 3                                                 # [-]
-    N_rows                  = 6
+    MAC_start               = cg_wing- 0.5*MAC   # ??                                          # [m]
+    OEW                     = W_OEW    # ??                                          # from class2 script [kg]
+    X_oew_abs               = cg_OEW                                       # absolute value of xcg oew
+    X_oew                   = (X_oew_abs - MAC_start) / MAC                # [percentage of MAC] (Still Assumed 0.3569)!
+    M_fuel                  = 110                                              # To not exceed the MTOW, a fuel weight of 6249 [kg] is used!!!                                              # [-]
+    M_pax                   = 82                                               # [kg] 77kg of passenger + 5kg carry on baggage
     seat_pitch              = 0.762     #30 inches (ADSEE)
-    cabin_length            = 7.366  #Jetstream                                           # [m]
-    length                  = 16.38  #Jetstream + 2 [m]
-    tailcone_length         = 4.2084
-    nosecone_length          = 2.674                         # ends at middle of row 1
+    nosecone_length          = 3.056                         # ends at middle of row 1
     starting_length         = nosecone_length - 0.762     # 1 seat distance before middle of row 1
-    X_fuel                  = 7         # ??                                          # [m] location of cg fuel                                            # [m] location of cg tank
+    X_fuel                  = 6.5         # ??                                          # [m] location of cg fuel                                            # [m] location of cg tank
     M_front_cargo           = 95                     # [kg]
     M_rear_cargo            = 95                      # [kg]
-    x_front_cargo_absolute  = 5    # ??
-    x_rear_cargo_absolute   = 12    # ??
+    x_front_cargo_absolute  = 3    # ??
+    x_rear_cargo_absolute   = 8    # ??
     X_front_cargo           = (x_front_cargo_absolute - MAC_start)/MAC
     X_rear_cargo            = (x_rear_cargo_absolute - MAC_start)/MAC
     emergency_space         = 0.15       # [m]
@@ -163,8 +158,8 @@ def plot_loadings():
     plt.xlabel(r'$X_{cg}/MAC$ [-]')
     plt.ylabel('Weight [kg]')
     plt.ylim((5000,8700))
-    plt.xlim(-0.05,0.5)
-    plt.xticks(np.arange(0.05,0.50,0.05))
+    plt.xlim(0,0.5)
+    plt.xticks(np.arange(0,0.50,0.05))
     ax.set(facecolor='w')
     plt.axvline(min_xcg_Hopper, ymin=0, ymax=1, color='black', linestyle='-')
     plt.axvline(max_xcg_Hopper, ymin=0, ymax=1, color='black', linestyle='-')
