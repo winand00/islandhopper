@@ -10,6 +10,6 @@ def water_tank(power_fc, time_to):
     return water_mass, water_volume
 
 if __name__ == "__main__":
-    water_mass, water_volume = water_tank(1300000, 50)
+    water_mass, water_volume = water_tank(800000, 50)
     print(f"Water mass  : {water_mass} \n"
           f"Water volume: {water_volume}")
