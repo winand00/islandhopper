@@ -2,7 +2,7 @@ from create_wingbox import make_wingbox, AL7040, n_ult_pos, n_ult_neg
 import numpy as np
 
 
-def iterate_wing_box(t_skin, n_str, size_str, material, n, type):
+def iterate_wing_box(t_skin, n_str, str_size, material, n, type):
     working_designs = {}
     failed_designs = {}
     for t in t_skin:

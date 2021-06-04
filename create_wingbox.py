@@ -1,9 +1,9 @@
 from wing_box import wingbox, stringer, skin, crosssection, Material
-from design_loads import design_loads
+from design_loads import design_loads, tail_load_elevator
 
-n_max_pos, n_max_neg = design_loads()
+n_max_pos, n_max_neg,_,_ = design_loads()
 n_ult_pos, n_ult_neg = 1.5*n_max_pos, 1.5*n_max_neg
-print(design_loads())
+
 t_skin = 0.006
 stringers_top = 8
 stringers_bot = 2
@@ -198,7 +198,7 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
 
 if __name__ == "__main__":
     type = 'vertical'
-    wingbox = make_wingbox(0.004, 0, 0.03, AL7040, n_ult_pos, type)
+    wingbox = make_wingbox(0.004, 10, 0.03, AL7040, n_ult_pos, type)
     # wingbox.plot_crosssection(5)
     # plt.show()
     print(wingbox.get_max_stress())
