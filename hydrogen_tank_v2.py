@@ -183,6 +183,8 @@ class Tank:
         self.volume = multi_cell_v(m, n, p, R - t_metal_liner)  # * 1000 #- multi_cell_m_incl_insulation(m, n, p, R, Mass)[5]
         self.dimensions = multi_cell_dimensions(m, n, p, R, self.thickness_insulation, t_polyamide_liner)
 
+        self.refuel_time = ((self.volume * 1000) / 500) * 60
+
 
     def properties(self):
         print(f"*****TANK***** \n"
@@ -197,6 +199,10 @@ class Tank:
               f"Number of tanks [-] = {self.number} \n"
               f"Mass all tanks [kg] = {self.number * self.mass_tank_and_insulation} \n"
               f"Volume all tanks [m3] = {self.number * self.volume} \n"
+              f"\n"
+              f"*****REFUEL TIME***** \n"
+              f"Refuel time for a single tank [t]: {self.refuel_time} \n"
+              f"Refuel time for all tanks when 1 fuel inlet [t]: {self.refuel_time * self.number} \n"
               f"\n"
               f"*****TANK DIMENSIONS***** \n"
               f"Outer surface metal liner: {self.surface_metal_liner}, Thickness: {t_metal_liner} \n"

@@ -117,7 +117,9 @@ def get_weight_flight_controls(N_f,N_m,S_csw,B_w,L_fuselage_whole,W_dg,R_z):
     W_flightcon = 145.9 * N_f**(0.554) * (1 + N_m/N_f)**(-1) * S_csw**(0.2) * (I_y*10**(-6))*0.07
     return W_flightcon
 
-def get_mcg(OEW,cg_fuel_cell,weight_fuell_cell,cg_hydrogen,weight_hydrogen,cg_batteries,weight_batteries,cg_cooling_system_etc,weight_cooling_system_etc,cg_engines,weight_engines,cg_avionics,weight_avionics,cg_landing_gear,weight_landing_gear,cg_fuselage,weight_fuselage,cg_vertical_tail,weight_vertical_tail,cg_horizontal_tail,weight_horizontal_tail,cg_engine_control,weight_engine_control,cg_furnishing,weight_furnishing,cg_handling_gear,weight_handling_gear,cg_instruments,weight_instruments,cg_airconditioning,weight_airconditioning,cg_electrical,weight_electrical,cg_APUins,weight_APUins,cg_starter,weight_starter,cg_hydraulics,weight_hydraulics,cg_flight_controls,weight_flight_controls,cg_lavatory,weight_lavatory):
+def get_mcg(OEW,cg_fuel_cell,weight_fuell_cell,cg_hydrogen,weight_hydrogen,cg_batteries,weight_batteries,cg_cooling_system_etc,weight_cooling_system_etc,cg_engines,weight_engines,cg_avionics,weight_avionics,cg_landing_gear,weight_landing_gear,cg_fuselage,weight_fuselage,cg_vertical_tail,weight_vertical_tail,cg_horizontal_tail,weight_horizontal_tail,cg_engine_control,weight_engine_control,cg_furnishing,weight_furnishing,cg_handling_gear,weight_handling_gear,cg_instruments,weight_instruments,cg_airconditioning,weight_airconditioning,cg_electrical,weight_electrical,cg_APUins,weight_APUins,cg_starter,weight_starter,cg_hydraulics,weight_hydraulics,cg_flight_controls,weight_flight_controls,cg_lavatory,weight_lavatory,cg_wing,weight_wing,cg_hydrogen_tank,weight_hydrogen_tank):
+    mcg_wing = cg_wing * weight_wing
+    mcg_hydrogen_tank = cg_hydrogen_tank * weight_hydrogen_tank
     mcg_fuel_cell = cg_fuel_cell * weight_fuell_cell
     mcg_hydrogen = cg_hydrogen * weight_hydrogen
     mcg_batteries = cg_batteries * weight_batteries
@@ -139,7 +141,7 @@ def get_mcg(OEW,cg_fuel_cell,weight_fuell_cell,cg_hydrogen,weight_hydrogen,cg_ba
     mcg_hydraulics = cg_hydraulics * weight_hydraulics
     mcg_flight_controls = cg_flight_controls * weight_flight_controls
     mcg_lavatory = cg_lavatory * weight_lavatory
-    mcg_total = mcg_fuel_cell + mcg_hydrogen + mcg_batteries + mcg_cooling_system_etc + mcg_engines + mcg_avionics + mcg_landing_gear + mcg_fuselage + mcg_vertical_tail + mcg_horizontal_tail + mcg_engine_control + mcg_furnishing + mcg_handling_gear + mcg_instruments + mcg_airconditioning + mcg_electrical + mcg_APUins + mcg_starter + mcg_hydraulics + mcg_flight_controls + mcg_lavatory
+    mcg_total = mcg_wing + mcg_hydrogen_tank + mcg_fuel_cell + mcg_hydrogen + mcg_batteries + mcg_cooling_system_etc + mcg_engines + mcg_avionics + mcg_landing_gear + mcg_fuselage + mcg_vertical_tail + mcg_horizontal_tail + mcg_engine_control + mcg_furnishing + mcg_handling_gear + mcg_instruments + mcg_airconditioning + mcg_electrical + mcg_APUins + mcg_starter + mcg_hydraulics + mcg_flight_controls + mcg_lavatory
     return mcg_total/OEW
 
 #Flight control inputs
@@ -242,7 +244,7 @@ weight_engines = 2 * (133 + 4 * 12 + 70)        #2 times: 1 engine, 4 inverters,
 
 #--------------------Centre of gravity inputs--------------------------------------
 #cg in meters from front of the plane
-cg_wing = 5
+cg_wing = 5.55
 cg_hydrogen_tank = 6.5
 
 cg_fuel_cell = cg_wing
@@ -291,7 +293,7 @@ weight_lavatory = 0.31 * N_p**(1.33)        #raymer
 weight_all_hydrogen_systems = weight_hydrogen_tank + weight_batteries + weight_cooling_system_etc + weight_fuell_cell #Hydrogen + Hydrogen tank + fuel cells + etc
 W_OEW = weight_all_hydrogen_systems + weight_engines + weight_wing + weight_avionics + weight_landing_gear + weight_fuselage + weight_vertical_tail + weight_horizontal_tail + weight_engine_control + weight_furnishing + weight_handling_gear + weight_instruments + weight_airconditioning + weight_electrical + weight_APUins + weight_starter + weight_hydraulics + weight_flight_controls + weight_lavatory
 
-cg_OEW = get_mcg(W_OEW,cg_fuel_cell,weight_fuell_cell,cg_hydrogen,weight_hydrogen,cg_batteries,weight_batteries,cg_cooling_system_etc,weight_cooling_system_etc,cg_engines,weight_engines,cg_avionics,weight_avionics,cg_landing_gear,weight_landing_gear,cg_fuselage,weight_fuselage,cg_vertical_tail,weight_vertical_tail,cg_horizontal_tail,weight_horizontal_tail,cg_engine_control,weight_engine_control,cg_furnishing,weight_furnishing,cg_handling_gear,weight_handling_gear,cg_instruments,weight_instruments,cg_airconditioning,weight_airconditioning,cg_electrical,weight_electrical,cg_APUins,weight_APUins,cg_starter,weight_starter,cg_hydraulics,weight_hydraulics,cg_flight_controls,weight_flight_controls,cg_lavatory,weight_lavatory)
+cg_OEW = get_mcg(W_OEW,cg_fuel_cell,weight_fuell_cell,cg_hydrogen,weight_hydrogen,cg_batteries,weight_batteries,cg_cooling_system_etc,weight_cooling_system_etc,cg_engines,weight_engines,cg_avionics,weight_avionics,cg_landing_gear,weight_landing_gear,cg_fuselage,weight_fuselage,cg_vertical_tail,weight_vertical_tail,cg_horizontal_tail,weight_horizontal_tail,cg_engine_control,weight_engine_control,cg_furnishing,weight_furnishing,cg_handling_gear,weight_handling_gear,cg_instruments,weight_instruments,cg_airconditioning,weight_airconditioning,cg_electrical,weight_electrical,cg_APUins,weight_APUins,cg_starter,weight_starter,cg_hydraulics,weight_hydraulics,cg_flight_controls,weight_flight_controls,cg_lavatory,weight_lavatory,cg_wing,weight_wing,cg_hydrogen_tank,weight_hydrogen_tank)
 
 
 # print("Inputted weights:")
