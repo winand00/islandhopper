@@ -18,9 +18,10 @@ def cgboundaries():
 def loading_diagram():
     # Define Hopper input parameters
     MAC                     = 2    #??                                          # [m]
-    MAC_start               = 7   # ??                                          # [m]
+    MAC_start               = 6   # ??                                          # [m]
     OEW                     = W_OEW    # ??                                          # from class2 script [kg]
-    X_oew                   = cg_OEW                                           # [percentage of MAC] (Still Assumed 0.3569)!
+    X_oew_abs               = cg_OEW                                       # absolute value of xcg oew
+    X_oew                   = (X_oew_abs - MAC_start) / MAC                # [percentage of MAC] (Still Assumed 0.3569)!
     M_fuel                  = 110                                              # To not exceed the MTOW, a fuel weight of 6249 [kg] is used!!!                                              # [-]
     M_pax                   = 82                                               # [kg] 77kg of passenger + 5kg carry on baggage
     seat_pitch              = 0.762     #30 inches (ADSEE)
@@ -157,8 +158,8 @@ def plot_loadings():
     plt.xlabel(r'$X_{cg}/MAC$ [-]')
     plt.ylabel('Weight [kg]')
     plt.ylim((5000,8700))
-    plt.xlim(-0.05,0.5)
-    plt.xticks(np.arange(0.05,0.50,0.05))
+    plt.xlim(-0.6,0.5)
+    plt.xticks(np.arange(-0.6,0.50,0.05))
     ax.set(facecolor='w')
     plt.axvline(min_xcg_Hopper, ymin=0, ymax=1, color='black', linestyle='-')
     plt.axvline(max_xcg_Hopper, ymin=0, ymax=1, color='black', linestyle='-')
