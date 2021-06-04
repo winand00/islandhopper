@@ -148,7 +148,6 @@ class crosssection:
         x = 0
         for stri in self.local_stringers['bottom']:
             x += bottom_spacing
-
             I_zz += stri.area * (x-self.x_centroid)**2
         return I_zz
 
@@ -301,7 +300,7 @@ class stringer:
 
 class wingbox:
     def __init__(self, stringers, cross_section, length, taper, material_density, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
-                 lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, lz_h, n, type):
+                 lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, lz_h, ly_fc, w_fc, ly_bat, w_bat, n, type):
         self.type = type
         self.stringers = stringers
         self.cross_section = cross_section
@@ -330,6 +329,10 @@ class wingbox:
         self.Mh = Mh
         self.lz_h = lz_h
         self.n = n
+        self.ly_fc = ly_fc
+        self.w_fc = w_fc
+        self.ly_bat = ly_bat
+        self.w_bat = w_bat
 
     def local_crosssection(self, y):
         return crosssection(self.stringers, self.skins, self.taper, y, self.length)
@@ -373,8 +376,8 @@ class wingbox:
         return steps_starts, l_w
 
     def shearz(self, y):
-        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2)
-        Vz = Ra+(self.w_wing)*y-(self.w_engine*Macaulay(y,self.ly_e,0))-(self.weight_force(y/2))*y
+        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2) + self.w_fc + self.w_bat
+        Vz = Ra+(self.w_wing)*y-(self.w_engine*Macaulay(y,self.ly_e,0))-(self.weight_force(y/2))*y -self.w_fc*Macaulay(y,self.ly_fc,0)-self.w_bat*Macaulay(y,self.ly_bat,0)
         return Vz
 
     def shearx(self, y):
@@ -383,9 +386,9 @@ class wingbox:
         return Vx
 
     def momentx(self, y):
-        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2)
-        M0 = -(self.w_engine * self.ly_e) + (self.w_wing * (self.length ** 2) / 2)-(self.weight_force(self.length/2)*self.length/2)
-        M = (Ra*y+M0+(self.w_wing/2)*y**2-(self.weight_force(y/2))*y/2-(self.w_engine*Macaulay(y,self.ly_e,1)))
+        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2)+ self.w_fc + self.w_bat
+        M0 = -(self.w_engine * self.ly_e) -(self.w_fc * self.ly_fc)-(self.w_bat * self.ly_bat)+ (self.w_wing * (self.length ** 2) / 2)-(self.weight_force(self.length/2)*self.length/2)
+        M = (Ra*y+M0+(self.w_wing/2)*y**2-(self.weight_force(y/2))*y/2-(self.w_engine*Macaulay(y,self.ly_e,1))-(self.w_fc*Macaulay(y,self.ly_fc,1))-(self.w_bat*Macaulay(y,self.ly_bat,1)))
         return M
 
     def momentz(self, y):
@@ -425,10 +428,11 @@ class wingbox:
 
     def displacementz(self, y, step):
         I = self.local_crosssection(y/2).I_xx
-        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2)
-        M0 = -(self.w_engine * self.ly_e) + (self.w_wing * (self.length ** 2) / 2) - self.weight_force(self.length/2) * self.length / 2
+        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2) + self.w_fc + self.w_bat
+        M0 = -(self.w_engine * self.ly_e) + (self.w_wing * (self.length ** 2) / 2) - self.weight_force(self.length/2) * self.length / 2-(self.bat * self.ly_bat)-(self.w_fc * self.ly_fc)
         v = -((-1 / (self.E * I)) * (((1 / 6) * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + ((self.w_wing / 24) * (y ** 4))
-                                    - (self.w_engine / 6 * Macaulay(y, self.ly_e, 3))-(((self.weight_force(y)) / 24) * (y ** 3))))
+                                    - (self.w_engine / 6 * Macaulay(y, self.ly_e, 3))-(self.w_bat / 6 * Macaulay(y, self.ly_bat, 3))-
+                                     (self.w_fc / 6 * Macaulay(y, self.ly_fc, 3))-(((self.weight_force(y)) / 24) * (y ** 3))))
         return v
 
     def new_displacementz(self, y, step):
