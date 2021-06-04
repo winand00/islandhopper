@@ -79,7 +79,7 @@ class Fuselage:
         R0 = -(-self.weight_dist*self.length -self.F_t +self.F_w)
         M0 = self.weight_dist*self.x_w**2/2 - self.F_t * (self.x_t-self.x_w) - self.weight_dist*(self.length-self.x_w)**2/2
         print(M0)
-        M = R0 * Macaulay(x, self.x_w, 1) - M0 * Macaulay(x, self.x_w, 0) - self.weight_dist * x ** 2 /2  - self.F_t * Macaulay(x, self.x_t, 1)#+ self.F_w * Macaulay(x, self.x_w, 1)
+        M = R0 * Macaulay(x, self.x_w, 1) - M0 * Macaulay(x, self.x_w, 0) - self.weight_dist * x ** 2 /2 - self.F_t * Macaulay(x, self.x_t, 1)#+ self.F_w * Macaulay(x, self.x_w, 1)
         return M
     
     def max_My(self):

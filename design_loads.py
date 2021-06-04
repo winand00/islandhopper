@@ -10,6 +10,11 @@ def design_loads():
     CL_clean = 2   # ???
     CL_flaps = 2.4  # ???
 
+    # Tail parameters
+    aht = 2  #???    # Tail lift curve slope
+    Sht = 5   #???   # Tail surface area
+    deda = 0.7   #???    # Lift downwash per alpha
+
     g = 9.80665  # [m/s2]
     W = 8618.25503 * 9.80665  # [N]
     rho_zero = 1.225  # sealevel density [kg/m3]
@@ -89,15 +94,41 @@ def design_loads():
     delta_n_F = (kg * rho_zero * Ude_D * VF * Cl_alpha) / (2 * W / S)
     n_pos_F = 1 + delta_n_F
 
+    # Change in tail load due to gusts
+    delta_L_F = kg * Ude_D*3.2808 * VF*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
+    delta_L_C = kg * Ude_C*3.2808 * VC*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
+    delta_L_D = kg * Ude_D*3.2808 * VD*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
+
+    delta_L = max(delta_L_F, delta_L_C, delta_L_D)
+
     # Calculate max and minimum load factors
     lf_pos = max(n_pos_C, n_pos_D, n_pos_B, 2.9278)
     lf_neg = min(n_neg_C, n_neg_D, n_neg_B, -1.171)
     lf_pos_flaps = max(n_pos_F, 2)
-    return lf_pos, lf_neg, lf_pos_flaps
+    return lf_pos, lf_neg, lf_pos_flaps, delta_L
 
+def tail_load_elevator():
+    delta_n = 2             # load factor increment
+    M = 8618.25503  # [kg]
+    g = 9.80665
+    x_cg_ac = 0.5  # ???   # [m] distance from ac to cg
+    l_t = 6  # ???         # tail arm
+    S_h_t = 5   # ???      # hor tail area
+    S = 45                 # wing surface
+    aht = 2   # ???        # lift curve slope hor tail
+    a = 3     # ???        # lift curve slope wing
+    deda = 0.7             # downwash change with alpha
+    rho_zero = 1.225       # density sealevel
+
+
+    # Change in tail load due to elevator deflection
+    delta_P = delta_n * M * g * ((x_cg_ac/l_t) - (S_h_t/S) * ((aht/a) * (1-deda) - rho_zero/2 * (S_h_t * aht * l_t / M)))
+
+
+    return delta_P
 
 if __name__ == "__main__":
-    lf_pos, lf_min = design_loads()
+    lf_pos, lf_min, v, b, s = design_loads()
     print(lf_pos, lf_min)
 
 
