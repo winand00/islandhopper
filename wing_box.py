@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from shear_stress import Stress
-from design_loads import design_loads
+
 
 class crosssection:
     def __init__(self, stringers, skins, taper = None, y = None, l_w = None):
@@ -65,7 +65,6 @@ class crosssection:
                 x = self.skin_taper_width()
             if z > 0:
                 z = self.skin_taper_height()
-
             skins_.append(skin(h, b, x, z))
         return skins_
 
@@ -197,9 +196,7 @@ class crosssection:
         A_sk = max(0, A_sk)
         sigma_panel = (sigma_cc_str*A_str+sigma_cc_sk*A_sk)/(A_str+A_sk)
         return sigma_panel
-        
-        
-        
+
     def graph_stress(self, y, Vx, Vz, Mx, Mz, T):
         stress = Stress(self.local_height , self.local_width , self.I_zz, self.I_xx, self.local_t,
                         Vx, Vz, Mx, Mz, T, self.x_centroid, self.z_centroid)
@@ -301,12 +298,11 @@ class stringer:
         sigma_cc = self.crippling(sigma_y, E, poisson)
         return t_sk/2*np.sqrt(C*np.pi**2/(12*(1-poisson**2)))*np.sqrt(E/sigma_cc)
         
-        
-
 
 class wingbox:
     def __init__(self, stringers, cross_section, length, taper, material_density, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
-                 lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, n):
+                 lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, lz_h, n, type):
+        self.type = type
         self.stringers = stringers
         self.cross_section = cross_section
         self.density = material_density
@@ -331,6 +327,8 @@ class wingbox:
         self.T_engine = T_engine
         self.F_hld = F_hld
         self.F_el = F_el
+        self.Mh = Mh
+        self.lz_h = lz_h
         self.n = n
 
     def local_crosssection(self, y):
@@ -344,6 +342,10 @@ class wingbox:
             weight += (stri.y_end) * stri.area * self.density
         return weight
 
+    def weight_force(self, y):
+        if type == 'vertical':
+            return 0
+        return self.local_crosssection(y).area * self.density * self.g * y
 
     def local_area(self, y):
         cross_section = self.local_crosssection(y)
@@ -371,8 +373,8 @@ class wingbox:
         return steps_starts, l_w
 
     def shearz(self, y):
-        Ra = -self.w_wing * self.length + self.w_engine + self.local_crosssection(self.length / 2).area * self.density * self.g * self.length
-        Vz = Ra+(self.w_wing)*y-(self.w_engine*Macaulay(y,self.ly_e,0))-(self.local_crosssection(self.length / 2).area * self.density * self.g * self.length)*y
+        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2)
+        Vz = Ra+(self.w_wing)*y-(self.w_engine*Macaulay(y,self.ly_e,0))-(self.weight_force(y/2))*y
         return Vz
 
     def shearx(self, y):
@@ -381,15 +383,15 @@ class wingbox:
         return Vx
 
     def momentx(self, y):
-        Ra = -self.w_wing * self.length + self.w_engine + self.local_crosssection(self.length/2).area*self.density*self.g*self.length
-        M0 = -(self.w_engine * self.ly_e) + (self.w_wing * (self.length ** 2) / 2)-(self.local_crosssection(self.length/2).area*self.density*self.g*self.length**2/2)
-        M = (Ra*y+M0+(self.w_wing/2)*y**2-(self.local_crosssection(self.length/2).area*self.density*self.g/2)*y**2-(self.w_engine*Macaulay(y,self.ly_e,1)))
+        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2)
+        M0 = -(self.w_engine * self.ly_e) + (self.w_wing * (self.length ** 2) / 2)-(self.weight_force(self.length/2)*self.length/2)
+        M = (Ra*y+M0+(self.w_wing/2)*y**2-(self.weight_force(y/2))*y/2-(self.w_engine*Macaulay(y,self.ly_e,1)))
         return M
 
     def momentz(self, y):
         Ra = self.w_wing*(1/self.L_D) * self.length - self.T_engine
-        M0 = (self.T_engine * self.ly_e) - (self.w_wing*(1/self.L_D) * (self.length ** 2) / 2)
-        M = (Ra*y+M0-(self.w_wing*(1/self.L_D)/2)*y**2+(self.T_engine*Macaulay(y,self.ly_e,1)))
+        M0 = (self.T_engine * self.ly_e) - (self.w_wing*(1/self.L_D) * (self.length ** 2) / 2) + self.Mh
+        M = (Ra*y+M0-(self.w_wing*(1/self.L_D)/2)*y**2+(self.T_engine*Macaulay(y,self.ly_e,1))) + self.Mh * Macaulay(y,self.lz_h,0)
         return M
 
     def moment2(self, y):
@@ -423,12 +425,10 @@ class wingbox:
 
     def displacementz(self, y, step):
         I = self.local_crosssection(y/2).I_xx
-        Ra = -self.w_wing * self.length + self.w_engine + self.local_crosssection(
-            self.length / 2).area * self.density * self.g * self.length
-        M0 = -(self.w_engine * self.ly_e) + (self.w_wing * (self.length ** 2) / 2) - (
-                    self.local_crosssection(self.length / 2).area * self.density * self.g * self.length ** 2 / 2)
+        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2)
+        M0 = -(self.w_engine * self.ly_e) + (self.w_wing * (self.length ** 2) / 2) - self.weight_force(self.length/2) * self.length / 2
         v = -((-1 / (self.E * I)) * (((1 / 6) * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + ((self.w_wing / 24) * (y ** 4))
-                                    - (self.w_engine / 6 * Macaulay(y, self.ly_e, 3))-(((self.local_crosssection(y / 2).area * self.density * self.g * y) / 24) * (y ** 4))))
+                                    - (self.w_engine / 6 * Macaulay(y, self.ly_e, 3))-(((self.weight_force(y)) / 24) * (y ** 3))))
         return v
 
     def new_displacementz(self, y, step):
@@ -444,7 +444,7 @@ class wingbox:
     def graph_displacmentz(self, function, label, ax):
         displacements = []
         total_displacements = []
-        step = 0.01
+        step = self.length/100
         y = np.arange(0, self.length, step)
         #displacements.append(0)
         for i in range(len(y)-1):
@@ -458,7 +458,7 @@ class wingbox:
 
     def total_displacement_z(self, y):
         total_v = 0
-        step = 0.1
+        step = self.length/100
         y = np.arange(0, y, step)
         for i in y:
             total_v += self.new_displacementz(i, step)
@@ -466,7 +466,7 @@ class wingbox:
 
     def total_displacement_x(self, y):
         total_v = 0
-        step = 0.1
+        step =self.length/100
         y = np.arange(0, y, step)
         for i in y:
             total_v += self.new_displacementx(i, step)
@@ -503,7 +503,7 @@ class wingbox:
 
     def total_twist(self, y):
         total_v = 0
-        step = 0.1
+        step = self.length/100
         y = np.arange(0, y, step)
         for i in y:
             total_v += self.twist(i, step)
@@ -513,7 +513,7 @@ class wingbox:
         return self.local_crosssection(y).plot()
 
     def graph(self, function, label, ax):
-        x = np.arange(0, self.length, 0.1)
+        x = np.arange(0, self.length, self.length/30)
         lst = []
         for i in range(len(x)):
             lst.append(function(x[i]))
@@ -555,7 +555,7 @@ class wingbox:
     def get_max_stress(self):
         y_max = None
         max_stress = 0
-        y = np.arange(0, self.length, 0.2)
+        y = np.arange(0, self.length, self.length/50)
         for i in y:
             cross_section = self.local_crosssection(i)
             Vx = self.shearx(i)
@@ -620,14 +620,14 @@ class wingbox:
         return min(sigma_panel, sigma_stringer)
     
     def is_crippling(self):
-        y = np.arange(0, self.length, 0.2)
+        y = np.arange(0, self.length, self.length/30)
         for i in y:
             if self.max_bending_stress(i) >= self.crippling(i):
                 return True
         return False
     
     def is_buckling(self):
-        y = np.arange(0, self.length, 0.2)
+        y = np.arange(0, self.length, self.length/30)
         for i in y:
             if self.max_shear_stress(i) >= self.local_crosssection(i).skin_buckling(self.E):
                 return True
@@ -665,121 +665,4 @@ class Material:
         self.E = E
         self.G = G
         self.sigma_y = sigma_y
-        self.poisson =poisson
-
-
-n_max_pos, n_max_neg = design_loads()
-n_ult_pos, n_ult_neg = 1.5*n_max_pos, 1.5*n_max_neg
-print(design_loads())
-t_skin = 0.006
-stringers_top = 8
-stringers_bot = 2
-size_str = 0.03
-n_str = 3
-
-
-#Aluminum 7040
-density = 2820  # kg/m3, density of aluminium
-E = 69 * 10 ** 9
-G = 26.4 * 10 ** 9
-sigma_y = 450 * 10 ** 6
-poisson = 0.33
-AL7040 = Material(density, E, G, sigma_y, poisson)
-
-def make_wingbox(t_skin, n_str, str_size, material, n):
-    b = 20
-    n = n
-    w_ac = 84516
-
-
-    h_box = 0.4
-    w_box = 1.5
-
-    # skin(height, width, x_coordinate, z_coordinate)
-    # coordinates are the bottom left point of the skin
-    skin_top = skin(t_skin, w_box, 0, h_box)
-    skin_bottom = skin(t_skin, w_box, 0, 0)
-    skin_left = skin(h_box, t_skin, 0, 0)
-    skin_right = skin(h_box, t_skin, w_box, 0)
-    skins = [skin_top, skin_bottom, skin_left, skin_right]
-    taper = 0.5  # taper ratio of the wingbox
-    l_w = b/2  # length of the wingbox
-
-
-    # crosssection.plot()
-    # plt.show()
-
-    # Creating stringerss
-
-    # Y_end position, number of stringers
-    y_stringers_stop_top = [(0.2 * l_w, n_str),
-                            (0.4 * l_w, n_str),
-                            (0.6 * l_w, n_str),
-                            (0.8 * l_w, n_str),
-                            (1.0 * l_w, n_str)]
-
-    # Y_end position, number of stringers
-    y_stringers_stop_bot = [(0.2 * l_w, 0),
-                            (0.4 * l_w, 0),
-                            (0.6 * l_w, n_str),
-                            (0.8 * l_w, 0),
-                            (1.0 * l_w, n_str)]
-    stringer_width = str_size
-    stringer_height = str_size
-    stringer_t = 0.005
-    stringer_list = {}
-    top_stringer_list = []
-    bottom_stringer_list = []
-    for i in y_stringers_stop_top:
-        for j in range(i[1]):
-            top_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t, i[0]))
-    stringer_list['top'] = top_stringer_list
-    for i in y_stringers_stop_bot:
-        for j in range(i[1]):
-            bottom_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t, i[0]))
-    stringer_list['bottom'] = bottom_stringer_list
-
-    root_crosssection = crosssection(stringer_list, skins)
-
-
-    # Test values for deflection
-    density_AL = material.density # kg/m3, density of aluminium
-    E = material.E
-    G = material.G
-    sigma_y = material.sigma_y
-    poisson = material.poisson
-
-    # Variables from other departments
-    ly_e = 0.2 * b/2
-    lz_e = h_box/2
-    ly_hld = 0.3 * b/2
-    lx_hld = w_box/2
-    ly_el = 0.8 * b/2
-    lx_el = w_box/2
-    w_engine = 200 * 9.81
-    w_wing = w_ac / b * n
-    T_engine = 1300*1000 / 90
-    F_el = 0
-    F_hld = 15000
-    L_D = 12
-    return wingbox(stringer_list, root_crosssection, l_w, taper, density_AL, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
-                      lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, n)
-
-
-if __name__ == "__main__":
-    wingbox = make_wingbox(0.004, 10, 0.03, AL7040, n_ult_pos)
-    # wingbox.plot_crosssection(5)
-    # plt.show()
-    print(wingbox.get_max_stress())
-    # wingbox.graph_properties()
-
-    wingbox.graphs()
-
-    y_max, max_stress = wingbox.get_max_stress()
-    print(f'{max_stress/(10**6)} MPa, at y = {y_max} m')
-    print(wingbox.weight, 'kg')
-    wingbox.graph_stress(y_max)
-
-    #print(wingbox.max_bending_stress(0))
-    #print(wingbox.is_buckling())
-    #print(wingbox.is_crippling())
+        self.poisson = poisson

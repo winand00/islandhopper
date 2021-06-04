@@ -158,7 +158,7 @@ class Stress:
     def plot_bending_stress_z(self, fig, ax, title):
         self.plot(self.bendingstress_z, fig, ax, title)
 
-    def plot_bending_stress_xz(self, y):
+    def plot_bending_stress_xz(self, fig, ax, title):
         self.plot(self.bendingstress_xz, fig, ax, title)
         
     def get_xz(self, N):

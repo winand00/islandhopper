@@ -1,0 +1,216 @@
+from wing_box import wingbox, stringer, skin, crosssection, Material
+from design_loads import design_loads, tail_load_elevator
+
+n_max_pos, n_max_neg,_,_ = design_loads()
+n_ult_pos, n_ult_neg = 1.5*n_max_pos, 1.5*n_max_neg
+
+t_skin = 0.006
+stringers_top = 8
+stringers_bot = 2
+size_str = 0.03
+n_str = 3
+
+
+#Aluminum 7040
+density = 2820  # kg/m3, density of aluminium
+E = 69 * 10 ** 9
+G = 26.4 * 10 ** 9
+sigma_y = 450 * 10 ** 6
+poisson = 0.33
+AL7040 = Material(density, E, G, sigma_y, poisson)
+
+def make_wingbox(t_skin, n_str, str_size, material, n, type):
+
+    w_ac = 84516
+    if type == 'wing':
+        b = 20
+        h_box = 0.4
+        w_box = 1.5
+
+    if type == 'vertical':
+        b = 3
+        h_box = 0.1
+        w_box = 0.5
+
+    if type == 'horizontal':
+        b = 3
+        h_box = 0.1
+        w_box = 0.5
+
+    #wing parameters
+    w_ly_e = 0.2 * b / 2
+    w_lz_e = h_box / 2
+    w_w_engine = 200 * 9.81
+    w_T_engine = 1300 * 1000 / 90
+    w_ly_hld = 0.3 * b / 2
+    w_lx_hld = w_box / 2
+    w_F_hld = 0  # 15000
+    w_ly_el = 0.8 * b / 2
+    w_lx_el = w_box / 2
+    w_F_el = 0
+    w_w_wing = w_ac / b * n
+    w_L_D = 12
+    w_Mh = 0
+    w_lz_h = 0
+
+    #horizontal tail parameters
+    h_ly_e = 0
+    h_lz_e = 0
+    h_w_engine = 0
+    h_T_engine = 0
+    h_ly_hld = 0
+    h_lx_hld = 0
+    h_F_hld = 0  # 15000
+    h_ly_el = b / 2 / 2  # y position of the elevator
+    h_lx_el = w_box / 2  # x position of the elevator
+    h_F_el = 1000  # elevator force
+    h_w_wing = w_ac / b * n / 5  # Lift of the horizontal tail
+    h_L_D = 12
+    h_Mh = 0
+    h_lz_h = 0
+
+    #vertical tail parameters
+    v_ly_e = 0
+    v_lz_e = 0
+    v_w_engine = 0
+    v_T_engine = 0
+    v_ly_hld = 0
+    v_lx_hld = 0
+    v_F_hld = 0  # 15000
+    v_ly_el = b / 2 / 2  # z position of the rudder
+    v_lx_el = w_box / 2  # x position of the rudder
+    v_F_el = 1000  # elevator force
+    v_w_wing = w_ac / b * n / 5  # Lift of the horizontal tail
+    v_L_D = 12
+    v_Mh = h_F_el * h_lx_el
+    v_lz_h = 0.5
+
+    # skin(height, width, x_coordinate, z_coordinate)
+    # coordinates are the bottom left point of the skin
+    skin_top = skin(t_skin, w_box, 0, h_box)
+    skin_bottom = skin(t_skin, w_box, 0, 0)
+    skin_left = skin(h_box, t_skin, 0, 0)
+    skin_right = skin(h_box, t_skin, w_box, 0)
+    skins = [skin_top, skin_bottom, skin_left, skin_right]
+    taper = 0.5  # taper ratio of the wingbox
+    l_w = b/2  # length of the wingbox
+
+
+    # crosssection.plot()
+    # plt.show()
+
+    # Creating stringerss
+
+    # Y_end position, number of stringers
+    y_stringers_stop_top = [(0.2 * l_w, n_str),
+                            (0.4 * l_w, n_str),
+                            (0.6 * l_w, n_str),
+                            (0.8 * l_w, n_str),
+                            (1.0 * l_w, n_str)]
+
+    # Y_end position, number of stringers
+    y_stringers_stop_bot = [(0.2 * l_w, 0),
+                            (0.4 * l_w, 0),
+                            (0.6 * l_w, n_str),
+                            (0.8 * l_w, 0),
+                            (1.0 * l_w, n_str)]
+    stringer_width = str_size
+    stringer_height = str_size
+    stringer_t = 0.005
+    stringer_list = {}
+    top_stringer_list = []
+    bottom_stringer_list = []
+    for i in y_stringers_stop_top:
+        for j in range(i[1]):
+            top_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t, i[0]))
+    stringer_list['top'] = top_stringer_list
+    for i in y_stringers_stop_bot:
+        for j in range(i[1]):
+            bottom_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t, i[0]))
+    stringer_list['bottom'] = bottom_stringer_list
+
+    root_crosssection = crosssection(stringer_list, skins)
+
+
+    # Test values for deflection
+    density_AL = material.density # kg/m3, density of aluminium
+    E = material.E
+    G = material.G
+    sigma_y = material.sigma_y
+    poisson = material.poisson
+
+
+
+    # Variables from other departments
+    if type == 'wing':
+        ly_e = w_ly_e
+        lz_e = w_lz_e
+        w_engine = w_w_engine
+        T_engine = w_T_engine
+        ly_hld = w_ly_hld
+        lx_hld = w_lx_hld
+        F_hld = w_F_hld
+        ly_el = w_ly_el
+        lx_el = w_lx_el
+        F_el = w_F_el
+        w_wing = w_w_wing
+        L_D = w_L_D
+        Mh = w_Mh
+        lz_h = w_lz_h
+
+    if type == 'horizontal':
+        ly_e = h_ly_e
+        lz_e = h_lz_e
+        w_engine = h_w_engine
+        T_engine = h_T_engine
+        ly_hld = h_ly_hld
+        lx_hld = h_lx_hld
+        F_hld = h_F_hld
+        ly_el = h_ly_el
+        lx_el = h_lx_el
+        F_el = h_F_el
+        w_wing = h_w_wing
+        L_D = h_L_D
+        Mh = h_Mh
+        lz_h = h_lz_h
+
+    if type == 'vertical':
+        ly_e = v_ly_e
+        lz_e = v_lz_e
+        w_engine = v_w_engine
+        T_engine = v_T_engine
+        ly_hld = v_ly_hld
+        lx_hld = v_lx_hld
+        F_hld = v_F_hld
+        ly_el = v_ly_el
+        lx_el = v_lx_el
+        F_el = v_F_el
+        w_wing = v_w_wing
+        L_D = v_L_D
+        Mh = v_Mh
+        lz_h = v_lz_h
+
+
+
+    return wingbox(stringer_list, root_crosssection, l_w, taper, density_AL, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
+                      lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, lz_h, n, type)
+
+
+if __name__ == "__main__":
+    type = 'vertical'
+    wingbox = make_wingbox(0.004, 10, 0.03, AL7040, n_ult_pos, type)
+    # wingbox.plot_crosssection(5)
+    # plt.show()
+    print(wingbox.get_max_stress())
+    # wingbox.graph_properties()
+
+    wingbox.graphs()
+
+    y_max, max_stress = wingbox.get_max_stress()
+    print(f'{max_stress/(10**6)} MPa, at y = {y_max} m')
+    print(wingbox.weight, 'kg')
+    wingbox.graph_stress(y_max)
+
+    #print(wingbox.max_bending_stress(0))
+    #print(wingbox.is_buckling())
+    #print(wingbox.is_crippling())
