@@ -22,7 +22,7 @@ class Stringer:
 
 
 class Fuselage:
-    def __init__(self, stringer, n_str, length, t, D, weight_dist, x_w, F_w, x_t, F_t, rho):
+    def __init__(self, stringer, n_str, length, t, D, weight_dist, x_w, F_w, x_t, F_t, rho, sigma_y, buckling_factor):
         self.weight_dist = weight_dist
         self.x_w = x_w
         self.F_w = F_w
@@ -40,6 +40,8 @@ class Fuselage:
         self.rho = rho
         self.skin_area = self.skin_area()
         self.weight = self.get_weight()
+        self.sigma_y = sigma_y
+        self.buckling_factor = buckling_factor
 
     def skin_area(self):
         return np.pi * self.D * self.t
@@ -60,33 +62,69 @@ class Fuselage:
         for i in range(4):
             for j in range(n_str//4):
                 angle += str_angle
-                stringers.append(Stringer(t, w, h, angle, self.D))
+                stringers.append(Stringer(t, w, h, stringer.rho, angle, self.D))
             angle += str_angle
         return stringers
 
     def V_z(self, x):
         V = -self.weight_dist * x + self.F_w * Macaulay(x, self.x_w, 0) - self.F_t * Macaulay(x, self.x_t, 0)
         return V
+
+    def V_z_left(self, x):
+        x = self.x_w - x
+        R0 = -self.weight_dist * self.x_w
+        V = -R0 - self.weight_dist * x
+        return V
+
+    def V_z_right(self, x):
+        R0 = -self.weight_dist*(self.length-self.x_w) - self.F_t
+        V = -R0 -self.weight_dist * (x-self.x_w) - self.F_t * Macaulay(x, self.x_t, 0)
+        return V
+
+    def V_z_combined(self, x):
+        if x < self.x_w:
+            return self.V_z_left(x)
+        else:
+            return self.V_z_right(x)
     
     def max_Vz(self):
         x = np.arange(0, self.length, 0.1)
         lst = []
         for i in range(len(x)):
-            lst.append(self.V_z(x[i]))
+            lst.append(self.V_z_combined(x[i]))
         return max(lst)
         
     def My(self, x):
         R0 = -(-self.weight_dist*self.length -self.F_t +self.F_w)
         M0 = self.weight_dist*self.x_w**2/2 - self.F_t * (self.x_t-self.x_w) - self.weight_dist*(self.length-self.x_w)**2/2
         print(M0)
-        M = R0 * Macaulay(x, self.x_w, 1) - M0 * Macaulay(x, self.x_w, 0) - self.weight_dist * x ** 2 /2 - self.F_t * Macaulay(x, self.x_t, 1)#+ self.F_w * Macaulay(x, self.x_w, 1)
+        M = R0 * Macaulay(x, self.x_w, 1) - M0 * Macaulay(x, self.x_w, 0) - self.weight_dist * x ** 2 / 2 - self.F_t * Macaulay(x, self.x_t, 1)#+ self.F_w * Macaulay(x, self.x_w, 1)
         return M
+
+    def My_left(self, x):
+        x = self.x_w - x
+        R0 = -(-self.weight_dist * (self.x_w)) #+ self.F_w
+        M0 = - (self.weight_dist*(self.x_w)**2/2)
+        M = R0 * Macaulay(x, 0, 1) + M0 * Macaulay(x, 0, 0) - self.weight_dist * Macaulay(x, 0, 2) / 2
+        return -M
+
+    def My_right(self, x):
+        R0 = -(-self.weight_dist * (self.length -self.x_w) - self.F_t) #+ self.F_w
+        M0 = (-self.F_t * (self.x_t-self.x_w) - self.weight_dist*(self.length-self.x_w)**2/2)
+        M = R0 * Macaulay(x, self.x_w, 1) + M0 * Macaulay(x, self.x_w, 0) - self.weight_dist * Macaulay(x, self.x_w, 2) / 2 - self.F_t * Macaulay(x,self.x_t, 1)
+        return -M
+
+    def My_combined(self, x):
+        if x < self.x_w:
+            return self.My_left(x)
+        else:
+            return self.My_right(x)
     
     def max_My(self):
         x = np.arange(0, self.length, 0.1)
         lst = []
         for i in range(len(x)):
-            lst.append(self.My(x[i]))
+            lst.append(self.My_combined(x[i]))
         return max(lst)
 
     def Iyy(self):
@@ -138,8 +176,8 @@ class Fuselage:
     def graphs(self):
         fig, axs = plt.subplots(3, 2, figsize=(20,10))
         fig.suptitle("Forces, moments of the fuselage")
-        self.graph(self.V_z, 'Shear force in z-direction', axs[0,0])
-        self.graph(self.My, 'Moment around the y-axis', axs[1, 0])
+        self.graph(self.V_z_combined, 'Shear force in z-direction', axs[0,0])
+        self.graph(self.My_combined, 'Moment around the y-axis', axs[1, 0])
         self.graph_circ(self.shear_stress, 'Shear stress along the skin', axs[0, 1])
         self.graph_circ(self.bending_stress, 'Bending stress along the skin', axs[1,1])
         self.graph_circ(self.von_mises, 'Von mises stress along the skin', axs[2,1])
@@ -149,24 +187,34 @@ class Fuselage:
         #self.graph(self.Torsiony, 'Torsional moment around the y-axis', axs[1, 2])
         #self.graph(self.total_twist, 'Twist around the y-axis', axs[2, 2])
         plt.show()
+
+    def is_failing(self):
+        return self.max_von_mises() > self.sigma_y * self.buckling_factor
         
-def create_fuselage():
+def create_fuselage(t_sk, n_str):
     weight_ac = 84516
     n = 2.93 * 1.5
     length = 15
     weight_wing = 1000 * 9.81
-    weight_dist = (weight_ac - weight_wing) /length #* n
-    t = 0.003/2
+    weight_dist = (weight_ac - weight_wing) / length * n
+    t = t_sk
     D = 2
     x_t = length - 0.1
-    F_t = weight_ac * n / 5
+    F_t = weight_ac * n / 2
     x_w = 15/2
-    F_w = weight_ac - weight_wing + F_t
+    F_w = weight_ac * n - weight_wing + F_t
 
-    
+    buckling_factor = 0.5 # fraction of sigma_y
     # Material
     rho_str = 2820
     rho_sk = 2820
+
+    density = 2820  # kg/m3, density of aluminium
+    E = 69 * 10 ** 9
+    G = 26.4 * 10 ** 9
+    sigma_y = 450 * 10 ** 6
+    poisson = 0.33
+
     
     # Make stringer
     t_str = 0.005
@@ -174,14 +222,17 @@ def create_fuselage():
     h_str = 0.1
 
     stringer = Stringer(t_str, w_str, h_str, rho_str)
-    n_str = 8 # Has to be a multiple of 4
+    n_str = n_str # Has to be a multiple of 4
     
-    fuselage = Fuselage(stringer, n_str, length, t, D, weight_dist, x_w, F_w, x_t, F_t, rho_sk)
+    fuselage = Fuselage(stringer, n_str, length, t, D, weight_dist, x_w, F_w, x_t, F_t, rho_sk, sigma_y, buckling_factor)
     return fuselage
 
 
 if __name__ == "__main__":
-    fuselage = create_fuselage()
+    t_sk = 0.003
+    n_str = 8
+    fuselage = create_fuselage(t_sk, n_str)
     fuselage.graphs()
     print(fuselage.max_von_mises())
     print(fuselage.weight)
+    print(fuselage.is_failing())

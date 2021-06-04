@@ -20,7 +20,7 @@ poisson = 0.33
 AL7040 = Material(density, E, G, sigma_y, poisson)
 
 def make_wingbox(t_skin, n_str, str_size, material, n, type):
-
+    L_D = 9.64
     w_ac = 84516
     if type == 'wing':
         b = 20
@@ -38,10 +38,19 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         w_box = 0.5
 
     #wing parameters
+    w_L_D = L_D
     w_ly_e = 0.2 * b / 2
     w_lz_e = h_box / 2
-    w_w_engine = 200 * 9.81
-    w_T_engine = 1300 * 1000 / 90
+    w_engine = 130
+    w_radiator = 100
+    w_prop = 80
+    w_w_engine = (w_engine + w_radiator + w_prop) * 9.81
+    powersetting = 0.5
+    w_T_engine = w_ac / w_L_D / 2 / powersetting
+    w_ly_fc = w_ly_e
+    w_w_fc = 140
+    w_ly_bat = w_ly_e
+    w_w_bat = 135
     w_ly_hld = 0.3 * b / 2
     w_lx_hld = w_box / 2
     w_F_hld = 0  # 15000
@@ -49,38 +58,47 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     w_lx_el = w_box / 2
     w_F_el = 0
     w_w_wing = w_ac / b * n
-    w_L_D = 12
     w_Mh = 0
     w_lz_h = 0
 
     #horizontal tail parameters
+    h_L_D = L_D
     h_ly_e = 0
     h_lz_e = 0
     h_w_engine = 0
     h_T_engine = 0
+    h_ly_fc = 0
+    h_w_fc = 0
+    h_ly_bat = 0
+    h_w_bat = 0
     h_ly_hld = 0
     h_lx_hld = 0
     h_F_hld = 0  # 15000
     h_ly_el = b / 2 / 2  # y position of the elevator
     h_lx_el = w_box / 2  # x position of the elevator
     h_F_el = 1000  # elevator force
-    h_w_wing = w_ac / b * n / 5  # Lift of the horizontal tail
+    h_w_wing = 3500
     h_L_D = 12
     h_Mh = 0
     h_lz_h = 0
 
     #vertical tail parameters
+    v_L_D = L_D
     v_ly_e = 0
     v_lz_e = 0
     v_w_engine = 0
     v_T_engine = 0
+    v_ly_fc = 0
+    v_w_fc = 0
+    v_ly_bat = 0
+    v_w_bat = 0
     v_ly_hld = 0
     v_lx_hld = 0
     v_F_hld = 0  # 15000
-    v_ly_el = b / 2 / 2  # z position of the rudder
-    v_lx_el = w_box / 2  # x position of the rudder
-    v_F_el = 1000  # elevator force
-    v_w_wing = w_ac / b * n / 5  # Lift of the horizontal tail
+    v_ly_el = b / 2 / 2
+    v_lx_el = w_box / 2
+    v_F_el = 1000
+    v_w_wing = 17500 / b * n / 5
     v_L_D = 12
     v_Mh = h_F_el * h_lx_el
     v_lz_h = 0.5
@@ -147,6 +165,10 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         lz_e = w_lz_e
         w_engine = w_w_engine
         T_engine = w_T_engine
+        ly_fc = w_ly_fc
+        w_fc = w_w_fc
+        ly_bat = w_ly_bat
+        w_bat = w_w_bat
         ly_hld = w_ly_hld
         lx_hld = w_lx_hld
         F_hld = w_F_hld
@@ -163,6 +185,10 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         lz_e = h_lz_e
         w_engine = h_w_engine
         T_engine = h_T_engine
+        ly_fc = h_ly_fc
+        w_fc = h_w_fc
+        ly_bat = h_ly_bat
+        w_bat = h_w_bat
         ly_hld = h_ly_hld
         lx_hld = h_lx_hld
         F_hld = h_F_hld
@@ -179,6 +205,10 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         lz_e = v_lz_e
         w_engine = v_w_engine
         T_engine = v_T_engine
+        ly_fc = v_ly_fc
+        w_fc = v_w_fc
+        ly_bat = v_ly_bat
+        w_bat = v_w_bat
         ly_hld = v_ly_hld
         lx_hld = v_lx_hld
         F_hld = v_F_hld
@@ -193,7 +223,7 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
 
 
     return wingbox(stringer_list, root_crosssection, l_w, taper, density_AL, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
-                      lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, lz_h, n, type)
+                      lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, lz_h, ly_fc, w_fc, ly_bat, w_bat, n, type)
 
 
 if __name__ == "__main__":
