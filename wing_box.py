@@ -196,9 +196,9 @@ class crosssection:
         sigma_panel = (sigma_cc_str*A_str+sigma_cc_sk*A_sk)/(A_str+A_sk)
         return sigma_panel
 
-    def graph_stress(self, y, Vx, Vz, Mx, Mz, T):
+    def graph_stress(self, y, Vx, Vz, Mx, Mz, T, sigma_F):
         stress = Stress(self.local_height , self.local_width , self.I_zz, self.I_xx, self.local_t,
-                        Vx, Vz, Mx, Mz, T, self.x_centroid, self.z_centroid)
+                        Vx, Vz, Mx, Mz, T, self.x_centroid, self.z_centroid, sigma_F)
         fig, axs = plt.subplots(2, 3, figsize=(20,10))
         fig.suptitle(f'Different stresses over the cross section, at y = {y}')
         stress.plot_bending_stress_x(fig, axs[0, 0], f'Bending stress due to Mx')
@@ -300,7 +300,7 @@ class stringer:
 
 class wingbox:
     def __init__(self, stringers, cross_section, length, taper, material_density, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
-                 lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, lz_h, ly_fc, w_fc, ly_bat, w_bat, n, type):
+                 lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, F_h, lz_h, ly_fc, w_fc, ly_bat, w_bat, n, type):
         self.type = type
         self.stringers = stringers
         self.cross_section = cross_section
@@ -327,12 +327,14 @@ class wingbox:
         self.F_hld = F_hld
         self.F_el = F_el
         self.Mh = Mh
+        self.F_h = F_h       
         self.lz_h = lz_h
         self.n = n
         self.ly_fc = ly_fc
         self.w_fc = w_fc
         self.ly_bat = ly_bat
         self.w_bat = w_bat
+
 
     def local_crosssection(self, y):
         return crosssection(self.stringers, self.skins, self.taper, y, self.length)
@@ -393,7 +395,7 @@ class wingbox:
 
     def momentz(self, y):
         Ra = self.w_wing*(1/self.L_D) * self.length - self.T_engine
-        M0 = (self.T_engine * self.ly_e) - (self.w_wing*(1/self.L_D) * (self.length ** 2) / 2) + self.Mh
+        M0 = (self.T_engine * self.ly_e) - (self.w_wing*(1/self.L_D) * (self.length ** 2) / 2) - self.Mh
         M = (Ra*y+M0-(self.w_wing*(1/self.L_D)/2)*y**2+(self.T_engine*Macaulay(y,self.ly_e,1))) + self.Mh * Macaulay(y,self.lz_h,0)
         return M
 
@@ -547,6 +549,12 @@ class wingbox:
         self.graph(self.local_Ixx, 'Ixx over the span', axs[0,1])
         self.graph(self.local_Izz, 'Izz over the span', axs[1, 1])
         plt.show()
+        
+    def sigma_F(self, y):
+        if y < self.lz_h:
+            return self.F_h / self.local_crosssection(y).area
+        else:
+            return 0
 
     def graph_stress(self, y):
         Vx = self.shearx(y)
@@ -554,7 +562,7 @@ class wingbox:
         Mx = self.momentx(y)
         Mz = self.momentz(y)
         T = self.Torsiony(y)
-        self.local_crosssection(y).graph_stress(y, Vx, Vz, Mx, Mz, T)
+        self.local_crosssection(y).graph_stress(y, Vx, Vz, Mx, Mz, T, self.sigma_F(y))
 
     def get_max_stress(self):
         y_max = None
@@ -574,7 +582,7 @@ class wingbox:
             T =  self.Torsiony(i)
             x_centroid = cross_section.x_centroid
             z_centroid = cross_section.z_centroid
-            stress = Stress(h, w, Izz, Ixx, t, Vx, Vz,Mx, Mz, T, x_centroid, z_centroid)
+            stress = Stress(h, w, Izz, Ixx, t, Vx, Vz,Mx, Mz, T, x_centroid, z_centroid, self.sigma_F(i))
             if stress.max_von_mises() > max_stress:
                 max_stress = stress.max_von_mises()
                 y_max = i
@@ -594,7 +602,7 @@ class wingbox:
         T =  self.Torsiony(y)
         x_centroid = cross_section.x_centroid
         z_centroid = cross_section.z_centroid
-        stress = Stress(h, w, Izz, Ixx, t, Vx, Vz,Mx, Mz, T, x_centroid, z_centroid)
+        stress = Stress(h, w, Izz, Ixx, t, Vx, Vz,Mx, Mz, T, x_centroid, z_centroid, self.sigma_F(y))
         return stress.max_bending_xz()
     
     def max_shear_stress(self, y):
@@ -611,7 +619,7 @@ class wingbox:
         T =  self.Torsiony(y)
         x_centroid = cross_section.x_centroid
         z_centroid = cross_section.z_centroid
-        stress = Stress(h, w, Izz, Ixx, t, Vx, Vz,Mx, Mz, T, x_centroid, z_centroid)
+        stress = Stress(h, w, Izz, Ixx, t, Vx, Vz,Mx, Mz, T, x_centroid, z_centroid, self.sigma_F(y))
         return stress.max_shear_total()
         
     

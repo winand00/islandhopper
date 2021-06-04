@@ -17,7 +17,7 @@ def iterate_fuselage(t_skin, n_str):
 
 
 
-n_str = np.arange(4, 20, 4)
+n_str = np.arange(12, 40, 4)
 t_skin = np.arange(0.002, 0.006, 0.001)
 
 print(iterate_fuselage(t_skin, n_str))

@@ -22,18 +22,23 @@ AL7040 = Material(density, E, G, sigma_y, poisson)
 def make_wingbox(t_skin, n_str, str_size, material, n, type):
     L_D = 9.64
     w_ac = 84516
+    b_wing = 20
+    b_vert = 3
+    b_hor = 3
+    V = 90
+    S_w = 45
     if type == 'wing':
-        b = 20
+        b = b_wing
         h_box = 0.4
         w_box = 1.5
 
     if type == 'vertical':
-        b = 3
+        b = b_vert
         h_box = 0.1
         w_box = 0.5
 
     if type == 'horizontal':
-        b = 3
+        b = b_hor
         h_box = 0.1
         w_box = 0.5
 
@@ -56,10 +61,11 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     w_F_hld = 0  # 15000
     w_ly_el = 0.8 * b / 2
     w_lx_el = w_box / 2
-    w_F_el = 0
+    w_F_el = 0.5*1.225*V**2*S_w*0.25 / w_box
     w_w_wing = w_ac / b * n
     w_Mh = 0
     w_lz_h = 0
+    w_F_h = 0
 
     #horizontal tail parameters
     h_L_D = L_D
@@ -77,10 +83,10 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     h_ly_el = b / 2 / 2  # y position of the elevator
     h_lx_el = w_box / 2  # x position of the elevator
     h_F_el = 1000  # elevator force
-    h_w_wing = 3500
-    h_L_D = 12
+    h_w_wing = 3500 / b
     h_Mh = 0
     h_lz_h = 0
+    h_F_h = 0
 
     #vertical tail parameters
     v_L_D = L_D
@@ -99,9 +105,10 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     v_lx_el = w_box / 2
     v_F_el = 1000
     v_w_wing = 17500 / b * n / 5
-    v_L_D = 12
     v_Mh = h_F_el * h_lx_el
-    v_lz_h = 0.5
+    v_lz_h = 3
+    v_F_h = -h_w_wing * b_hor
+     
 
     # skin(height, width, x_coordinate, z_coordinate)
     # coordinates are the bottom left point of the skin
@@ -179,6 +186,7 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         L_D = w_L_D
         Mh = w_Mh
         lz_h = w_lz_h
+        F_h = w_F_h
 
     if type == 'horizontal':
         ly_e = h_ly_e
@@ -199,6 +207,7 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         L_D = h_L_D
         Mh = h_Mh
         lz_h = h_lz_h
+        F_h = h_F_h
 
     if type == 'vertical':
         ly_e = v_ly_e
@@ -219,11 +228,12 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         L_D = v_L_D
         Mh = v_Mh
         lz_h = v_lz_h
+        F_h = v_F_h
 
 
 
     return wingbox(stringer_list, root_crosssection, l_w, taper, density_AL, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
-                      lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, lz_h, ly_fc, w_fc, ly_bat, w_bat, n, type)
+                      lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, F_h, lz_h, ly_fc, w_fc, ly_bat, w_bat, n, type)
 
 
 if __name__ == "__main__":

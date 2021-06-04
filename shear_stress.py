@@ -12,7 +12,7 @@ h = 1
 w =1
 
 class Stress:
-    def __init__(self, h, w, Izz, Ixx, t, Vx, Vz, Mx, Mz, T, x_centroid, z_centroid):
+    def __init__(self, h, w, Izz, Ixx, t, Vx, Vz, Mx, Mz, T, x_centroid, z_centroid, sigma_F):
         self.h = h
         self.w = w
         self.Izz = Izz
@@ -25,6 +25,7 @@ class Stress:
         self.T = T
         self.x_centroid = x_centroid
         self.z_centroid = z_centroid
+        self.sigma_F = sigma_F
 
     def von_mises(self, x ,z):
         return np.sqrt(self.bendingstress_xz(x, z) ** 2 + 3 * self.shear_total(x, z) **2)
@@ -37,14 +38,20 @@ class Stress:
         return max(stresses)
 
     def bendingstress_x(self,x, z):
-        return self.Mx*(z-self.z_centroid)/self.Ixx
+        sigma = self.Mx*(z-self.z_centroid)/self.Ixx
+        sigma += self.sigma_F
+        return sigma
 
     def bendingstress_z(self, x, z):
-        return -self.Mz * (x - self.x_centroid) / self.Izz
+        sigma = -self.Mz * (x - self.x_centroid) / self.Izz
+        sigma += self.sigma_F
+        return sigma
 
     def bendingstress_xz(self, x, z):
-        return self.Mx*(z-self.z_centroid)/self.Ixx - self.Mz * (x - self.x_centroid) / self.Izz
-
+        sigma = self.Mx*(z-self.z_centroid)/self.Ixx - self.Mz * (x - self.x_centroid) / self.Izz
+        sigma += self.sigma_F
+        return sigma
+        
     def max_bending_xz(self):
         stresses = []
         x, z = self.get_xz(10)
