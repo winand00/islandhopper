@@ -66,7 +66,7 @@ if __name__ == '__main__':
     Cl_Ah = 2.4- Cl_h #!
 
     # True ShS
-    ShS_true = 12 / 45
+    ShS_true = 11.5 / 45
 
     # Cg locations Hopper from loading diagram
     min_x_cg, max_x_cg = cgboundaries() 

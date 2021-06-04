@@ -244,7 +244,7 @@ weight_engines = 2 * (133 + 4 * 12 + 70)        #2 times: 1 engine, 4 inverters,
 
 #--------------------Centre of gravity inputs--------------------------------------
 #cg in meters from front of the plane
-cg_wing = 5.55
+cg_wing = 5.6       #5.256 sized to l410
 cg_hydrogen_tank = 6.5
 
 cg_fuel_cell = cg_wing
