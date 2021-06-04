@@ -28,7 +28,7 @@ def controllability_line(xbar_ac, cbar, Cl_h, Cl_Ah, l_h, VhV, Cm_ac):
 
 if __name__ == '__main__':
     # Set Hopper values
-    M = 0.4
+    M = 0.274
     beta = np.sqrt(1-M*M)
     eta = 0.95
     lambda_h = 0

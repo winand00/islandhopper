@@ -73,7 +73,7 @@ class Parameters1:
         self.CD0_tail = 0.006           # CD0 tail [-]
         self.S_tail = 9.88 * (45/35.18)              # Surface area tail [m^2] (sized with same A, S and chord of L-410)
         self.A_tail = 6.73 * (9 / 11.45)               # Aspect ratio [-]
-        self.e_tail = 0.8               # Oswald effiency tail [-]
+        self.e_tail = 0.7               # Oswald effiency tail [-]
 
         #Fuselage option 1
         self.CL_fl = 0.0              # CL fuselage [-] (can be neglected)
@@ -120,7 +120,7 @@ class Parameters2:
         self.CD0_tail = 0.006  # CD0 tail [-]
         self.S_tail = 9.88 * (45 / 35.18)  # Surface area tail [m^2] (sized with same A, S and chord of L-410)
         self.A_tail = 6.73 * (9 / 11.45)  # Aspect ratio [-]
-        self.e_tail = 0.8  # Oswald effiency tail [-]
+        self.e_tail = 0.7  # Oswald effiency tail [-]
 
         # Fuselage option 2
         self.CL_fl = 0.0  # CL fuselage [-] (can be neglected)
