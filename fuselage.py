@@ -221,13 +221,16 @@ class Fuselage:
         plt.show()
 
     def is_failing(self):
-        return self.max_von_mises() > self.sigma_y or self.skin_buckling()
+        return self.max_von_mises() > self.sigma_y or self.skin_buckling() or self.is_crippling()
     
     def skin_buckling(self):
         Ks = 4
         w = self.skin_width()
         tau_cr = Ks * self.E * (self.t/w)**2
         return tau_cr < self.max_shear_stress()
+
+    def is_crippling(self):
+        return self.max_bending_stress() > self.panel_crippling()
         
     def skin_width(self):
         return self.D * np.pi / len(self.stringers)
