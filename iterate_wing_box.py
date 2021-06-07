@@ -18,7 +18,7 @@ def iterate_wing_box(t_skin, n_str, str_size, material, n, type):
 
 type = 'wing'
 size_str = np.arange(0.03, 0.06, 0.01)
-n_str = np.arange(0, 5, 1)
-t_skin = np.arange(0.003, 0.005, 0.001)
+n_str = np.arange(0, 8, 1)
+t_skin = np.arange(0.003, 0.005, 0.0005)
 n = n_ult_pos
 print(iterate_wing_box(t_skin, n_str, size_str, AL7040, n, type))

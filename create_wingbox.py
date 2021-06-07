@@ -83,7 +83,7 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     h_ly_el = b / 2 / 2  # y position of the elevator
     h_lx_el = w_box / 2  # x position of the elevator
     h_F_el = 1000  # elevator force
-    h_w_wing = 3500 / b
+    h_w_wing = n * 3500 / b
     h_Mh = 0
     h_lz_h = 0
     h_F_h = 0
@@ -237,7 +237,7 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
 
 
 if __name__ == "__main__":
-    type = 'vertical'
+    type = 'wing'
     wingbox = make_wingbox(0.004, 10, 0.03, AL7040, n_ult_pos, type)
     # wingbox.plot_crosssection(5)
     # plt.show()

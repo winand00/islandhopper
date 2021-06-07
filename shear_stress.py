@@ -202,7 +202,8 @@ class Stress:
 
         ax.set_xlim(np.min(x) - 0.2*self.w, np.max(x) +0.2*self.w)
         ax.set_ylim(np.min(ys)-0.2*self.h, np.max(ys)+0.2*self.h)
-
+        ax.set_xlabel("x [m]")
+        ax.set_ylabel("z [m]")
         z = np.array([function(x[i], ys[i]) for i in range(len(ys))])
         points_for_stack = np.array([x, ys]).T.reshape(-1, 1, 2)
         segments_for_coloring = np.concatenate([points_for_stack[:-1], points_for_stack[1:]], axis=1)
@@ -210,6 +211,7 @@ class Stress:
         line_segments.set_array(z)
         ax.set_title(title)
         axcb = fig.colorbar(line_segments, ax = ax)
+        axcb.ax.tick_params(labelsize=12)
         #axcb.set_label('Shear stress')
         bp = ax.add_collection(line_segments)
 
