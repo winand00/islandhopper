@@ -32,7 +32,7 @@ rho_hydr = 70 # [kg/m3]
 d_H_vap = 446100 #J/kg
 BOR_percentage = 0.016 # [-]
 d_T = 293.15 # temp diff between 20 K and 40 C
-h_out = 30 #[W/m2K]
+#h_out = -0.23083#30 #[W/m2K]
 
 def multi_cell_dimensions(m, n, p, R, t_ins, t_polyamide_liner):
     width = m * R * 2 - (m-1) * (y * R)
@@ -132,18 +132,51 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
     tanks_needed = math.ceil(Mass/(volume * rho_hydr))
 
     optimum = False
-    t_ins = 0.01
-    threshold = 0.00001
+    S_cryo = S
+
+    threshold = 0.001
     while not optimum:
-        t_old = t_ins
+
+        S_old = S_cryo
+
+        Q = (Mass * BOR_percentage) * d_H_vap
+        U = Q / (S_cryo * d_T)
+
+        h_out = Q/3600 /S / (-1*d_T)
+
+        t_ins = (1 / U - t / k_comp - 1 / h_out) * k_ins
+
         S_cryo, M_throwaway, t_throwaway = multi_cell_s(m, n, p, R + t_ins)
-        Q = (Mass * (1+BOR_percentage) - Mass)  * d_H_vap
-        U = Q / S_cryo / d_T
-        t_ins = (1 / U - t / k_comp + 1 / h_out) * k_ins
-        delta_t = abs(t_old - t_ins)
+
+        delta_t = abs(S_old - S_cryo)
+
+        print(t_ins)
+
 
         if delta_t < threshold:
             optimum = True
+
+    # optimum = False
+    # t_ins = 1
+    #
+    # threshold = 0.00001
+    # while not optimum:
+    #
+    #     print("t_ins", t_ins)
+    #
+    #
+    #     t_old = t_ins
+    #     S_cryo, M_throwaway, t_throwaway = multi_cell_s(m, n, p, R + t_ins)
+    #     Q = (Mass * BOR_percentage)  * d_H_vap
+    #     U = Q / (S_cryo * d_T)
+    #     t_ins = (1 / U - t / k_comp - 1 / h_out) * k_ins
+    #     delta_t = abs(t_old - t_ins)
+    #
+    #     print("delta", delta_t)
+    #
+    #
+    #     if delta_t < threshold:
+    #         optimum = True
 
 
     M_insulation = rho_ins * t_ins * S_cryo
