@@ -105,31 +105,84 @@ def design_loads():
     lf_pos = max(n_pos_C, n_pos_D, n_pos_B, 2.9278)
     lf_neg = min(n_neg_C, n_neg_D, n_neg_B, -1.171)
     lf_pos_flaps = max(n_pos_F, 2)
+
+    # Plot loading diagram
+    fig, ax = plt.subplots()
+
+    # Get 2% margin lines:
+
+    # Manoeuvre lines
+    VA = sqrt(2.9278 * W / (S * rho * 0.5 * CL_clean))
+    V_VA = np.arange(0, VA + 0.6, 1)
+    n_VA = CL_clean / (W/S) * 0.5 * rho * V_VA **2
+    plt.plot(V_VA,n_VA,color='k')
+    V_VD = np.arange(VA, VD, 1)
+    n_VD = 2.9278 * np.ones(len(V_VD))
+    plt.plot(V_VD,n_VD,color='k')
+    V_VS = np.arange(0, VS1 + 1, 1)
+    n_VS = - CL_clean / (W/S) * 0.5 * rho * V_VS **2 * 1.16
+    plt.plot(V_VS,n_VS,color='k')
+    V_VC = np.arange(VS1, VC, 1)
+    n_VC = -1.171 * np.ones(len(V_VC))
+    plt.plot(V_VC,n_VC,color='k')
+    V_VD = np.arange(VC, VD + 1, 1)
+    n_VD = -1.171 + 1.171 / (VD-VC) * (V_VD - VC)
+    plt.plot(V_VD,n_VD,color='k')
+
+    # Gust lines
+    V_VB = np.arange(0, VB, 1)
+    n_VB = n_pos_B / VB * V_VB
+    plt.plot(V_VB, n_VB, color='r')
+    V_VBVC = np.arange(VB, VC, 1)
+    n_VBVC = n_pos_B + (n_pos_C - n_pos_B) / (VC - VB) * (V_VBVC - VB)
+    plt.plot(V_VBVC, n_VBVC, color='r')
+    n_VCVD = n_pos_C + (n_pos_D - n_pos_C) / (VD - VC) * (V_VD - VC)
+    plt.plot(V_VD, n_VCVD, color='r')
+    n_VB_neg = n_neg_B / VB * V_VB
+    plt.plot(V_VB, n_VB_neg, color='r')
+    n_VBVC_neg = n_neg_B + (n_neg_C - n_neg_B) / (VC - VB) * (V_VBVC - VB)
+    plt.plot(V_VBVC, n_VBVC_neg, color='r')
+    n_VCVD_neg = n_neg_C + (n_neg_D - n_neg_C) / (VD - VC) * (V_VD - VC)
+    plt.plot(V_VD, n_VCVD_neg, color='r')
+    plt.vlines(x=VD, ymin=0, ymax=2.9278, colors='k')
+    #plt.axvline(VD, ymin=0, ymax=2.9278, color='black', linestyle='-')
+    plt.title('Load Diagram Hopper')
+    plt.xlabel('V [m/s]')
+    plt.ylabel('n [-]')
+    plt.ylim((-1.5, 3.2))
+    plt.xlim(0, VD + 10)
+    plt.xticks(np.arange(0, VD + 10, 10))
+    plt.yticks(np.arange(-1.5, 3.2, 0.5))
+    ax.set(facecolor='w')
+    # Legend:
+    #plt.legend(loc=2, prop={'size': 8})
+    plt.grid(axis='y')
+
+
     return lf_pos, lf_neg, lf_pos_flaps, delta_L
 
+
 def tail_load_elevator():
-    delta_n = 2             # load factor increment
+    delta_n = lf_pos             # load factor increment
     M = 8618.25503  # [kg]
     g = 9.80665
     x_cg_ac = 0.5  # ???   # [m] distance from ac to cg
-    l_t = 6  # ???         # tail arm
-    S_h_t = 5   # ???      # hor tail area
+    l_t = 9  # ???         # tail arm
+    S_h_t = 6   # ???      # hor tail area
     S = 45                 # wing surface
     aht = 2   # ???        # lift curve slope hor tail
     a = 3     # ???        # lift curve slope wing
     deda = 0.7             # downwash change with alpha
     rho_zero = 1.225       # density sealevel
 
-
     # Change in tail load due to elevator deflection
     delta_P = delta_n * M * g * ((x_cg_ac/l_t) - (S_h_t/S) * ((aht/a) * (1-deda) - rho_zero/2 * (S_h_t * aht * l_t / M)))
-
-
     return delta_P
 
 if __name__ == "__main__":
-    lf_pos, lf_min, v, b, s = design_loads()
-    print(lf_pos, lf_min)
+    lf_pos, lf_min, v, b = design_loads()
+    fsadf = tail_load_elevator()
+    plt.show()
 
 
 
