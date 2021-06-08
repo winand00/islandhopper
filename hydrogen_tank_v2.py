@@ -10,12 +10,12 @@ t_ply = 0.00014       #[m] #Table 4-3
 t_metal_liner = 0.001
 t_polyamide_liner = 0.001
 
-rho_comp = 2700
+rho_comp = 1800 #2700
 k_comp = 60
-rho_ins = 200
-rho_metal_liner = 1
-rho_polyamide_liner = 1
-k_ins = 0.025
+rho_ins = 32#200
+rho_metal_liner = 2700
+rho_polyamide_liner = 1010
+k_ins = 0.022
 
 y = 1.4
 R_over_t = 130
@@ -27,12 +27,14 @@ i_ratio = 2.5             #(fig 4.23b)   [ratio between 0 degrees fibers and phi
 k_overlap = 0.75          #(fig 5.5)
 BOR = 0.016
 
+
+
 rho_hydr = 70 # [kg/m3]
 
 d_H_vap = 446100 #J/kg
 BOR_percentage = 0.016 # [-]
 d_T = 293.15 # temp diff between 20 K and 40 C
-h_out = 30 #[W/m2K]
+#h_out = -0.23083#30 #[W/m2K]
 
 def multi_cell_dimensions(m, n, p, R, t_ins, t_polyamide_liner):
     width = m * R * 2 - (m-1) * (y * R)
@@ -132,18 +134,51 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
     tanks_needed = math.ceil(Mass/(volume * rho_hydr))
 
     optimum = False
-    t_ins = 0.01
-    threshold = 0.00001
+    S_cryo = S
+
+    threshold = 0.001
     while not optimum:
-        t_old = t_ins
+
+        S_old = S_cryo
+
+        Q = (Mass * BOR_percentage) * d_H_vap
+        U = Q / (S_cryo * d_T)
+
+        h_out = Q/3600 /S / (-1*d_T) #-4.5 #
+
+        t_ins = (1 / U - t / k_comp - 1 / h_out) * k_ins
+
         S_cryo, M_throwaway, t_throwaway = multi_cell_s(m, n, p, R + t_ins)
-        Q = (Mass * (1+BOR_percentage) - Mass)  * d_H_vap
-        U = Q / S_cryo / d_T
-        t_ins = (1 / U - t / k_comp + 1 / h_out) * k_ins
-        delta_t = abs(t_old - t_ins)
+
+        delta_t = abs(S_old - S_cryo)
+
+        print(t_ins)
+
 
         if delta_t < threshold:
             optimum = True
+
+    # optimum = False
+    # t_ins = 1
+    #
+    # threshold = 0.00001
+    # while not optimum:
+    #
+    #     print("t_ins", t_ins)
+    #
+    #
+    #     t_old = t_ins
+    #     S_cryo, M_throwaway, t_throwaway = multi_cell_s(m, n, p, R + t_ins)
+    #     Q = (Mass * BOR_percentage)  * d_H_vap
+    #     U = Q / (S_cryo * d_T)
+    #     t_ins = (1 / U - t / k_comp - 1 / h_out) * k_ins
+    #     delta_t = abs(t_old - t_ins)
+    #
+    #     print("delta", delta_t)
+    #
+    #
+    #     if delta_t < threshold:
+    #         optimum = True
 
 
     M_insulation = rho_ins * t_ins * S_cryo
@@ -197,7 +232,7 @@ class Tank:
               f"Volume single tank [m3] = {self.volume} \n"
               f"\n"
               f"Number of tanks [-] = {self.number} \n"
-              f"Mass all tanks [kg] = {self.number * self.mass_tank_and_insulation} \n"
+              f"Mass all tanks [kg] = {self.number * (self.mass_metal_liner + self.mass_tank_and_insulation + self.mass_polyamide_liner)} \n"
               f"Volume all tanks [m3] = {self.number * self.volume} \n"
               f"\n"
               f"*****REFUEL TIME***** \n"
