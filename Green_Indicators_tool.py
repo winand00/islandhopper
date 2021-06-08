@@ -23,13 +23,13 @@ def recycle(a):
     return GI_1
 
 def Efficiency(a):
-    S = a.S_wing + a.S_tail + a.S_fl + a.S_lg
-    CL = (a.CL_wing * a.S_wing + a.CL_tail * a.S_tail + a.CL_fl * a.S_fl/2) / (S - a.S_lg - a.S_fl)
+    S = a.S_wing + a.S_tail + a.S_fl_wet + a.S_lg
+    CL = (a.CL_wing * a.S_wing + a.CL_tail * a.S_tail) / (S - a.S_lg - a.S_fl_wet)
     C_D_0 = 1.1* (a.CD0_wing * 2*1.07*(a.S_wing - (45/35.18)*(2.07*2.07)) + a.CD0_tail * 1.05*2*(a.S_tail - (45/35.18) * 0.595) + a.CD0_fl * a.S_fl_wet + a.CD0_lg * a.S_lg_wet) / a.S_wing  #Adsee Lift & Drag Estimation slides
-    C_D_i = ( a.S_wing*(a.CL_wing ** 2) / (pi * a.A_wing* a.e_wing) + a.S_tail * (a.CL_tail ** 2) / (pi * a.A_tail* a.e_tail))/(S - a.S_lg - a.S_fl)
+    C_D_i = ( a.S_wing*(a.CL_wing ** 2) / (pi * a.A_wing* a.e_wing) + a.S_tail * (a.CL_tail ** 2) / (pi * a.A_tail* a.e_tail))/(S - a.S_lg - a.S_fl_wet)
     C_D = C_D_0 + C_D_i
     GI_2 = CL / C_D * 1/(a.MTOW + a.dW * a.G) * a.n_prop * a.n_engine * a.n_pmad * a.n_cooling * a.n_fuelcell
-    print(CL/C_D)
+    #print(CL/C_D)
     return GI_2
 
 def Noise(a):
@@ -66,19 +66,18 @@ class Parameters1:
         self.CD0_wing = 0.006           # CD0 wing [-]
         self.S_wing = 45               # Surface area wing [m^2]
         self.A_wing = 9                # Aspect ratio [-]
-        self.e_wing = 0.8               # Oswald effiency wing [-]
+        self.e_wing = 0.7               # Oswald effiency wing [-]
 
         #Tail option 1
         self.CL_tail = 0.55            # CL  tail [-] (Generally use cruise conditions)
         self.CD0_tail = 0.006           # CD0 tail [-]
         self.S_tail = 9.88 * (45/35.18)              # Surface area tail [m^2] (sized with same A, S and chord of L-410)
         self.A_tail = 6.73 * (9 / 11.45)               # Aspect ratio [-]
-        self.e_tail = 0.8               # Oswald effiency tail [-]
+        self.e_tail = 0.7               # Oswald effiency tail [-]
 
         #Fuselage option 1
         self.CL_fl = 0.0              # CL fuselage [-] (can be neglected)
         self.CD0_fl = 0.06              # CD0 fuselage [-]
-        self.S_fl = 72.46  # Surface area fuselage  [m^2]
         self.S_fl_wet = pi * (1.92) ** 2  # Wetted fuselage surface area (frontal area) [m^2]
 
         #Landing Gear option 1
@@ -113,14 +112,14 @@ class Parameters2:
         self.CD0_wing = 0.006  # CD0 wing [-]
         self.S_wing = 45  # Surface area wing [m^2]
         self.A_wing = 9  # Aspect ratio [-]
-        self.e_wing = 0.8  # Oswald effiency wing [-]
+        self.e_wing = 0.7  # Oswald effiency wing [-]
 
         # Tail option 2
         self.CL_tail = 0.55  # CL  tail [-] (Generally use cruise conditions)
         self.CD0_tail = 0.006  # CD0 tail [-]
         self.S_tail = 9.88 * (45 / 35.18)  # Surface area tail [m^2] (sized with same A, S and chord of L-410)
         self.A_tail = 6.73 * (9 / 11.45)  # Aspect ratio [-]
-        self.e_tail = 0.8  # Oswald effiency tail [-]
+        self.e_tail = 0.7  # Oswald effiency tail [-]
 
         # Fuselage option 2
         self.CL_fl = 0.0  # CL fuselage [-] (can be neglected)
