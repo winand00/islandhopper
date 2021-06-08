@@ -10,12 +10,12 @@ t_ply = 0.00014       #[m] #Table 4-3
 t_metal_liner = 0.001
 t_polyamide_liner = 0.001
 
-rho_comp = 2700
+rho_comp = 1800 #2700
 k_comp = 60
-rho_ins = 200
+rho_ins = 32#200
 rho_metal_liner = 1
 rho_polyamide_liner = 1
-k_ins = 0.025
+k_ins = 0.022
 
 y = 1.4
 R_over_t = 130
@@ -26,6 +26,8 @@ phi = 24                  #degrees (fig 4.23b) [layup angle]
 i_ratio = 2.5             #(fig 4.23b)   [ratio between 0 degrees fibers and phi degrees fibres]
 k_overlap = 0.75          #(fig 5.5)
 BOR = 0.016
+
+
 
 rho_hydr = 70 # [kg/m3]
 
@@ -142,7 +144,7 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
         Q = (Mass * BOR_percentage) * d_H_vap
         U = Q / (S_cryo * d_T)
 
-        h_out = Q/3600 /S / (-1*d_T)
+        h_out = Q/3600 /S / (-1*d_T) #-4.5 #
 
         t_ins = (1 / U - t / k_comp - 1 / h_out) * k_ins
 
