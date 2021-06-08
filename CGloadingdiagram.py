@@ -15,9 +15,9 @@ def cgboundaries():
     max_xcg_Hopper = max(loading_diagram()[2]) + 0.02
     return min_xcg_Hopper, max_xcg_Hopper
 
+MAC = 2
 def loading_diagram():
-    # Define Hopper input parameters
-    MAC                     = 2    #??                                          # [m]
+    # Define Hopper input parameters                                          # [m]
     MAC_start               = cg_wing- 0.5*MAC                                   # [m]
     OEW                     = W_OEW                                          # from class2 script [kg]
     X_oew_abs               = cg_OEW                                       # absolute value of xcg oew
@@ -171,8 +171,9 @@ def plot_loadings():
     plt.show()
 
 if __name__ == "__main__":
-    print('Minimum x_cg Hopper:', min_xcg_Hopper)
-    print('Maximum x_cg Hopper:', max_xcg_Hopper)
-    print()
+    print('Minimum x_cg Hopper [percentage of MAC]:', min_xcg_Hopper)
+    print('Maximum x_cg Hopper [percentage of MAC]:', max_xcg_Hopper)
+    print('Minimum x_cg Hopper [m]:', cg_wing - MAC/2 + min_xcg_Hopper*MAC)
+    print('Maximum x_cg Hopper [m]:', cg_wing - MAC/2 + max_xcg_Hopper*MAC)
 
     plot_loadings()

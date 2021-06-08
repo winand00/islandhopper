@@ -187,7 +187,7 @@ L_over_D = 9.24  #Lift over drag
 #Vertical tail inputs
 H_t = 1.5/4     #Horizontal tail height above fuselage [m]
 H_v = 1     # Vertical tail height above fuselage [m]
-S_vt = 11.9    #Surface area vertical tail [m^2]
+S_vt = 11.5    #Surface area vertical tail [m^2]
 Sweep_angle_vt =   (45/180)*pi     #Sweep angle vertical tail [rad]
 A_v =  1    #Aspect ratio vertical tail
 
