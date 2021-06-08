@@ -1,5 +1,8 @@
 import unittest
-import hydrogen_tank_v2
+from hydrogen_tank_v2 import Tank
+
+import numpy as np
+import math
 
 # CONSTANTS
 k_overlap = 0.75      #Used in thesis
@@ -36,25 +39,34 @@ d_T = 293.15 # temp diff between 20 K and 40 C
 
 class TestHydrogenTank(unittest.TestCase):
 
-    def test_multi_cell_dimensions(self):
-        # m, n, p, R, t_ins, t_polyamide_liner
-        # t_polyamide_liner = 0.001
-        result = hydrogen_tank_v2.multi_cell_dimensions(2, 2, 2, 0.5, 0.1, 0.01)
+    def setUp(self):
+        # self.tank_1 = Tank(20, 20, 20, 0.2, 1) # Many spheres
+        # self.tank_2 = Tank(2, 2, 2, 0.01, 1)   # Small radius
+        # self.tank_3 = Tank(2, 2, 2, 10, 1)      # Large radius
+        # self.tank_4 = Tank(1, 1, 1, 1, 1)      # Sphere
+        # self.tank_5 = Tank(1, 1, 10, 1, 1)      # Long line
 
-    def test_multi_cell_v(self):
-        # (m, n, p, R)
-        # result = hydrogen_tank_v2.multi_cell_v()
-        pass
 
-    def test_multi_cell_s(self):
-        # (m, n, p, R)
-        # result = hydrogen_tank_v2.multi_cell_s()
-        pass
-
-    def test_multi_cell_m_incl_insulation(self):
-        # (m, n, p, R, Mass)
-        # result = hydrogen_tank_v2.multi_cell_m_incl_insulation()
-        pass
+    # def test_multi_cell_dimensions(self):
+    #     # m, n, p, R, t_ins, t_polyamide_liner
+    #     # t_polyamide_liner = 0.001
+    #     result = hydrogen_tank_v2.multi_cell_dimensions(2, 2, 2, 100, 1, 1)
+    #     self.assertTrue(result[0] == result[1] == result[2])
+    #
+    # def test_multi_cell_v(self):
+    #     # (m, n, p, R)
+    #     # result = hydrogen_tank_v2.multi_cell_v()
+    #     pass
+    #
+    # def test_multi_cell_s(self):
+    #     # (m, n, p, R)
+    #     # result = hydrogen_tank_v2.multi_cell_s()
+    #     pass
+    #
+    # def test_multi_cell_m_incl_insulation(self):
+    #     # (m, n, p, R, Mass)
+    #     # result = hydrogen_tank_v2.multi_cell_m_incl_insulation()
+    #     pass
 
 
 if __name__ == "__main__":

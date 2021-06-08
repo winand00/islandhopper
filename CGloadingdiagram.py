@@ -143,7 +143,8 @@ def loading_diagram():
 
 min_xcg_Hopper = min(loading_diagram()[0]) - 0.02
 max_xcg_Hopper = max(loading_diagram()[2]) + 0.02
-
+min_xcg_Hopper_nose = cg_wing - MAC/2 + min_xcg_Hopper*MAC
+max_xcg_Hopper_nose = cg_wing - MAC/2 + max_xcg_Hopper*MAC
 def plot_loadings():
     fig, ax = plt.subplots()
     plt.plot(loading_diagram()[0][0:3]  , loading_diagram()[1][0:3]  , label = 'Cargo', color='b')
