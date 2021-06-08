@@ -13,8 +13,8 @@ t_polyamide_liner = 0.001
 rho_comp = 1800 #2700
 k_comp = 60
 rho_ins = 32#200
-rho_metal_liner = 1
-rho_polyamide_liner = 1
+rho_metal_liner = 2700
+rho_polyamide_liner = 1010
 k_ins = 0.022
 
 y = 1.4
@@ -232,7 +232,7 @@ class Tank:
               f"Volume single tank [m3] = {self.volume} \n"
               f"\n"
               f"Number of tanks [-] = {self.number} \n"
-              f"Mass all tanks [kg] = {self.number * self.mass_tank_and_insulation} \n"
+              f"Mass all tanks [kg] = {self.number * (self.mass_metal_liner + self.mass_tank_and_insulation + self.mass_polyamide_liner)} \n"
               f"Volume all tanks [m3] = {self.number * self.volume} \n"
               f"\n"
               f"*****REFUEL TIME***** \n"
