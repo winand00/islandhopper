@@ -7,7 +7,7 @@ from Class2_weight_estimation import cg_OEW,W_OEW,cg_wing
 '''
 Function 'loading_diagram' can be used to plot the loading diagram of either the RJ85 or the RJXX.
 Inputs of function are:
-: Hopper (input as a string)f
+: Hopper (input as a string)
 plot: single or combined (input as a string)
 '''
 def cgboundaries():
