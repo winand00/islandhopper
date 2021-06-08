@@ -132,14 +132,14 @@ def design_loads():
 
     # Gust lines
     V_VB = np.arange(0, VB, 1)
-    n_VB = n_pos_B / VB * V_VB
+    n_VB = 1 + (n_pos_B -1) / VB * V_VB
     plt.plot(V_VB, n_VB, color='r')
     V_VBVC = np.arange(VB, VC, 1)
     n_VBVC = n_pos_B + (n_pos_C - n_pos_B) / (VC - VB) * (V_VBVC - VB)
     plt.plot(V_VBVC, n_VBVC, color='r')
     n_VCVD = n_pos_C + (n_pos_D - n_pos_C) / (VD - VC) * (V_VD - VC)
     plt.plot(V_VD, n_VCVD, color='r')
-    n_VB_neg = n_neg_B / VB * V_VB
+    n_VB_neg = 1 + (n_neg_B - 1) / VB * V_VB
     plt.plot(V_VB, n_VB_neg, color='r')
     n_VBVC_neg = n_neg_B + (n_neg_C - n_neg_B) / (VC - VB) * (V_VBVC - VB)
     plt.plot(V_VBVC, n_VBVC_neg, color='r')
