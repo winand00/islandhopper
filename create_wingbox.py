@@ -1,5 +1,6 @@
 from wing_box import wingbox, stringer, skin, crosssection, Material
 from design_loads import design_loads, tail_load_elevator
+import wingbox_inputs as wb
 
 n_max_pos, n_max_neg,_,_ = design_loads()
 n_ult_pos, n_ult_neg = 1.5*n_max_pos, 1.5*n_max_neg
@@ -19,28 +20,34 @@ sigma_y = 450 * 10 ** 6
 poisson = 0.33
 AL7040 = Material(density, E, G, sigma_y, poisson)
 
+
+
+
 def make_wingbox(t_skin, n_str, str_size, material, n, type):
-    L_D = 9.64
+    L_D = wb.L_D
     w_ac = 84516
-    b_wing = 20
-    b_vert = 3
-    b_hor = 3
-    V = 90
+    b_wing = wb.b_wing
+    b_vert = wb.b_vert
+    b_hor = wb.b_hor
+    V = wb.V_cruise
     S_w = 45
     if type == 'wing':
         b = b_wing
-        h_box = 0.4
-        w_box = 1.5
+        h_box = wb.h_wing
+        w_box = wb.w_wing
+        taper = wb.taper_wing  
 
     if type == 'vertical':
         b = b_vert
-        h_box = 0.1
-        w_box = 0.5
+        h_box = wb.h_vert
+        w_box = wb.w_vert
+        taper = wb.taper_vert
 
     if type == 'horizontal':
         b = b_hor
-        h_box = 0.1
-        w_box = 0.5
+        h_box = wb.h_hor
+        w_box = wb.w_hor
+        taper = wb.taper_hor
 
     #wing parameters
     w_L_D = L_D
@@ -117,7 +124,7 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     skin_left = skin(h_box, t_skin, 0, 0)
     skin_right = skin(h_box, t_skin, w_box, 0)
     skins = [skin_top, skin_bottom, skin_left, skin_right]
-    taper = 0.5  # taper ratio of the wingbox
+
     l_w = b/2  # length of the wingbox
 
 

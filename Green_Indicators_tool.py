@@ -29,7 +29,6 @@ def Efficiency(a):
     C_D_i = ( a.S_wing*(a.CL_wing ** 2) / (pi * a.A_wing* a.e_wing) + a.S_tail * (a.CL_tail ** 2) / (pi * a.A_tail* a.e_tail))/(S - a.S_lg - a.S_fl_wet)
     C_D = C_D_0 + C_D_i
     GI_2 = CL / C_D * 1/(a.MTOW + a.dW * a.G) * a.n_prop * a.n_engine * a.n_pmad * a.n_cooling * a.n_fuelcell
-    #print(CL/C_D)
     return GI_2
 
 def Noise(a):
@@ -96,7 +95,6 @@ class Parameters1:
         self.n_fuelcell = 0.5          #Fuel cell efficiency [-]
 
         #Noise Parameters option 1
-        W_ac_L410 = 8618 / 6600
         self.Pto = 634000 * 2 * (8618/6600)               #Take-off Power [W] (For now from l410 http://www.let.cz/documents/L410NG.pdf)
         self.Dp = 2.3 * (8618/6600)                   #Propeller diameter [m] (For now from l410)
         self.B = 5                      #Number of blades per propeller [-]    (For now from l410)

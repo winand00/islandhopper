@@ -18,7 +18,7 @@ def design_loads():
     g = 9.80665  # [m/s2]
     W = 8618.25503 * 9.80665  # [N]
     rho_zero = 1.225  # sealevel density [kg/m3]
-    rho = 0.6527  # [kg/m3] density from 6096-0 [m]
+    rho = 0.7708#0.6527  # [kg/m3] density from 6096-0 [m]
 
     VC = 31.9426 * sqrt(19000 / (S*10.76391)) * 0.514444 # W/S in lbs/ft2, Value of 31 changes with W/S, see CS-23
     VD = 1.3880 * VC            # Value of 1.38 changes with W/S, see CS-23
@@ -33,6 +33,7 @@ def design_loads():
 
     # Gust load factor at VC
     delta_n_C = (kg*rho_zero*Ude_C*VC*Cl_alpha)/(2*W/S)
+    #delta_n_C_check = kg*Ude_C*3.28*VC*1.944*Cl_alpha/(498*(0.020885*W/S))
     n_pos_C = 1 + delta_n_C
     n_neg_C = 1 - delta_n_C
     """
@@ -58,7 +59,7 @@ def design_loads():
     # Second way of VB calculation, using intersection between stall curve and VB air gust line
     V = np.arange(0, 130, 1)
     n_B_line = 1 + (kg * rho_zero * Ude_B * V * Cl_alpha) / (2 * W / S)
-    n_S_line = 0.5 * rho * V ** 2 * CL_clean / (W/S)  # Assumed CLmax clean is 2
+    n_S_line = 0.5 * rho * V ** 2 * CL_clean / (W/S)
     for i in np.arange(0, 130, 1):
         diff = n_B_line[i] - n_S_line[i]
         if diff > 0 and diff < 0.03:
@@ -95,11 +96,11 @@ def design_loads():
     n_pos_F = 1 + delta_n_F
 
     # Change in tail load due to gusts
-    delta_L_F = kg * Ude_D*3.2808 * VF*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
-    delta_L_C = kg * Ude_C*3.2808 * VC*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
-    delta_L_D = kg * Ude_D*3.2808 * VD*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
+    #delta_L_F = kg * Ude_D*3.2808 * VF*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
+    #delta_L_C = kg * Ude_C*3.2808 * VC*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
+    #delta_L_D = kg * Ude_D*3.2808 * VD*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
 
-    delta_L = max(delta_L_F, delta_L_C, delta_L_D)
+    #delta_L = max(delta_L_F, delta_L_C, delta_L_D)
 
     # Calculate max and minimum load factors
     lf_pos = max(n_pos_C, n_pos_D, n_pos_B, 2.9278)
@@ -158,15 +159,16 @@ def design_loads():
     #plt.legend(loc=2, prop={'size': 8})
     plt.grid(axis='y')
 
-
-    return lf_pos, lf_neg, lf_pos_flaps, delta_L
+    return lf_pos, lf_neg, lf_pos_flaps
 
 
 def tail_load_elevator():
     delta_n = lf_pos             # load factor increment
     M = 8618.25503  # [kg]
     g = 9.80665
-    x_cg_ac = 0.5  # ???   # [m] distance from ac to cg
+    x_cg = 6
+    x_ac = 5.5
+    x_cg_ac = x_cg - x_ac # ???   # [m] distance from ac to cg
     l_t = 9  # ???         # tail arm
     S_h_t = 6   # ???      # hor tail area
     S = 45                 # wing surface
@@ -177,10 +179,11 @@ def tail_load_elevator():
 
     # Change in tail load due to elevator deflection
     delta_P = delta_n * M * g * ((x_cg_ac/l_t) - (S_h_t/S) * ((aht/a) * (1-deda) - rho_zero/2 * (S_h_t * aht * l_t / M)))
+
     return delta_P
 
 if __name__ == "__main__":
-    lf_pos, lf_min, v, b = design_loads()
+    lf_pos, lf_min, v = design_loads()
     fsadf = tail_load_elevator()
     plt.show()
 
