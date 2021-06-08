@@ -180,16 +180,16 @@ W_l = 8618          #Landing design gross weight [kg]    (took 5% of MTOW for no
 #Fuselage inputs
 K_door = 1     #1.0 if no cargo door; = 1.06 if one side cargo door; = 1.12 if two side cargo doors; = 1.12 if aft clamshell door; = 1.25 if two side cargo doors and aft clamshell door
 K_lg = 1.12    # 1.12 if fuselage-mounted main landing gear;= 1.0 otherwise
-L_fus =   8      #Fuselage length excluding tail cap en radome
-S_f =  780 / m2_to_ft2
-L_over_D = 9.2   #Lift over drag
+L_fus =  10      #Fuselage length excluding tail cap en radome [m]
+S_f =  70 * (10/11.5)
+L_over_D = 9.24  #Lift over drag
 
 #Vertical tail inputs
 H_t = 1.5/4     #Horizontal tail height above fuselage [m]
 H_v = 1     # Vertical tail height above fuselage [m]
-S_vt = 6.7 * (45/35.18)    #Surface area vertical tail [m^2]
-Sweep_angle_vt =   (40/180)*pi     #Sweep angle vertical tail [rad]
-A_v =  1.58    #Aspect ratio vertical tail
+S_vt = 11.5    #Surface area vertical tail [m^2]
+Sweep_angle_vt =   (45/180)*pi     #Sweep angle vertical tail [rad]
+A_v =  1    #Aspect ratio vertical tail
 
 #Inputs Horizontal tail
 K_uht = 1           #1.143 for unit (all-moving) horizontal tail; = 1.0 otherwise
@@ -244,7 +244,7 @@ weight_engines = 2 * (133 + 4 * 12 + 70)        #2 times: 1 engine, 4 inverters,
 
 #--------------------Centre of gravity inputs--------------------------------------
 #cg in meters from front of the plane
-cg_wing = 5.55
+cg_wing = 5.6       #5.256 sized to l410
 cg_hydrogen_tank = 6.5
 
 cg_fuel_cell = cg_wing
@@ -297,27 +297,27 @@ cg_OEW = get_mcg(W_OEW,cg_fuel_cell,weight_fuell_cell,cg_hydrogen,weight_hydroge
 
 
 # print("Inputted weights:")
-# print("Weight hydrogen tank and fuell cells and hydrogen =", weight_all_hydrogen_systems, "   % of MTOW:", 100*weight_all_hydrogen_systems/W_dg)
-# print("Weight engines =", weight_engines, "   % of MTOW:", 100*weight_engines/W_dg)
+print("Weight hydrogen tank and fuell cells and hydrogen =", weight_all_hydrogen_systems, "   % of MTOW:", 100*weight_all_hydrogen_systems/W_dg)
+print("Weight engines =", weight_engines, "   % of MTOW:", 100*weight_engines/W_dg)
 #
-# print("\n Calculated weights Class 2:")
-# print("Weight wing =", weight_wing, ",   c.g.:", 100*weight_wing/W_dg)
-# print("Weight avionics =", weight_avionics, ",   %,   c.g.:", 100*weight_avionics/W_dg)
-# print("Weight Landing gear =", weight_landing_gear, ",   c.g.:", 100*weight_landing_gear/W_dg)
-# print("Weight fuselage = ", weight_fuselage, ",   c.g.:", 100*weight_fuselage/W_dg)
-# print("Weight vertical tail = ", weight_vertical_tail, ",   c.g.:", 100*weight_vertical_tail/W_dg)
-# print("Weight horizontal tail = ", weight_horizontal_tail, ",   c.g.:", 100*weight_horizontal_tail/W_dg)
-# print("Weight engine control =", weight_engine_control, ",   c.g.:", 100*weight_engine_control/W_dg)
-# print("Weight furnishing =", weight_furnishing, ",   c.g.:", cg_furnishing, "m")
-# print("Weight handling gear =", weight_handling_gear, ",   c.g.:", 100*weight_handling_gear/W_dg)
-# print("Weight instruments =", weight_instruments, ",   c.g.:", 100*weight_instruments/W_dg)
-# print("Weight airconditioning =", weight_airconditioning, ",   c.g.:", 100*weight_airconditioning/W_dg)
-# print("Weight electrical =", weight_electrical, ",   c.g.:", 100*weight_electrical/W_dg)
-# print("Weight installed Auxiliary power unit=", weight_APUins, ",   c.g.:", 100*weight_APUins/W_dg)
-# print("Weight starter (pneumatic) =", weight_starter, ",   %   c.g.:", 100*weight_starter/W_dg)
-# print("Weight hydraulics =", weight_hydraulics, ",   %   c.g.:", 100*weight_hydraulics/W_dg)
-# print("Weight flight controls =", weight_flight_controls, ",   c.g.:", 100*weight_flight_controls/W_dg)
-# print("Weight lavatory =", weight_lavatory, ",   c.g.:", 100*weight_lavatory/W_dg)
-#print("\n")
+print("\n Calculated weights Class 2:")
+print("Weight wing =", weight_wing, "   ,  % of MTOW:",  100*weight_wing/W_dg, "    ,   c.g.:", cg_wing, "m")
+print("Weight avionics =", weight_avionics, "   ,  % of MTOW:", 100*weight_avionics/W_dg,     "     ,   c.g.:", cg_avionics, "m")
+print("Weight Landing gear =", weight_landing_gear,"    , % of MTOW:",100*weight_landing_gear/W_dg , "  ,   c.g.:", cg_landing_gear, "m")
+print("Weight fuselage = ", weight_fuselage, "  , % of MTOW:",100*weight_fuselage/W_dg , "    ,   c.g.:", cg_fuselage, "m")
+print("Weight vertical tail = ", weight_vertical_tail, "    , % of MTOW:", 100*weight_vertical_tail/W_dg ,  "   ,   c.g.:", cg_vertical_tail, "m")
+print("Weight horizontal tail = ", weight_horizontal_tail, "    , % of MTOW:", 100*weight_horizontal_tail/W_dg,  "  ,   c.g.:", cg_horizontal_tail, "m")
+print("Weight engine control =", weight_engine_control, "   , % of MTOW:", 100*weight_engine_control/W_dg,  "  ,   c.g.:", cg_engine_control, "m")
+print("Weight furnishing =", weight_furnishing, "   , % of MTOW:",100*weight_furnishing/W_dg ,  "  ,   c.g.:", cg_furnishing, "m")
+print("Weight handling gear =", weight_handling_gear, " , % of MTOW:",100*weight_handling_gear/W_dg ,  " ,   c.g.:", cg_handling_gear, "m")
+print("Weight instruments =", weight_instruments, " , % of MTOW:", 100*weight_instruments/W_dg ,  "  ,   c.g.:", cg_instruments, "m")
+print("Weight airconditioning =", weight_airconditioning, " , % of MTOW:", 100*weight_airconditioning/W_dg,  "   ,   c.g.:", cg_airconditioning, "m")
+print("Weight electrical =", weight_electrical, "   , % of MTOW:",100*weight_electrical/W_dg,  "   ,   c.g.:", cg_electrical, "m")
+print("Weight installed Auxiliary power unit=", weight_APUins,  "   , % of MTOW:",100*weight_APUins/W_dg ,  "  ,   c.g.:", cg_APUins, "m")
+print("Weight starter (pneumatic) =", weight_starter,  "    , % of MTOW:", 100*weight_starter/W_dg,  "  ,      c.g.:", cg_starter, "m")
+print("Weight hydraulics =", weight_hydraulics,  "  , % of MTOW:", 100*weight_hydraulics/W_dg,  " ,      c.g.:", cg_hydraulics, "m")
+print("Weight flight controls =", weight_flight_controls,  ", % of MTOW:",100*weight_flight_controls/W_dg ,  "  ,   c.g.:", cg_flight_controls, "m")
+print("Weight lavatory =", weight_lavatory, "   , % of MTOW:",100*weight_lavatory/W_dg ,  "    ,   c.g.:", cg_lavatory, "m")
+print("\n")
 print("Total weight of subsystems (OEW):", W_OEW)
 print("OEW cg =", cg_OEW)

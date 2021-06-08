@@ -28,7 +28,7 @@ def controllability_line(xbar_ac, cbar, Cl_h, Cl_Ah, l_h, VhV, Cm_ac):
 
 if __name__ == '__main__':
     # Set Hopper values
-    M = 0.4
+    M = 0.274
     beta = np.sqrt(1-M*M)
     eta = 0.95
     lambda_h = 0
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     Cl_Ah = 2.4- Cl_h #!
 
     # True ShS
-    ShS_true = 12 / 45
+    ShS_true = 11.5 / 45
 
     # Cg locations Hopper from loading diagram
     min_x_cg, max_x_cg = cgboundaries() 
