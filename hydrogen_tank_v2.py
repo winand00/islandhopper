@@ -152,9 +152,6 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
 
         delta_t = abs(S_old - S_cryo)
 
-        print(t_ins)
-
-
         if delta_t < threshold:
             optimum = True
 
@@ -248,7 +245,7 @@ class Tank:
 
 
 if __name__ == "__main__":
-    a  = Tank(4, 2, 1, 0.25, 111)
+    a  = Tank(2, 2, 2, 5, 111)
     a.properties()
 
 # print('v:', a.volume)

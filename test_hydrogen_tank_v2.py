@@ -40,6 +40,7 @@ class TestHydrogenTank(unittest.TestCase):
         # m, n, p, R, t_ins, t_polyamide_liner
         # t_polyamide_liner = 0.001
         result = hydrogen_tank_v2.multi_cell_dimensions(2, 2, 2, 0.5, 0.1, 0.01)
+        self.assertTrue(result[0] == result[1] == result[2])
 
     def test_multi_cell_v(self):
         # (m, n, p, R)
