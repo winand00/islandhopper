@@ -7,18 +7,20 @@ import matplotlib.pyplot as plt
 
 # -- Definitions -- #
 class Material:
-    def __init__(self, M, RC, n_rc, E_p):
+    def __init__(self, M, RC, E_vir, E_rc , RECD):
         #Recycling Parameters
         self.M = M          # Part weight [kg]
         self.RC = RC        # Recyclability percentage [-]
-        self.n_rc = n_rc    # Recycling energy usage / virgin production energy usage [-]
-        self.E_p = E_p      # Virgin production energy [J/kg]
+        self.E_vir = E_vir  # Embodied energy, primary production [J]
+        self.E_rc = E_rc    # Embodied energy, recycling    [J]
+        self.RECD = RECD    # Percentage of material that is already recycled (0 for both material options if unknown)
         #self.n_m = n_m     # Material scarcity index (Only relevant for batteries)
 
 def recycle(a):
     GI_1 = 0
+
     for i in range(0, len(a), 1):
-        GIsub = (a[i].M*a[i].RC*a[i].n_rc+(1-a[i].RC)*a[i].M)*a[i].E_p
+        GIsub = (a[i].M*a[i].RC*a[i].E_rc + (1-a[i].RC)*a[i].M * a[i].E_vir) * ((1-a[i].RECD) + a[i].RECD* (a[i].E_rc/a[i].E_vir))
         GI_1 = GI_1 + GIsub
     return GI_1
 
@@ -142,8 +144,7 @@ class Parameters2:
 
         # Noise Parameters option 2
         W_ac_L410 = 8618 / 6600
-        self.Pto = 634000 * 2 * (
-                    8618 / 6600)  # Take-off Power [W] (For now from l410 http://www.let.cz/documents/L410NG.pdf)
+        self.Pto = 634000 * 2 * (8618 / 6600)  # Take-off Power [W] (For now from l410 http://www.let.cz/documents/L410NG.pdf)
         self.Dp = 2.3 * (8618 / 6600)  # Propeller diameter [m] (For now from l410)
         self.B = 5  # Number of blades per propeller [-]    (For now from l410)
         self.nrpm = 1950  # Engine RPM [evolutions/minute]   (For now from l410 http://www.let.cz/documents/L410NG.pdf)
@@ -155,15 +156,17 @@ design1 = Parameters1()
 design2 = Parameters2()
 
 
-# Recyclability inputs #
-carbon2 = Material(100, 0.4, 0.5, 20000)
-alluminium2 = Material(600, 0.8, 0.2, 1500)
 
-carbon1 = Material(400, 0.4, 0.5, 20000)
-alluminium1 = Material(100, 0.8, 0.2, 1500)
+# Recyclability inputs , (M, RC, E_vir, E_rc , RECD) Line 12-16 for explanation of symbols
+carbon1 = Material(400, 0.4, 220000, 20000, 0.6)
+alluminium1 = Material(100, 0.8, 10000, 1500, 0.5)
+
+carbon2 = Material(400, 0.4, 220000, 20000, 0.5)
+alluminium2 = Material(100, 0.8, 10000, 1500, 0.6)
+
+
 
 Option1 = [carbon1, alluminium1]
 Option2 = [carbon2, alluminium2]
-
 
 tool(design1, Option1, design2, Option2)
