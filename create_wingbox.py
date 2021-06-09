@@ -20,6 +20,30 @@ sigma_y = 450 * 10 ** 6
 poisson = 0.33
 AL7040 = Material(density, E, G, sigma_y, poisson)
 
+#Aluminum
+density = 2810  # kg/m3, density of aluminium
+E = 71.1 * 10 ** 9
+G = 26.9 * 10 ** 9
+sigma_y = 550 * 10 ** 6
+poisson = 0.33
+AL = Material(density, E, G, sigma_y, poisson)
+
+#Titanium
+density = 4800  # kg/m3, density of aluminium
+E = 110 * 10 ** 9
+G = 90 * 10 ** 9
+sigma_y = 1200 * 10 ** 6
+poisson = 0.31
+Ti = Material(density, E, G, sigma_y, poisson)
+
+#Glare
+density = 2520  # kg/m3, density of aluminium
+E = 67.9 * 10 ** 9
+G = 26.7 * 10 ** 9
+sigma_y = 280 * 10 ** 6
+poisson = 0.33
+Glare = Material(density, E, G, sigma_y, poisson)
+
 
 
 
@@ -33,7 +57,7 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         b = b_wing
         h_box = wb.h_wing
         w_box = wb.w_wing
-        taper = wb.taper_wing  
+        taper = wb.taper_wing
 
     if type == 'vertical':
         b = b_vert
@@ -231,18 +255,18 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
 
 if __name__ == "__main__":
     type = 'wing'
-    wingbox = make_wingbox(0.004, 10, 0.03, AL7040, n_ult_pos, type)
+    wingbox = make_wingbox(0.004, 0, 0.03, AL7040, n_ult_pos, type)
     # wingbox.plot_crosssection(5)
     # plt.show()
     print(wingbox.get_max_stress())
-    # wingbox.graph_properties()
+    wingbox.graph_properties()
 
     wingbox.graphs()
 
     y_max, max_stress = wingbox.get_max_stress()
     print(f'{max_stress/(10**6)} MPa, at y = {y_max} m')
     print(wingbox.weight, 'kg')
-    wingbox.graph_stress(y_max)
+    wingbox.graph_stress(5)
 
     #print(wingbox.max_bending_stress(0))
     #print(wingbox.is_buckling())
