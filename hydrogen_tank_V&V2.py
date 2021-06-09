@@ -128,6 +128,7 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
     S_cryo = S
 
     threshold = 0.001
+    t_result = []
     while not optimum:
 
         S_old = S_cryo
@@ -137,7 +138,27 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
 
         h_out = Q/3600 /S / (-1*d_T) #-4.5 #
 
+
+        # t_ins = (1 / U - t / k_comp - 1 / h_out) * k_ins
+        # t_result.append(t_ins)
+        # print(t_ins)
+
         t_ins = (1 / U - t / k_comp - 1 / h_out) * k_ins
+        if math.isnan(t_ins):
+            break
+
+        t_result.append(t_ins)
+        print(t_ins)
+
+        # except FloatingPointError:
+        #     print('Runtime warning')
+        #     break
+
+        # try:
+        #     S_cryo, M_throwaway, t_throwaway = multi_cell_s(m, n, p, R + t_ins)
+        # except RuntimeWarning:
+        #     print('Runtime warning')
+        #     break
 
         S_cryo, M_throwaway, t_throwaway = multi_cell_s(m, n, p, R + t_ins)
 
@@ -171,11 +192,54 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
 
     M_insulation = rho_ins * t_ins * S_cryo
     M_total = M_structural + M_insulation
-    return M_total, M_structural, M_insulation, S, S_cryo, t_ins, tanks_needed
+    return M_total, M_structural, M_insulation, S, S_cryo, t_ins, tanks_needed, t_result
 
 if __name__ == '__main__':
+    result = []
+
     for i in np.arange(100, 10, -1):
-        print(multi_cell_m_incl_insulation(2, 2, 2, 1, i))
+        print(f'START with i = {i}')
+        result.append(multi_cell_m_incl_insulation(2, 2, 2, 1, i))
+        print('STOP')
+
+    # for i in range(80, 89):
+    #     plt.plot(np.arange(0, len(result[i][-1])), result[i][-1])
+
+    plt.figure()
+    plt.plot(np.arange(0, len(result[80][-1])), result[80][-1], label='20 kg')
+    plt.plot(np.arange(0, len(result[81][-1])), result[81][-1], label='19 kg')
+    plt.plot(np.arange(0, len(result[82][-1])), result[82][-1], label='18 kg')
+    plt.plot(np.arange(0, len(result[83][-1])), result[83][-1], label='17 kg')
+    plt.plot(np.arange(0, len(result[84][-1])), result[84][-1], label='16 kg')
+    plt.plot(np.arange(0, len(result[85][-1])), result[85][-1], label='15 kg')
+    plt.plot(np.arange(0, len(result[86][-1])), result[86][-1], label='14 kg')
+    plt.plot(np.arange(0, len(result[87][-1])), result[87][-1], label='13 kg')
+    plt.plot(np.arange(0, len(result[88][-1])), result[88][-1], label='12 kg')
+    # plt.plot(np.arange(0, len(result[89][-1])), result[89][-1], label='11 kg')
+
+    plt.title('Insulation Thickness after Iteration (Conversion)', weight='bold')
+    plt.legend(loc='best', title='m=n=p=2\nR=1\nHydrogen mass')
+    plt.grid(b=True, which='major', axis='y')
+    plt.xlabel('Iterations [$-$]')
+    plt.ylabel('Insulation thickness, $t_{ins}$ [$m$]')
+    plt.show()
+
+    plt.figure()
+    plt.plot(np.arange(0, len(result[89][-1])), result[89][-1], label='11 kg')
+    plt.title('Insulation Thickness after Iteration (Diversion)', weight='bold')
+    plt.legend(loc='best', title='m=n=p=2\nR=1\nHydrogen mass')
+    plt.grid(b=True, which='major', axis='y')
+    plt.xlabel('Iterations [$-$]')
+    plt.ylabel('Insulation thickness, $t_{ins}$ [$m$]')
+    plt.yscale('log')
+    plt.show()
+
+
+
+
+
+
+
 
 
 
