@@ -13,7 +13,7 @@ class Material:
         self.RC = RC        # Recyclability percentage [-]
         self.E_vir = E_vir  # Embodied energy, primary production [J]
         self.E_rc = E_rc    # Embodied energy, recycling    [J]
-        self.RECD = RECD    # Percentage of material that is already recycled
+        self.RECD = RECD    # Percentage of material that is already recycled (0 for both material options if unknown)
         #self.n_m = n_m     # Material scarcity index (Only relevant for batteries)
 
 def recycle(a):
