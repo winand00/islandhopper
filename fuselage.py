@@ -1,4 +1,5 @@
 from wing_box import Macaulay
+import wingbox_inputs as wb
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -38,10 +39,10 @@ class Stringer:
 
 
 class Fuselage:
-    def __init__(self, stringer, n_str, length, t, D, weight_dist, x_w, F_w, x_t, F_t, rho, E, sigma_y, poisson, buckling_factor):
+    def __init__(self, stringer, n_str, length, t, D, weight_dist, x_w, T_t, x_t, F_t, rho, E, sigma_y, poisson, buckling_factor):
         self.weight_dist = weight_dist
         self.x_w = x_w
-        self.F_w = F_w
+        #self.F_w = F_w
         self.x_t = x_t
         self.F_t = F_t
         self.length = length
@@ -51,7 +52,7 @@ class Fuselage:
         self.Iyy = self.Iyy()
         self.max_Vz = self.max_Vz() # 2.6 * 10 **5
         self.max_My = self.max_My() # 1.4*10**6
-        self.max_T = 1 *10**4
+        self.max_T = T_t
         self.J = np.pi*self.t*self.D**3/4
         self.rho = rho
         self.skin_area = self.skin_area()
@@ -272,17 +273,17 @@ class Fuselage:
 def create_fuselage(t_sk, n_str):
     weight_ac = 84516
     n = 2.93 * 1.5
-    length = 10
-    weight_wing = 1000 * 9.81
+    length = wb.l_fuselage
+    weight_wing = wb.weight_wing
     weight_dist = (weight_ac - weight_wing) / length * n
     t = t_sk
-    D = 1.91
+    D = wb.D_fuselage
     x_t = length - 0.1
-    F_t = weight_ac * n / 2
-    x_w = 15/2
-    F_w = weight_ac * n - weight_wing + F_t
-
-    buckling_factor = 0.5 # fraction of sigma_y
+    F_t = wb.L_hor * wb.b_hor * n
+    x_w = wb.x_pos_wing
+    F_w = 0 #weight_ac * n - weight_wing + F_t
+    T_t = wb.L_ver * wb.b_vert ** 2 / 3
+    buckling_factor = 0 #5 # fraction of sigma_y
     # Material
     #Stringer
     rho_str = 2820
@@ -296,7 +297,7 @@ def create_fuselage(t_sk, n_str):
     sigma_y_sk = 450 * 10 ** 6
     poisson_sk = 0.33
 
-    G = 26.4 * 10 ** 9
+    #G = 26.4 * 10 ** 9
     
     # Make stringer
     t_str = 0.005
@@ -306,7 +307,7 @@ def create_fuselage(t_sk, n_str):
     stringer = Stringer(t_str, w_str, h_str, rho_str, sigma_y_str, E_str, poisson_str)
     n_str = n_str # Has to be a multiple of 4
     
-    fuselage = Fuselage(stringer, n_str, length, t, D, weight_dist, x_w, F_w, x_t, F_t, rho_sk, E_sk, sigma_y_sk, poisson_sk, buckling_factor)
+    fuselage = Fuselage(stringer, n_str, length, t, D, weight_dist, x_w, T_t, x_t, F_t, rho_sk, E_sk, sigma_y_sk, poisson_sk, buckling_factor)
     return fuselage
 
 

@@ -31,7 +31,7 @@ V_cruise = 90
 distance = 555000
 
 rho_loiter = 1
-t_loiter = 45 #min
+t_loiter = 45*60 #min
 
 V_descent = 90 #TBD
 descent_angle = -3 #deg
@@ -75,7 +75,7 @@ t_climbout = 132
 
 
 P_takeoff = Pmax+P_low
-P_climbout = 0.85*P_takeoff + P_low
+P_climbout = 0.85*P_takeoff
 RC_climbout = 4
 Hclimbout = t_climbout*RC_climbout
 
@@ -86,7 +86,7 @@ Pr = Cd_climb/Cl_climb *W*V_climb
 
 RC = (Hcruise-Hclimbout)/tclimb
 
-P_climb = RC*W + Pr +P_low
+P_climb = RC*W + Pr
 
 
 #cruise
@@ -94,7 +94,7 @@ Cl_cruise = CL(rho_cruise, V_cruise)
 Cd_cruise = CD(Cl_cruise)
 tcruise = distance/V_cruise
 
-Pr_cruise = Cd_cruise/Cl_cruise *W *V_cruise +P_low
+Pr_cruise = Cd_cruise/Cl_cruise *W *V_cruise
 
 #loiter
 Cl_loiter = np.sqrt(3*Cd0*np.pi*A*e)
@@ -102,7 +102,7 @@ V_loiter = Velocity(rho_loiter,Cl_loiter)
 Cd_loiter = CD(Cl_loiter)
 D = Cd_loiter/Cl_loiter * W
 
-P_loiter = D*V_loiter +P_low
+P_loiter = D*V_loiter
 
 #decent
 Cl_descent = CL(rho_descent,V_descent)
@@ -111,22 +111,22 @@ D = Cd_descent*0.5*rho_descent*V_descent**2*S
 T = D + W*np.sin(np.radians(descent_angle))
 t_descent = -Hcruise/(V_descent*np.sin(np.radians(descent_angle)))
 
-P_descent = T*V_descent +P_low
+P_descent = T*V_descent
 
 #sizing
 
 #battery
-power_density = 2000 #W/kg
-energy_density = 350 #Wh/kg
+power_density = 5000 #W/kg
+energy_density = 300 *3600#Wh/kg
 
 
 inputfactor = 1/(eff_propeller*eff_engine*eff_pmad)
 
-P_fuelcell = Pr_cruise*inputfactor
+P_fuelcell = Pr_cruise*inputfactor +P_low
 m_fuelcell = 111.86*np.log(P_fuelcell/1000) - 261.95 + P_fuelcell/3000
 Pbat = P_takeoff*inputfactor-P_fuelcell
 mbat = Pbat/power_density
-Ebat = mbat *energy_density
+Ebat = mbat * energy_density
 
 print("Battery until what phase?: climbout/climb")
 batphase = input()
@@ -136,8 +136,8 @@ if batphase == "climb":
     Ebat_needed= Ebat_needed + (P_climb*inputfactor-P_fuelcell)*tclimb
 
 if Ebat_needed>Ebat:
-    mbat = Ebat_needed/(energy_density*3600)
-    Pbat = mbat *power_density
+    mbat = Ebat_needed/(energy_density)
+    Pbat = mbat * power_density
     print("Energy limiting")
 else:
     print("power limiting")
@@ -168,4 +168,3 @@ Reynolds = 15000000
 T_diff = 50
 Pratzl = 0.71
 #Nusselt =
-print(Pr_cruise,P_loiter)

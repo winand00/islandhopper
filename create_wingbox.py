@@ -2,7 +2,7 @@ from wing_box import wingbox, stringer, skin, crosssection, Material
 from design_loads import design_loads, tail_load_elevator
 import wingbox_inputs as wb
 
-n_max_pos, n_max_neg,_,_ = design_loads()
+n_max_pos, n_max_neg,_ = design_loads()
 n_ult_pos, n_ult_neg = 1.5*n_max_pos, 1.5*n_max_neg
 
 t_skin = 0.006
@@ -29,8 +29,6 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     b_wing = wb.b_wing
     b_vert = wb.b_vert
     b_hor = wb.b_hor
-    V = wb.V_cruise
-    S_w = 45
     if type == 'wing':
         b = b_wing
         h_box = wb.h_wing
@@ -51,24 +49,21 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
 
     #wing parameters
     w_L_D = L_D
-    w_ly_e = 0.2 * b / 2
-    w_lz_e = h_box / 2
-    w_engine = 130
-    w_radiator = 100
-    w_prop = 80
-    w_w_engine = (w_engine + w_radiator + w_prop) * 9.81
-    powersetting = 0.5
+    w_ly_e = wb.ly_e
+    w_lz_e = wb.lz_e
+    w_w_engine = (wb.w_engine + wb.w_radiator + wb.w_prop) * 9.81
+    powersetting = wb.powersetting
     w_T_engine = w_ac / w_L_D / 2 / powersetting
-    w_ly_fc = w_ly_e
-    w_w_fc = 140
-    w_ly_bat = w_ly_e
-    w_w_bat = 135
-    w_ly_hld = 0.3 * b / 2
-    w_lx_hld = w_box / 2
-    w_F_hld = 0  # 15000
-    w_ly_el = 0.8 * b / 2
-    w_lx_el = w_box / 2
-    w_F_el = 0.5*1.225*V**2*S_w*0.25 / w_box
+    w_ly_fc = wb.ly_fc
+    w_w_fc = wb.w_fc
+    w_ly_bat = wb.ly_bat
+    w_w_bat = wb.w_bat
+    w_ly_hld = wb.ly_hld
+    w_lx_hld = wb.lx_hld
+    w_F_hld = wb.F_hld
+    w_ly_el = wb.ly_a
+    w_lx_el = wb.lx_a
+    w_F_el = wb.F_a
     w_w_wing = w_ac / b * n
     w_Mh = 0
     w_lz_h = 0
@@ -86,11 +81,11 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     h_w_bat = 0
     h_ly_hld = 0
     h_lx_hld = 0
-    h_F_hld = 0  # 15000
-    h_ly_el = b / 2 / 2  # y position of the elevator
-    h_lx_el = w_box / 2  # x position of the elevator
-    h_F_el = 1000  # elevator force
-    h_w_wing = n * 3500 / b
+    h_F_hld = 0
+    h_ly_el = wb.ly_el  # y position of the elevator
+    h_lx_el = wb.lx_el  # x position of the elevator
+    h_F_el = wb.F_el  # elevator force
+    h_w_wing = wb.L_hor * n  # Is scaled with the loadfactor
     h_Mh = 0
     h_lz_h = 0
     h_F_h = 0
@@ -108,12 +103,12 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     v_ly_hld = 0
     v_lx_hld = 0
     v_F_hld = 0  # 15000
-    v_ly_el = b / 2 / 2
-    v_lx_el = w_box / 2
-    v_F_el = 1000
-    v_w_wing = 17500 / b * n / 5
+    v_ly_el = wb.ly_r
+    v_lx_el = wb.lx_r
+    v_F_el = wb.F_r
+    v_w_wing = wb.L_ver
     v_Mh = h_F_el * h_lx_el
-    v_lz_h = 3
+    v_lz_h = wb.lz_hor
     v_F_h = -h_w_wing * b_hor
      
 
@@ -126,10 +121,6 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     skins = [skin_top, skin_bottom, skin_left, skin_right]
 
     l_w = b/2  # length of the wingbox
-
-
-    # crosssection.plot()
-    # plt.show()
 
     # Creating stringerss
 
@@ -163,17 +154,12 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
 
     root_crosssection = crosssection(stringer_list, skins)
 
-
-    # Test values for deflection
     density_AL = material.density # kg/m3, density of aluminium
     E = material.E
     G = material.G
     sigma_y = material.sigma_y
     poisson = material.poisson
 
-
-
-    # Variables from other departments
     if type == 'wing':
         ly_e = w_ly_e
         lz_e = w_lz_e
