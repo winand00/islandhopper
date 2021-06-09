@@ -104,6 +104,6 @@ if __name__ == "__main__":
     plt.title('Surface Area of the Hydrogen Tank', weight='bold')
     plt.legend(loc='best')
     plt.grid(b=True, which='major', axis='y')
-    plt.xlabel('$Radius, R$ [m]')
-    plt.ylabel('$Surface area, S$ [$m^2$]')
+    plt.xlabel('Radius, R [$m$]')
+    plt.ylabel('Surface area, S [$m^2$]')
     plt.show()
