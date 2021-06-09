@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 P_low = 25000 #watt
 Pmax = 1150000
-V_climb = 53 #TBD
+V_climb = 60 #TBD
 tclimb = 10*60
 
 #constants
@@ -93,6 +93,31 @@ Pr = Cd_climb/Cl_climb *W*V_climb
 RC = V_climb*(np.sin(np.radians(1.37)))
 
 P_climb = RC*W + Pr
+
+#climb one engine inoperative case 1
+rho_climbOEI = 1.225
+V_climbOEI = 1.2 * Velocity(rho_climbOEI, 1.8)
+print("Speed", V_climbOEI)
+CL_climbOEI = CL(rho_climbOEI, V_climbOEI)
+print("CL", CL_climbOEI)
+Cd_climbOEI = CD(CL_climbOEI)
+Pr = Cd_climbOEI/Cl_climb *W*V_climbOEI
+print("Power required", Pr)
+RC_OEI = V_climbOEI*(np.sin(np.radians(1.14576)))
+P_climbOEI = RC_OEI*W + Pr
+P_engineOEI = P_climbOEI / eff_propeller
+print("One engine inoperative", P_climbOEI, P_engineOEI)
+
+#climb one engine inoperative case 1
+rho_climbOEI2 = 1.17215
+V_climbOEI2 = 1.2 * Velocity(rho_climbOEI2, 1.8)
+CL_climbOEI2 = CL(rho_climbOEI2, V_climbOEI2)
+Cd_climbOEI2 = CD(CL_climbOEI2)
+PrOEI2 = Cd_climbOEI2/CL_climbOEI2 *W*V_climbOEI2
+RC_OEI2 = V_climbOEI*(np.sin(np.radians(0.6875)))
+P_climbOEI2 = RC_OEI2*W + PrOEI2
+P_engineOEI2 = P_climbOEI2 / eff_propeller
+print("One engine inoperative case 2", P_climbOEI2, P_engineOEI2)
 
 
 #cruise
