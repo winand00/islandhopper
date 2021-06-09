@@ -57,7 +57,7 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         b = b_wing
         h_box = wb.h_wing
         w_box = wb.w_wing
-        taper = wb.taper_wing
+        taper = 1#wb.taper_wing
 
     if type == 'vertical':
         b = b_vert
