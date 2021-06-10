@@ -48,7 +48,7 @@ class Stress:
         return sigma
 
     def bendingstress_xz(self, x, z):
-        sigma = self.Mx*(z-self.z_centroid)/self.Ixx - self.Mz * (x - self.x_centroid) / self.Izz
+        sigma = self.Mx*(z-self.z_centroid)/self.Ixx + self.Mz * (x - self.x_centroid) / self.Izz
         sigma += self.sigma_F
         return sigma
         

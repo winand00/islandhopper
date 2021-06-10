@@ -1,20 +1,23 @@
 import numpy as np
 import math
+from matplotlib import pyplot as plt
 
 # CONSTANTS
-k_overlap = 0.75      #Used in thesis
+k_overlap = 0.75
 P = 5.7
-# sigma_allowable = 1
 
-t_ply = 0.00014       #[m] #Table 4-3
+t_ply = 0.00014
+
 t_metal_liner = 0.001
-t_polyamide_liner = 0.001
-
-rho_comp = 1800 #2700
-k_comp = 60
-rho_ins = 32#200
 rho_metal_liner = 2700
+
+t_polyamide_liner = 0.001
 rho_polyamide_liner = 1010
+
+rho_comp = 1800
+k_comp = 60
+
+rho_ins = 32
 k_ins = 0.022
 
 y = 1.4
@@ -25,23 +28,11 @@ t_junction_over_R = 0.027 #(fig 4.23d)
 phi = 24                  #degrees (fig 4.23b) [layup angle]
 i_ratio = 2.5             #(fig 4.23b)   [ratio between 0 degrees fibers and phi degrees fibres]
 k_overlap = 0.75          #(fig 5.5)
-BOR = 0.016
-
-
 
 rho_hydr = 70 # [kg/m3]
-
 d_H_vap = 446100 #J/kg
 BOR_percentage = 0.016 # [-]
 d_T = 293.15 # temp diff between 20 K and 40 C
-#h_out = -0.23083#30 #[W/m2K]
-
-def multi_cell_dimensions(m, n, p, R, t_ins, t_polyamide_liner):
-    width = m * R * 2 - (m-1) * (y * R)
-    length = n * R * 2 - (n-1) * (y * R)
-    height = p * R * 2 - (p-1) * (y * R)
-    dimensions = [width + t_ins + t_polyamide_liner, length + t_ins + t_polyamide_liner, height + t_ins + t_polyamide_liner]
-    return dimensions
 
 def multi_cell_v(m, n, p, R):
     """"Function to calculate multi cell volume in m3."""
@@ -137,6 +128,7 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
     S_cryo = S
 
     threshold = 0.001
+    t_result = []
     while not optimum:
 
         S_old = S_cryo
@@ -146,7 +138,27 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
 
         h_out = Q/3600 /S / (-1*d_T) #-4.5 #
 
+
+        # t_ins = (1 / U - t / k_comp - 1 / h_out) * k_ins
+        # t_result.append(t_ins)
+        # print(t_ins)
+
         t_ins = (1 / U - t / k_comp - 1 / h_out) * k_ins
+        if math.isnan(t_ins):
+            break
+
+        t_result.append(t_ins)
+        print(t_ins)
+
+        # except FloatingPointError:
+        #     print('Runtime warning')
+        #     break
+
+        # try:
+        #     S_cryo, M_throwaway, t_throwaway = multi_cell_s(m, n, p, R + t_ins)
+        # except RuntimeWarning:
+        #     print('Runtime warning')
+        #     break
 
         S_cryo, M_throwaway, t_throwaway = multi_cell_s(m, n, p, R + t_ins)
 
@@ -180,87 +192,47 @@ def multi_cell_m_incl_insulation(m, n, p, R, Mass):
 
     M_insulation = rho_ins * t_ins * S_cryo
     M_total = M_structural + M_insulation
-    return M_total, M_structural, M_insulation, S, S_cryo, t_ins, tanks_needed
+    return M_total, M_structural, M_insulation, S, S_cryo, t_ins, tanks_needed, t_result
 
+if __name__ == '__main__':
+    result = []
 
+    for i in np.arange(100, 10, -1):
+        print(f'START with i = {i}')
+        result.append(multi_cell_m_incl_insulation(2, 2, 2, 1, i))
+        print('STOP')
 
+    # for i in range(80, 89):
+    #     plt.plot(np.arange(0, len(result[i][-1])), result[i][-1])
 
-class Material:
-    def __init__(self, K, E, rho):
-        self.K = K      # [MPa]
-        self.E = E      # [GPa]
-        self.rho = rho  # [kg/m^3]
+    plt.figure()
+    plt.plot(np.arange(0, len(result[80][-1])), result[80][-1], label='20 kg')
+    plt.plot(np.arange(0, len(result[81][-1])), result[81][-1], label='19 kg')
+    plt.plot(np.arange(0, len(result[82][-1])), result[82][-1], label='18 kg')
+    plt.plot(np.arange(0, len(result[83][-1])), result[83][-1], label='17 kg')
+    plt.plot(np.arange(0, len(result[84][-1])), result[84][-1], label='16 kg')
+    plt.plot(np.arange(0, len(result[85][-1])), result[85][-1], label='15 kg')
+    plt.plot(np.arange(0, len(result[86][-1])), result[86][-1], label='14 kg')
+    plt.plot(np.arange(0, len(result[87][-1])), result[87][-1], label='13 kg')
+    plt.plot(np.arange(0, len(result[88][-1])), result[88][-1], label='12 kg')
+    # plt.plot(np.arange(0, len(result[89][-1])), result[89][-1], label='11 kg')
 
-aluminium_2219 = Material(172.4*10**6, 73.8 * 10 ** 9, 2825)
+    plt.title('Insulation Thickness after Iteration (Conversion)', weight='bold')
+    plt.legend(loc='best', title='m=n=p=2\nR=1\nHydrogen mass')
+    plt.grid(b=True, which='major', axis='y')
+    plt.xlabel('Iterations [$-$]')
+    plt.ylabel('Insulation thickness, $t_{ins}$ [$m$]')
+    plt.show()
 
-class Tank:
-    def __init__(self, m, n, p, R, Mass):
-        self.mass_tank_and_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[0]
-        self.mass_tank = multi_cell_m_incl_insulation(m, n, p, R, Mass)[1]
-        self.mass_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[2]
-
-        self.surface_outer_tank = multi_cell_m_incl_insulation(m, n, p, R, Mass)[3]
-        self.surface_outer_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[4]
-
-        self.thickness_insulation = multi_cell_m_incl_insulation(m, n, p, R, Mass)[5]
-        self.thickness_tank = multi_cell_s(m, n, p, R)[2]
-        self.number = multi_cell_m_incl_insulation(m, n, p, R, Mass)[6]
-
-        self.surface_metal_liner = multi_cell_s(m, n, p, R - t_metal_liner)[0]
-        self.mass_metal_liner = self.surface_metal_liner * rho_metal_liner * t_metal_liner
-
-        self.surface_polyamide_liner = multi_cell_s(m, n, p, R + self.thickness_insulation)[0]
-        self.mass_polyamide_liner = self.surface_polyamide_liner * rho_polyamide_liner * t_polyamide_liner
-
-        self.volume = multi_cell_v(m, n, p, R - t_metal_liner)  # * 1000 #- multi_cell_m_incl_insulation(m, n, p, R, Mass)[5]
-        self.dimensions = multi_cell_dimensions(m, n, p, R, self.thickness_insulation, t_polyamide_liner)
-
-        self.refuel_time = ((self.volume * 1000) / 500) * 60
-
-
-    def properties(self):
-        print(f"*****TANK***** \n"
-              f"Mass metal liner (for 1 tank) [kg] = {self.mass_metal_liner} \n"
-              f"Mass tank (for 1 tank) [kg] = {self.mass_tank} \n"
-              f"Mass insulation (for 1 tank) [kg] = {self.mass_insulation} \n"
-              f"Mass polyamide liner (for 1 tank) [kg] = {self.mass_polyamide_liner} \n"
-              f"---------------------------+ \n"
-              f"Mass total single tank [kg] = {self.mass_metal_liner + self.mass_tank_and_insulation + self.mass_polyamide_liner} \n"
-              f"Volume single tank [m3] = {self.volume} \n"
-              f"\n"
-              f"Number of tanks [-] = {self.number} \n"
-              f"Mass all tanks [kg] = {self.number * (self.mass_metal_liner + self.mass_tank_and_insulation + self.mass_polyamide_liner)} \n"
-              f"Volume all tanks [m3] = {self.number * self.volume} \n"
-              f"\n"
-              f"*****REFUEL TIME***** \n"
-              f"Refuel time for a single tank [t]: {self.refuel_time} \n"
-              f"Refuel time for all tanks when 1 fuel inlet [t]: {self.refuel_time * self.number} \n"
-              f"\n"
-              f"*****TANK DIMENSIONS***** \n"
-              f"Outer surface metal liner: {self.surface_metal_liner}, Thickness: {t_metal_liner} \n"
-              f"Outer surface tank: {self.surface_outer_tank}, Thickness: {self.thickness_tank} \n"
-              f"Outer surface insulation: {self.surface_outer_insulation}, Thickness: {self.thickness_insulation} \n"
-              f"Outer surface polyamide liner: {self.surface_polyamide_liner}, Thickness: {t_polyamide_liner} \n"
-              f"Dimensions (w * h * l) [m] = {self.dimensions}")
-
-
-if __name__ == "__main__":
-    a  = Tank(4, 2, 1, 0.27, 150) # Tank(4, 2, 1, 0.27, 150) for structures
-    a.properties()
-
-# print('v:', a.volume)
-# print('m_tank:', a.mass_tank)
-# print('m_ins:', a.mass_insulation)
-# print('m_tot:', a.mass_total)
-# print('number of tanks:', a.number)
-# print('v_total_all:', a.number*a.volume)
-# print('M_total_all:', a.number*a.mass_total)
-# print('Dimensions:', a.dimensions)
-
-
-#b = multi_cell_v(2, 2, 1, 0.145, 0.200, 0.029, 0.06047, 0.75, 0.00397)
-
-# 0.037
+    plt.figure()
+    plt.plot(np.arange(0, len(result[89][-1])), result[89][-1], label='11 kg')
+    plt.title('Insulation Thickness after Iteration (Diversion)', weight='bold')
+    plt.legend(loc='best', title='m=n=p=2\nR=1\nHydrogen mass')
+    plt.grid(b=True, which='major', axis='y')
+    plt.xlabel('Iterations [$-$]')
+    plt.ylabel('Insulation thickness, $t_{ins}$ [$m$]')
+    plt.yscale('log')
+    plt.show()
 
 
 
@@ -268,3 +240,7 @@ if __name__ == "__main__":
 
 
 
+
+
+
+    # print(multi_cell_m_incl_insulation(2, 2, 2, 1, 12)) # (2, 2, 2, 1, 12) lowest h possible

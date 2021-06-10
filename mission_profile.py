@@ -9,6 +9,7 @@ tclimb = 10*60
 
 #constants
 E_hydrogen = 120000000 #J/kg
+efficiency_constant = 1.23
 eff_engine = 0.93
 eff_propeller = 0.85
 eff_pmad = 0.989
@@ -27,7 +28,7 @@ rho_takeoff = 1.225
 s_takeoff = 750
 
 rho_cruise = script(Hcruise)
-V_cruise = 90
+V_cruise = 58
 distance = 555000
 
 rho_loiter = 1
@@ -49,6 +50,10 @@ def Velocity(rho,Cl):
 
 def Energy(t,P, eff_fuelcell):
     return t*P/(eff_propeller*eff_engine*eff_fuelcell*eff_pmad)
+
+def efficiency(A):
+    V = -0.047 * np.log(A) + 0.9782
+    return V/efficiency_constant
 
 #Take-off
 #V_takeoff = Velocity(rho_takeoff,CL_takeoff)
@@ -84,9 +89,35 @@ Cl_climb = CL(rho_climb,V_climb)
 Cd_climb = CD(Cl_climb)
 Pr = Cd_climb/Cl_climb *W*V_climb
 
-RC = (Hcruise-Hclimbout)/tclimb
+#RC = (Hcruise-Hclimbout)/tclimb
+RC = V_climb*(np.sin(np.radians(1.37)))
 
 P_climb = RC*W + Pr
+
+#climb one engine inoperative case 1
+rho_climbOEI = 1.225
+V_climbOEI = 1.2 * Velocity(rho_climbOEI, 1.8)
+print("Speed", V_climbOEI)
+CL_climbOEI = CL(rho_climbOEI, V_climbOEI)
+print("CL", CL_climbOEI)
+Cd_climbOEI = CD(CL_climbOEI)
+Pr = Cd_climbOEI/Cl_climb *W*V_climbOEI
+print("Power required", Pr)
+RC_OEI = V_climbOEI*(np.sin(np.radians(1.14576)))
+P_climbOEI = RC_OEI*W + Pr
+P_engineOEI = P_climbOEI / eff_propeller
+print("One engine inoperative", P_climbOEI, P_engineOEI)
+
+#climb one engine inoperative case 1
+rho_climbOEI2 = 1.17215
+V_climbOEI2 = 1.2 * Velocity(rho_climbOEI2, 1.8)
+CL_climbOEI2 = CL(rho_climbOEI2, V_climbOEI2)
+Cd_climbOEI2 = CD(CL_climbOEI2)
+PrOEI2 = Cd_climbOEI2/CL_climbOEI2 *W*V_climbOEI2
+RC_OEI2 = V_climbOEI*(np.sin(np.radians(0.6875)))
+P_climbOEI2 = RC_OEI2*W + PrOEI2
+P_engineOEI2 = P_climbOEI2 / eff_propeller
+print("One engine inoperative case 2", P_climbOEI2, P_engineOEI2)
 
 
 #cruise
@@ -116,8 +147,8 @@ P_descent = T*V_descent
 #sizing
 
 #battery
-power_density = 5000 #W/kg
-energy_density = 300 *3600#Wh/kg
+power_density = 2000 #W/kg
+energy_density = 360 *3600#Wh/kg
 
 
 inputfactor = 1/(eff_propeller*eff_engine*eff_pmad)
@@ -131,7 +162,7 @@ Ebat = mbat * energy_density
 print("Battery until what phase?: climbout/climb")
 batphase = input()
 
-Ebat_needed = (P_takeoff*inputfactor-P_fuelcell)*t_takeoff + (P_climbout*inputfactor-P_fuelcell)*t_climbout
+Ebat_needed = (P_takeoff*inputfactor-P_fuelcell)*t_takeoff + (P_climbout*inputfactor-P_fuelcell)*t_climbout + (Pmax*inputfactor*0.1*10*60+P_low)
 if batphase == "climb":
     Ebat_needed= Ebat_needed + (P_climb*inputfactor-P_fuelcell)*tclimb
 
@@ -150,17 +181,16 @@ print("Battery mass = ", mbat)
 
 #Hydrogen calculation
 flight_time = t_takeoff+tclimb+tcruise+t_descent+t_loiter
-E_takeoff = Energy(t_takeoff,P_takeoff,0.45) + Energy(t_climbout,P_climbout,0.45)
-E_climb = Energy(tclimb,P_climb,0.50)
-E_cruise = Energy(tcruise,Pr_cruise,0.55)
-E_descent = Energy(t_descent,P_descent,0.55)
-E_loiter = Energy(t_loiter,P_loiter,0.55)
-E_taxi = Energy(15*60,Pmax*0.1,0.55)
+E_takeoff = Energy(t_takeoff,P_takeoff,0.53) + Energy(t_climbout,P_climbout,0.55)
+E_climb = Energy(tclimb,P_climb,0.57)
+E_cruise = Energy(tcruise,Pr_cruise,0.585)
+E_descent = Energy(t_descent,P_descent,0.63)
+E_loiter = Energy(t_loiter,P_loiter,0.61)
+E_taxi = Energy(15*60,Pmax*0.1,0.67)
 
 Etotal = E_takeoff +E_climb+E_cruise+E_descent+E_taxi+E_loiter
 Hydrogen = Etotal/E_hydrogen
 print(Hydrogen)
-print(Etotal/3600000)
 print('fight time = ', flight_time/3600)
 
 #radiator
@@ -168,3 +198,4 @@ Reynolds = 15000000
 T_diff = 50
 Pratzl = 0.71
 #Nusselt =
+print(E_taxi/3600000,E_takeoff/3600000,E_climb/3600000,E_cruise/3600000,E_descent/3600000, Etotal/3600000)
