@@ -197,8 +197,8 @@ class flyingwing:
 class hydrogen:
     def __init__(self):
         # Change these 7 as you wish
-        self.C_D_0 = 0.039
-        self.C_L = 2.4#2.2
+        self.C_D_0 = 0.03
+        self.C_L = 2.8#2.2
         self.e = 0.8
         self.A = 9
         self.h_cruise = 3048
@@ -563,10 +563,10 @@ def Tool(a,WS, WP):
 #Fill in aircraftname, WS, WP
 
 
-WS = 1863
-WP = 0.0653
-#Tool(hydrogen(),WS,WP)
-#wpws_plot(hydrogen())
+WS = 1880
+WP = 0.0755
+Tool(hydrogen(),WS,WP)
+wpws_plot(hydrogen())
 
 
 
@@ -590,7 +590,7 @@ WP = 0.050785 #0.06226
 
 #WS = 2313
 #WP = 0.06917
-Tool(claimthisname4(),WS,WP)
+#Tool(claimthisname4(),WS,WP)
 
 #WS = 1863
 #WP = 0.0545
