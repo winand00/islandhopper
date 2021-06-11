@@ -28,6 +28,7 @@ class crosssection:
         self.I_zz = self.I_zz()
         self.J = self.get_J()
 
+
     def get_stringer_spacing(self):
         width = self.local_width
         top_stringers = len(self.local_stringers['top'])
@@ -311,6 +312,7 @@ class stringer:
 class wingbox:
     def __init__(self, stringers, cross_section, length, taper, material_density, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
                  lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, F_h, lz_h, ly_fc, w_fc, ly_bat, w_bat, n, type):
+        self.rib_spacing = 0.8
         self.type = type
         self.stringers = stringers
         self.cross_section = cross_section
@@ -346,11 +348,16 @@ class wingbox:
         self.w_bat = w_bat
 
 
+
     def local_crosssection(self, y):
         return crosssection(self.stringers, self.skins, self.taper, y, self.length)
 
     def get_weight(self):
-        return  self.skin_weight()+self.top_stringer_weight()+self.bottom_stringer_weight()
+        return self.skin_weight()+self.top_stringer_weight()+self.bottom_stringer_weight()+self.rib_weight()
+
+    def rib_weight(self):
+        rib_area = self.local_crosssection(self.length/2).local_width * self.local_crosssection(self.length/2).local_height
+        return round(self.length/self.rib_spacing) * rib_area * self.local_crosssection(self.length/2).local_t * self.density
 
     def skin_weight(self):
         weight = self.local_crosssection(self.length / 2).skin_area() * self.length * self.density
@@ -591,7 +598,7 @@ class wingbox:
     def get_max_stress(self):
         y_max = None
         max_stress = 0
-        y = np.arange(0, self.length, self.length/50)
+        y = np.arange(0, self.length, self.length/25)
         for i in y:
             cross_section = self.local_crosssection(i)
             Vx = self.shearx(i)
@@ -656,14 +663,14 @@ class wingbox:
         return min(sigma_panel, sigma_stringer)
     
     def is_crippling(self):
-        y = np.arange(0, self.length, self.length/30)
+        y = np.arange(0, self.length, self.length/25)
         for i in y:
             if self.max_bending_stress(i) >= self.crippling(i):
                 return True
         return False
     
     def is_buckling(self):
-        y = np.arange(0, self.length, self.length/30)
+        y = np.arange(0, self.length, self.length/25)
         for i in y:
             if self.max_shear_stress(i) >= self.local_crosssection(i).skin_buckling(self.E, self.n):
                 return True

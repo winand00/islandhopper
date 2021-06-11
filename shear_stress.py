@@ -32,7 +32,7 @@ class Stress:
     
     def max_von_mises(self):
         stresses = []
-        x, z = self.get_xz(10)
+        x, z = self.get_xz(6)
         for i in range(len(x)):
             stresses.append(self.von_mises(x[i],z[i]))
         return max(stresses)
@@ -54,7 +54,7 @@ class Stress:
         
     def max_bending_xz(self):
         stresses = []
-        x, z = self.get_xz(10)
+        x, z = self.get_xz(6)
         for i in range(len(x)):
             stresses.append(self.bendingstress_xz(x[i],z[i]))
         return max(stresses)
@@ -116,7 +116,7 @@ class Stress:
        
     def max_shear_total(self):
         stresses = []
-        x, z = self.get_xz(10)
+        x, z = self.get_xz(6)
         for i in range(len(x)):
             stresses.append(abs(self.shear_total(x[i],z[i])))
         return max(stresses)

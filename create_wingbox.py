@@ -2,9 +2,9 @@ from wing_box import wingbox, stringer, skin, crosssection, Material
 from design_loads import design_loads, tail_load_elevator
 import wingbox_inputs as wb
 
-n_max_pos, n_max_neg,_ = design_loads()
-n_ult_pos, n_ult_neg = 1.5*n_max_pos, 1.5*n_max_neg
-
+n_max_pos, n_max_neg, n_max_flaps = design_loads()
+n_ult_pos, n_ult_neg, n_ult_flaps = 1.5*n_max_pos, 1.5*n_max_neg, 1.5 * n_max_flaps
+n_ult_ail = n_ult_pos * 2/3
 t_skin = 0.006
 stringers_top = 8
 stringers_bot = 2
@@ -48,6 +48,16 @@ Glare = Material(density, E, G, sigma_y, poisson)
 
 
 def make_wingbox(t_skin, n_str, str_size, material, n, type):
+    if n != n_ult_flaps:
+        flaps_on = 0
+    else:
+        flaps_on = 1
+    if n != n_ult_ail:
+        ail_on = 0
+    else:
+        ail_on = 1
+
+
     L_D = wb.L_D
     w_ac = 84516
     b_wing = wb.b_wing
@@ -84,10 +94,10 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     w_w_bat = wb.w_bat
     w_ly_hld = wb.ly_hld
     w_lx_hld = wb.lx_hld
-    w_F_hld = wb.F_hld
+    w_F_hld = flaps_on * wb.F_hld
     w_ly_el = wb.ly_a
     w_lx_el = wb.lx_a
-    w_F_el = wb.F_a
+    w_F_el = ail_on * wb.F_a
     w_w_wing = w_ac / b * n
     w_Mh = 0
     w_lz_h = 0
@@ -257,6 +267,7 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
 if __name__ == "__main__":
     type = 'wing'
     wingbox = make_wingbox(0.004, 1, 0.03, AL7040, n_ult_pos, type)
+    print(wingbox.rib_weight())
     wingbox.plot_crosssection(0)
     # plt.show()
     print(wingbox.get_max_stress())
