@@ -1,5 +1,6 @@
 from wing_box import Macaulay
 import wingbox_inputs as wb
+from create_wingbox import AL, AL7040
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -270,7 +271,7 @@ class Fuselage:
         return sigma_panel
     
     
-def create_fuselage(t_sk, n_str):
+def create_fuselage(t_sk, n_str, material_skin, material_stringer):
     weight_ac = 84516
     n = 2.93 * 1.5
     length = wb.l_fuselage
@@ -286,17 +287,16 @@ def create_fuselage(t_sk, n_str):
     buckling_factor = 0 #5 # fraction of sigma_y
     # Material
     #Stringer
-    rho_str = 2820
-    E_str = 69 * 10 ** 9   
-    sigma_y_str = 450 * 10 ** 6
-    poisson_str = 0.33   
+    rho_str = material_stringer.density
+    E_str = material_stringer.E
+    sigma_y_str = material_stringer.sigma_y
+    poisson_str = material_stringer.poisson
     
     #Skin
-    rho_sk = 2820
-    E_sk = 69 * 10 ** 9
-    sigma_y_sk = 450 * 10 ** 6
-    poisson_sk = 0.33
-
+    rho_sk = material_skin.density
+    E_sk = material_skin.E
+    sigma_y_sk = material_skin.sigma_y
+    poisson_sk = material_skin.poisson
     #G = 26.4 * 10 ** 9
     
     # Make stringer
@@ -314,7 +314,9 @@ def create_fuselage(t_sk, n_str):
 if __name__ == "__main__":
     t_sk = 0.003
     n_str = 20
-    fuselage = create_fuselage(t_sk, n_str)
+    material_skin = AL
+    material_stringer = AL7040
+    fuselage = create_fuselage(t_sk, n_str, material_skin, material_stringer)
     fuselage.graphs()
     print(fuselage.max_von_mises())
     print(fuselage.skin_buckling())

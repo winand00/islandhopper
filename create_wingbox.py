@@ -147,7 +147,8 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     l_w = b/2  # length of the wingbox
 
     # Creating stringerss
-
+    material_stringers_top = AL
+    material_stringers_bottom = AL7040
     # Y_end position, number of stringers
     y_stringers_stop_top = [(0.2 * l_w, n_str),
                             (0.4 * l_w, n_str),
@@ -169,11 +170,11 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     bottom_stringer_list = []
     for i in y_stringers_stop_top:
         for j in range(i[1]):
-            top_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t, i[0]))
+            top_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t, i[0], material_stringers_top))
     stringer_list['top'] = top_stringer_list
     for i in y_stringers_stop_bot:
         for j in range(i[1]):
-            bottom_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t, i[0]))
+            bottom_stringer_list.append(stringer(stringer_width, stringer_height, stringer_t, i[0], material_stringers_bottom))
     stringer_list['bottom'] = bottom_stringer_list
 
     root_crosssection = crosssection(stringer_list, skins)
@@ -255,18 +256,17 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
 
 if __name__ == "__main__":
     type = 'wing'
-    wingbox = make_wingbox(0.004, 0, 0.03, AL7040, n_ult_pos, type)
-    # wingbox.plot_crosssection(5)
+    wingbox = make_wingbox(0.004, 1, 0.03, AL7040, n_ult_pos, type)
+    wingbox.plot_crosssection(0)
     # plt.show()
     print(wingbox.get_max_stress())
-    wingbox.graph_properties()
-
+    # wingbox.graph_properties()
     wingbox.graphs()
-
+    print(wingbox.top_stringer_weight(), wingbox.bottom_stringer_weight(), wingbox.skin_weight())
     y_max, max_stress = wingbox.get_max_stress()
     print(f'{max_stress/(10**6)} MPa, at y = {y_max} m')
     print(wingbox.weight, 'kg')
-    wingbox.graph_stress(5)
+    # wingbox.graph_stress(5)
 
     #print(wingbox.max_bending_stress(0))
     #print(wingbox.is_buckling())
