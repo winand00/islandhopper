@@ -10,15 +10,10 @@ def design_loads():
     CL_clean = 2   # ???
     CL_flaps = 2.4  # ???
 
-    # Tail parameters
-    aht = 2  #???    # Tail lift curve slope
-    Sht = 5   #???   # Tail surface area
-    deda = 0.7   #???    # Lift downwash per alpha
-
     g = 9.80665  # [m/s2]
     W = 8618.25503 * 9.80665  # [N]
     rho_zero = 1.225  # sealevel density [kg/m3]
-    rho = 0.7708#0.6527  # [kg/m3] density from 6096-0 [m]
+    rho = 0.7708 # [kg/m3] density at 15000 ft
 
     VC = 31.9426 * sqrt(19000 / (S*10.76391)) * 0.514444 # W/S in lbs/ft2, Value of 31 changes with W/S, see CS-23
     VD = 1.3880 * VC            # Value of 1.38 changes with W/S, see CS-23
@@ -85,9 +80,9 @@ def design_loads():
     """
 
     # Gust load factor with flaps out
-    VS2 = sqrt(W / (0.5 * rho * S * CL_flaps))  # [m/s]
+    VS0 = sqrt(W / (0.5 * rho * S * CL_flaps))  # [m/s]
     VF_1 = 1.4 * VS1
-    VF_2 = 1.8 * VS2
+    VF_2 = 1.8 * VS0
     if VF_1 < VF_2:
         VF = VF_1
     else:
@@ -169,7 +164,7 @@ def tail_load_elevator():
     g = 9.80665
     x_cg = 6
     x_ac = 5.5
-    x_cg_ac = x_cg - x_ac # ???   # [m] distance from ac to cg
+    x_cg_ac = x_cg - x_ac  # ???   # [m] distance from ac to cg
     l_t = 9  # ???         # tail arm
     S_h_t = 6   # ???      # hor tail area
     S = 45                 # wing surface
