@@ -12,9 +12,14 @@ def get_S_w(S_w_w,S_w_f,S_w_t,S_w_n):
     return S_w
 
 def get_S(b,c_r,c_t,y_c,c_c):
+    y_c = y_c * ft
+    b = b*ft
+    c_r = c_r * ft
+    c_c = c_c * ft
+    c_t = c_t * ft
     Lambda = c_t/c_r
     Lambda_c = c_c/c_r
-    eta_c = y_c * (b/2)
+    eta_c = y_c / (b/2)
     S = 0.5 * b * c_r * (Lambda*(1-eta_c) + eta_c + Lambda_c)
     return S
 
@@ -43,3 +48,4 @@ b = 20.12       #Wing span [m]
 c_r = 1.5         #Chord at root [m]
 c_t = 2.25         #Chord at tip [m]
 y_c = 1.92/2         #Distance from mid of wing to where wing meets fuselage [m] (0.5 times diameter)
+c_c =
