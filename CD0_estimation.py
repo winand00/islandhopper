@@ -34,7 +34,15 @@ def get_S_w_f(l_f, l_tc, l_nc, d)
     return S_fuselage
 
 def get_S_w_t(S)
-    if S*10.7639 < 3000:
+    if S*ft2 < 3000:
+        S_tail = 0.88*S
+    else:
+        S_tail = 2.5*S^0.85
+    return S_tail
+
+def get_S_w_n(d_n,l_n)
+    S_nacelle = 2*pi*d_n*l_n
+    return S_nacelle
 
 
 
