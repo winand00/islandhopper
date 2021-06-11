@@ -98,6 +98,7 @@ def flap_calculator(dCl_max_TE, dCL_max= dCL_max, LE = False):
     return SwfS_LE, SwfS_TE
 
 
+
 def chord(y):
     return (2*S/((1+lamb)*b))*(1-(1-lamb)*abs(2*y)/b)
 

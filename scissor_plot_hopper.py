@@ -35,7 +35,7 @@ if __name__ == '__main__':
     lambda_a = 0
     b = 20.12
     bf = 2.09
-    lf = 16 #fuselage length
+    lf = 13 #fuselage length
     S = 45
     SnS = 0.9
     cbar = 2.24
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     Cl_Ah = 2.4- Cl_h #!
 
     # True ShS
-    ShS_true = 11 / 45
+    ShS_true = 13 / 45
 
     # Cg locations Hopper from loading diagram
     min_x_cg, max_x_cg = cgboundaries() 
