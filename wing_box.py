@@ -28,6 +28,7 @@ class crosssection:
         self.I_zz = self.I_zz()
         self.J = self.get_J()
 
+
     def get_stringer_spacing(self):
         width = self.local_width
         top_stringers = len(self.local_stringers['top'])
@@ -94,9 +95,12 @@ class crosssection:
             area += sk.area
         return area
     
-    def max_skin_width(self):
+    def max_skin_width(self, n):
         top_spacing, bottom_spacing = self.get_stringer_spacing()
-        return max(top_spacing, bottom_spacing, self.local_height)
+        if n > 0:
+            return top_spacing#max(top_spacing, self.local_height)
+        else:
+            return bottom_spacing#max(bottom_spacing, self.local_height)
 
     def centroid_x(self):
         area_distance = 0
@@ -155,9 +159,9 @@ class crosssection:
         A = self.local_width * self.local_height
         return 1/((self.local_width * 2 + self.local_height * 2)/(4 * A * self.local_t))
     
-    def skin_buckling(self, E):
+    def skin_buckling(self, E, n):
         Ks = 5
-        w = self.max_skin_width()
+        w = self.max_skin_width(n)
         tau_cr = Ks * E * (self.local_t/w)**2
         return tau_cr
     
@@ -247,6 +251,8 @@ class crosssection:
 
         plt.plot(self.centroid_x(), self.centroid_z(), 'X')
         plt.gca().set_aspect('equal', adjustable='box')
+        plt.xlabel('x [m]')
+        plt.ylabel('z [m]')
         plt.show()
 
 
@@ -266,12 +272,17 @@ class skin:
 
 
 class stringer:
-    def __init__(self, b, h, t, y_end):
+    def __init__(self, b, h, t, y_end, material):
         self.b = b
         self.h = h
         self.t = t
         self.area = self.area()
         self.y_end = y_end
+        self.density = material.density
+        self.E = material.E
+        self.G = material.G
+        self.sigma_y = material.sigma_y
+        self.poisson = material.poisson
 
     def is_present(self, y):
         return y <= self.y_end
@@ -287,8 +298,8 @@ class stringer:
         b = self.b - self.t
         A1 = h * self.t
         A2 = b * self.t
-        sigma_cc_1 = sigma_y * alpha*(C/sigma_y*np.pi**2*E/(12*(1-poisson**2))*(self.t/h)**2)**(1-n)
-        sigma_cc_2 = sigma_y * alpha*(C/sigma_y*np.pi**2*E/(12*(1-poisson**2))*(self.t/b)**2)**(1-n)
+        sigma_cc_1 = self.sigma_y * alpha*(C/self.sigma_y*np.pi**2*self.E/(12*(1-self.poisson**2))*(self.t/h)**2)**(1-n)
+        sigma_cc_2 = self.sigma_y * alpha*(C/self.sigma_y*np.pi**2*self.E/(12*(1-self.poisson**2))*(self.t/b)**2)**(1-n)
         sigma_total = (sigma_cc_1*A1+sigma_cc_2*A2)/(A1+A2)
         return sigma_total
         
@@ -301,6 +312,7 @@ class stringer:
 class wingbox:
     def __init__(self, stringers, cross_section, length, taper, material_density, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
                  lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, F_h, lz_h, ly_fc, w_fc, ly_bat, w_bat, n, type):
+        self.rib_spacing = 0.8
         self.type = type
         self.stringers = stringers
         self.cross_section = cross_section
@@ -336,15 +348,31 @@ class wingbox:
         self.w_bat = w_bat
 
 
+
     def local_crosssection(self, y):
         return crosssection(self.stringers, self.skins, self.taper, y, self.length)
 
     def get_weight(self):
+        return self.skin_weight()+self.top_stringer_weight()+self.bottom_stringer_weight()+self.rib_weight()
+
+    def rib_weight(self):
+        rib_area = self.local_crosssection(self.length/2).local_width * self.local_crosssection(self.length/2).local_height
+        return round(self.length/self.rib_spacing) * rib_area * self.local_crosssection(self.length/2).local_t * self.density
+
+    def skin_weight(self):
         weight = self.local_crosssection(self.length / 2).skin_area() * self.length * self.density
+        return weight
+
+    def top_stringer_weight(self):
+        weight = 0
         for stri in self.stringers['top']:
-            weight += (stri.y_end) * stri.area * self.density
+            weight += (stri.y_end) * stri.area * stri.density
+        return weight
+
+    def bottom_stringer_weight(self):
+        weight = 0
         for stri in self.stringers['bottom']:
-            weight += (stri.y_end) * stri.area * self.density
+            weight += (stri.y_end) * stri.area * stri.density
         return weight
 
     def weight_force(self, y):
@@ -570,7 +598,7 @@ class wingbox:
     def get_max_stress(self):
         y_max = None
         max_stress = 0
-        y = np.arange(0, self.length, self.length/50)
+        y = np.arange(0, self.length, self.length/25)
         for i in y:
             cross_section = self.local_crosssection(i)
             Vx = self.shearx(i)
@@ -635,16 +663,16 @@ class wingbox:
         return min(sigma_panel, sigma_stringer)
     
     def is_crippling(self):
-        y = np.arange(0, self.length, self.length/30)
+        y = np.arange(0, self.length, self.length/25)
         for i in y:
             if self.max_bending_stress(i) >= self.crippling(i):
                 return True
         return False
     
     def is_buckling(self):
-        y = np.arange(0, self.length, self.length/30)
+        y = np.arange(0, self.length, self.length/25)
         for i in y:
-            if self.max_shear_stress(i) >= self.local_crosssection(i).skin_buckling(self.E):
+            if self.max_shear_stress(i) >= self.local_crosssection(i).skin_buckling(self.E, self.n):
                 return True
         return False
         
