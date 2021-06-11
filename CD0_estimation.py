@@ -1,11 +1,11 @@
 from math import *
 
-m_to_ft = 3.2808399
-m2_to_ft2 = 10.7639104
-m3_to_ft3 = 35.3146667
-kg_to_lbs = 2.20462262
-m_to_in = 39.3700787
-kgm2_to_lbft2 = 23.73025
+ft = 3.2808399
+ft2 = 10.7639104
+ft3 = 35.3146667
+lbs = 2.20462262
+inch = 39.3700787
+lbft2 = 23.73025
 
 def get_S_w(S_w_w,S_w_f,S_w_t,S_w_n):
     S_w = S_w_w + S_w_f + S_w_t + S_w_n
@@ -23,6 +23,13 @@ def get_S_e_w(S,c_r,d,):
     S_e_w_2 =
 
 def get_S_w_w()
+
+def get_S_w_f(l_f, l_tc, l_nc, d)
+    S_fuselage = pi*d*l_f(1-1/3*(l_nc/l_f)-1/2*(l_tc/l_f))
+    return S_fuselage
+
+def get_S_w_t(S)
+    if S*10.7639 < 3000:
 
 
 
