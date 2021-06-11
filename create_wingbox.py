@@ -18,15 +18,39 @@ E = 69 * 10 ** 9
 G = 26.4 * 10 ** 9
 sigma_y = 450 * 10 ** 6
 poisson = 0.33
-AL7040 = Material(density, E, G, sigma_y, poisson)
+AL7040 = Material(density, E, G, sigma_y, poisson, 'AL7040')
 
-#Aluminum
+#Aluminum 
 density = 2810  # kg/m3, density of aluminium
 E = 71.1 * 10 ** 9
 G = 26.9 * 10 ** 9
 sigma_y = 550 * 10 ** 6
 poisson = 0.33
-AL = Material(density, E, G, sigma_y, poisson)
+AL = Material(density, E, G, sigma_y, poisson, 'AL')
+
+#Aluminium 7055
+density = 2860  # kg/m3, density of aluminium
+E = 75 * 10 ** 9
+G = 26.9 * 10 ** 9
+sigma_y = 614 * 10 ** 6
+poisson = 0.33
+AL7055 = Material(density, E, G, sigma_y, poisson, 'AL7055')
+
+#Aluminium 2099
+density = 2630  # kg/m3, density of aluminium
+E = 78 * 10 ** 9
+G = 27.5 * 10 ** 9
+sigma_y = 455 * 10 ** 6
+poisson = 0.33
+AL2099 = Material(density, E, G, sigma_y, poisson, 'AL2099')
+
+#Aluminium 6061
+density = 2700  # kg/m3, density of aluminium
+E = 69 * 10 ** 9
+G = 26.2 * 10 ** 9
+sigma_y = 455 * 10 ** 6
+poisson = 0.33
+AL6061 = Material(density, E, G, sigma_y, poisson, 'AL6061')
 
 #Titanium
 density = 4800  # kg/m3, density of aluminium
@@ -34,7 +58,7 @@ E = 110 * 10 ** 9
 G = 90 * 10 ** 9
 sigma_y = 1200 * 10 ** 6
 poisson = 0.31
-Ti = Material(density, E, G, sigma_y, poisson)
+Ti = Material(density, E, G, sigma_y, poisson, 'Titanium')
 
 #Glare
 density = 2520  # kg/m3, density of aluminium
@@ -42,12 +66,12 @@ E = 67.9 * 10 ** 9
 G = 26.7 * 10 ** 9
 sigma_y = 280 * 10 ** 6
 poisson = 0.33
-Glare = Material(density, E, G, sigma_y, poisson)
+Glare = Material(density, E, G, sigma_y, poisson, 'Glare')
 
 
 
 
-def make_wingbox(t_skin, n_str, str_size, material, n, type):
+def make_wingbox(t_skin, n_str_top, n_str_bot, str_size, material_skin, material_stringers_top, material_stringers_bottom, n, type):
     if n != n_ult_flaps:
         flaps_on = 0
     else:
@@ -85,13 +109,15 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     w_L_D = L_D
     w_ly_e = wb.ly_e
     w_lz_e = wb.lz_e
-    w_w_engine = (wb.w_engine + wb.w_radiator + wb.w_prop) * 9.81
+    w_w_engine = (wb.w_engine + wb.w_prop)
     powersetting = wb.powersetting
     w_T_engine = w_ac / w_L_D / 2 / powersetting
     w_ly_fc = wb.ly_fc
     w_w_fc = wb.w_fc
     w_ly_bat = wb.ly_bat
     w_w_bat = wb.w_bat
+    w_ly_sys = wb.ly_sys
+    w_w_sys = wb.w_sys
     w_ly_hld = wb.ly_hld
     w_lx_hld = wb.lx_hld
     w_F_hld = flaps_on * wb.F_hld
@@ -113,6 +139,8 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     h_w_fc = 0
     h_ly_bat = 0
     h_w_bat = 0
+    h_ly_sys = 0
+    h_w_sys = 0
     h_ly_hld = 0
     h_lx_hld = 0
     h_F_hld = 0
@@ -134,6 +162,8 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     v_w_fc = 0
     v_ly_bat = 0
     v_w_bat = 0
+    v_ly_sys = 0
+    v_w_sys = 0
     v_ly_hld = 0
     v_lx_hld = 0
     v_F_hld = 0  # 15000
@@ -157,21 +187,21 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
     l_w = b/2  # length of the wingbox
 
     # Creating stringerss
-    material_stringers_top = AL
-    material_stringers_bottom = AL7040
+    #material_stringers_top = AL
+    #material_stringers_bottom = AL7040
     # Y_end position, number of stringers
-    y_stringers_stop_top = [(0.2 * l_w, n_str),
-                            (0.4 * l_w, n_str),
-                            (0.6 * l_w, n_str),
-                            (0.8 * l_w, n_str),
-                            (1.0 * l_w, n_str)]
+    y_stringers_stop_top = [(0.2 * l_w, n_str_top),
+                            (0.4 * l_w, n_str_top),
+                            (0.6 * l_w, n_str_top),
+                            (0.8 * l_w, n_str_top),
+                            (1.0 * l_w, n_str_top)]
 
     # Y_end position, number of stringers
     y_stringers_stop_bot = [(0.2 * l_w, 0),
                             (0.4 * l_w, 0),
-                            (0.6 * l_w, n_str),
+                            (0.6 * l_w, n_str_bot),
                             (0.8 * l_w, 0),
-                            (1.0 * l_w, n_str)]
+                            (1.0 * l_w, n_str_bot)]
     stringer_width = str_size
     stringer_height = str_size
     stringer_t = 0.005
@@ -189,11 +219,11 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
 
     root_crosssection = crosssection(stringer_list, skins)
 
-    density_AL = material.density # kg/m3, density of aluminium
-    E = material.E
-    G = material.G
-    sigma_y = material.sigma_y
-    poisson = material.poisson
+    density_AL = material_skin.density # kg/m3, density of aluminium
+    E = material_skin.E
+    G = material_skin.G
+    sigma_y = material_skin.sigma_y
+    poisson = material_skin.poisson
 
     if type == 'wing':
         ly_e = w_ly_e
@@ -204,6 +234,8 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         w_fc = w_w_fc
         ly_bat = w_ly_bat
         w_bat = w_w_bat
+        ly_sys = w_ly_sys
+        w_sys = w_w_sys
         ly_hld = w_ly_hld
         lx_hld = w_lx_hld
         F_hld = w_F_hld
@@ -225,6 +257,8 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         w_fc = h_w_fc
         ly_bat = h_ly_bat
         w_bat = h_w_bat
+        ly_sys = h_ly_sys
+        w_sys = h_w_sys
         ly_hld = h_ly_hld
         lx_hld = h_lx_hld
         F_hld = h_F_hld
@@ -246,6 +280,8 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
         w_fc = v_w_fc
         ly_bat = v_ly_bat
         w_bat = v_w_bat
+        ly_sys = v_ly_sys
+        w_sys = v_w_sys
         ly_hld = v_ly_hld
         lx_hld = v_lx_hld
         F_hld = v_F_hld
@@ -261,13 +297,13 @@ def make_wingbox(t_skin, n_str, str_size, material, n, type):
 
 
     return wingbox(stringer_list, root_crosssection, l_w, taper, density_AL, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
-                      lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, F_h, lz_h, ly_fc, w_fc, ly_bat, w_bat, n, type)
+                      lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, F_h, lz_h, ly_fc, w_fc, ly_bat, w_bat, ly_sys, w_sys, n, type)
 
 
 if __name__ == "__main__":
     type = 'wing'
-    wingbox = make_wingbox(0.004, 1, 0.03, AL7040, n_ult_pos, type)
-    print(wingbox.rib_weight())
+    wingbox = make_wingbox(0.004, 1, 1, 0.03, AL7040, AL7040, AL7040, n_ult_pos, type)
+    print(wingbox.front_skin_weight())
     wingbox.plot_crosssection(0)
     # plt.show()
     print(wingbox.get_max_stress())

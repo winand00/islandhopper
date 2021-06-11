@@ -35,7 +35,7 @@ taper_vert = 0.8
 c_avg_vert = S_vert/b_vert
 c_root_vert = c_avg_vert/((1-taper_vert)/2+taper_vert)
 L_ver = 17500 / b_vert  # Lift distribution on the vertical tail
-lz_hor = b_vert/3  # Z-position of the horizontal tail on the vertical tail
+lz_hor = b_vert/6  # Z-position of the horizontal tail on the vertical tail
 # Root dimensions of the wingbox
 h_vert = 0.4 * c_root_vert
 w_vert = h_vert * 0.3
@@ -59,20 +59,24 @@ F_el = 1000  # elevator force
 
 #Systems inputs:
 #Engine
-w_engine = 130
+w_engine = 130 * 9.81
 ly_e = 1 * b_wing / 2
 lz_e = h_wing / 2
 powersetting = 0.5
-w_radiator = 100
-w_prop = 80
+w_radiator = 100 * 9.81
+w_prop = 80 * 9.81
 
 #Fuel cell
-w_fc = 140
-ly_fc = ly_e
+w_fc = 140 * 9.81
+ly_fc = 0.5 * b_wing
 
 #Battery
-w_bat = 135
-ly_bat = ly_e
+w_bat = 135 * 9.81
+ly_bat = 0.4 * b_wing
+
+#Other systems
+w_sys = 113 * 9.81 + w_radiator
+ly_sys = 0.3 * b_wing
 
 # Structures
 l_fuselage = 10

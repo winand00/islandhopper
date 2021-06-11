@@ -311,7 +311,7 @@ class stringer:
 
 class wingbox:
     def __init__(self, stringers, cross_section, length, taper, material_density, E, G, sigma_y, poisson, ly_e, w_wing, w_engine, L_D,
-                 lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, F_h, lz_h, ly_fc, w_fc, ly_bat, w_bat, n, type):
+                 lz_e, ly_hld, lx_hld, ly_el, lx_el, T_engine, F_hld, F_el, Mh, F_h, lz_h, ly_fc, w_fc, ly_bat, w_bat, ly_sys, w_sys, n, type):
         self.rib_spacing = 0.8
         self.type = type
         self.stringers = stringers
@@ -346,6 +346,8 @@ class wingbox:
         self.w_fc = w_fc
         self.ly_bat = ly_bat
         self.w_bat = w_bat
+        self.ly_sys = ly_sys
+        self.w_sys = w_sys
 
 
 
@@ -353,8 +355,12 @@ class wingbox:
         return crosssection(self.stringers, self.skins, self.taper, y, self.length)
 
     def get_weight(self):
-        return self.skin_weight()+self.top_stringer_weight()+self.bottom_stringer_weight()+self.rib_weight()
-
+        return self.skin_weight()+self.top_stringer_weight()+self.bottom_stringer_weight()+self.rib_weight()+self.front_skin_weight()
+    
+    def front_skin_weight(self):
+        volume = np.pi*self.local_crosssection(self.length/2).local_height/2 * self.local_crosssection(self.length/2).local_t * self.length
+        rho_glare = 2520
+        return volume * rho_glare
     def rib_weight(self):
         rib_area = self.local_crosssection(self.length/2).local_width * self.local_crosssection(self.length/2).local_height
         return round(self.length/self.rib_spacing) * rib_area * self.local_crosssection(self.length/2).local_t * self.density
@@ -406,8 +412,8 @@ class wingbox:
         return steps_starts, l_w
 
     def shearz(self, y):
-        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2) * 2 + self.w_fc + self.w_bat
-        Vz = Ra+(self.w_wing)*y-(self.w_engine*Macaulay(y,self.ly_e,0))-(self.weight_force(y/2))*2 -self.w_fc*Macaulay(y,self.ly_fc,0)-self.w_bat*Macaulay(y,self.ly_bat,0)
+        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2) * 2 + self.w_fc + self.w_bat + self.w_sys
+        Vz = Ra+(self.w_wing)*y-(self.w_engine*Macaulay(y,self.ly_e,0))-(self.weight_force(y/2))*2 -self.w_fc*Macaulay(y,self.ly_fc,0)-self.w_bat*Macaulay(y,self.ly_bat,0)-self.w_sys*Macaulay(y,self.ly_sys,0)
         return -Vz
 
     def shearx(self, y):
@@ -416,9 +422,9 @@ class wingbox:
         return Vx
 
     def momentx(self, y):
-        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2)*2 + self.w_fc + self.w_bat
-        M0 = -(self.w_engine * self.ly_e) -(self.w_fc * self.ly_fc)-(self.w_bat * self.ly_bat)+ (self.w_wing * (self.length ** 2) / 2)-(self.weight_force(self.length/2)*self.length)
-        M = (Ra*y+M0+(self.w_wing/2)*y**2-(self.weight_force(y/2))*y-(self.w_engine*Macaulay(y, self.ly_e, 1))-(self.w_fc*Macaulay(y,self.ly_fc,1))-(self.w_bat*Macaulay(y,self.ly_bat,1)))
+        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2)*2 + self.w_fc + self.w_bat + self.w_sys
+        M0 = -(self.w_engine * self.ly_e) -(self.w_fc * self.ly_fc)-(self.w_bat * self.ly_bat) -(self.w_sys * self.ly_sys)+ (self.w_wing * (self.length ** 2) / 2)-(self.weight_force(self.length/2)*self.length)
+        M = (Ra*y+M0+(self.w_wing/2)*y**2-(self.weight_force(y/2))*y-(self.w_engine*Macaulay(y, self.ly_e, 1))-(self.w_fc*Macaulay(y,self.ly_fc,1)) -(self.w_sys*Macaulay(y,self.ly_sys,1))-(self.w_bat*Macaulay(y,self.ly_bat,1)))
         return M
 
     def momentz(self, y):
@@ -459,11 +465,11 @@ class wingbox:
 
     def displacementz(self, y):
         I = self.local_crosssection(y/2).I_xx
-        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2)*2 + self.w_fc + self.w_bat
-        M0 = -(self.w_engine * self.ly_e) + (self.w_wing * (self.length ** 2) / 2) - self.weight_force(self.length/2) * self.length-(self.w_bat * self.ly_bat)-(self.w_fc * self.ly_fc)
+        Ra = -self.w_wing * self.length + self.w_engine + self.weight_force(self.length/2)*2 + self.w_fc + self.w_bat + self.w_sys
+        M0 = -(self.w_engine * self.ly_e) + (self.w_wing * (self.length ** 2) / 2) - self.weight_force(self.length/2) * self.length-(self.w_bat * self.ly_bat)-(self.w_fc * self.ly_fc) -(self.w_sys * self.ly_sys)
         v = -((-1 / (self.E * I)) * (((1 / 6) * Ra * (y ** 3)) + (1 / 2 * M0 * (y ** 2)) + ((self.w_wing / 24) * (y ** 4))
                                     - (self.w_engine / 6 * Macaulay(y, self.ly_e, 3))-(self.w_bat / 6 * Macaulay(y, self.ly_bat, 3))-
-                                     (self.w_fc / 6 * Macaulay(y, self.ly_fc, 3))-(((self.weight_force(y/2)) / 12) * (y ** 3))))
+                                     (self.w_fc / 6 * Macaulay(y, self.ly_fc, 3))-(self.w_sys / 6 * Macaulay(y, self.ly_sys, 3))-(((self.weight_force(y/2)) / 12) * (y ** 3))))
         return v
 
     def new_displacementz(self, y, step):
@@ -598,7 +604,7 @@ class wingbox:
     def get_max_stress(self):
         y_max = None
         max_stress = 0
-        y = np.arange(0, self.length, self.length/25)
+        y = np.arange(0, self.length, self.length/15)
         for i in y:
             cross_section = self.local_crosssection(i)
             Vx = self.shearx(i)
@@ -663,14 +669,14 @@ class wingbox:
         return min(sigma_panel, sigma_stringer)
     
     def is_crippling(self):
-        y = np.arange(0, self.length, self.length/25)
+        y = np.arange(0, self.length, self.length/15)
         for i in y:
             if self.max_bending_stress(i) >= self.crippling(i):
                 return True
         return False
     
     def is_buckling(self):
-        y = np.arange(0, self.length, self.length/25)
+        y = np.arange(0, self.length, self.length/15)
         for i in y:
             if self.max_shear_stress(i) >= self.local_crosssection(i).skin_buckling(self.E, self.n):
                 return True
@@ -709,9 +715,10 @@ def Macaulay(x, x_point, power):
 
 
 class Material:
-    def __init__(self, density, E, G, sigma_y, poisson):
+    def __init__(self, density, E, G, sigma_y, poisson, name):
         self.density = density  # kg/m3, density of aluminium
         self.E = E
         self.G = G
         self.sigma_y = sigma_y
         self.poisson = poisson
+        self.name = name

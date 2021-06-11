@@ -1,6 +1,6 @@
 from wing_box import Macaulay
 import wingbox_inputs as wb
-from create_wingbox import AL, AL7040
+from create_wingbox import AL, AL7040, Glare
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -78,7 +78,9 @@ class Fuselage:
         stringer_weight = 0
         for stri in self.stringers:
             stringer_weight += stri.area * self.length * stri.rho
-        return stringer_weight + self.skin_area * self.length * self.rho + self.rib_weight()
+        bottom_skin = self.skin_area * self.length * self.rho / 2
+        top_skin = self.skin_area * self.length * Glare.density / 2
+        return stringer_weight + bottom_skin + top_skin  + self.rib_weight()
 
     def make_stringers(self, stringer, n_str):
         t = stringer.t
