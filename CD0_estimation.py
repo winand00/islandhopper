@@ -23,7 +23,7 @@ def get_S_w_f(l_f, l_tc, l_nc, f_d):
     return S_fuselage
 
 def get_S_w_t(S):
-    if S*ft2 < 3000:
+    if S < 3000:
         S_tail = 0.88*S
     else:
         S_tail = 2.5*S**0.85
@@ -39,7 +39,7 @@ def get_S_w_n(d_n,l_n):
 
 # Wing/tail inputs #
 b = 20.*ft                                   #Wing span [m]
-y_b = 1.*ft                                     #
+y_b = 0.5*ft                                     #
 S = 40.*ft2                                      #Wing area [m]
 tc_max = 0.17
 lambda_t = 0.5
@@ -60,15 +60,20 @@ l_n = 1.8*ft
 
 #--------------------------------------------------#
 
-S_w_w = get_S_w_w(S, b, y_b, lambda_t, tc_max)                         #Wing wetted area
-S_w_f = get_S_w_f(l_f, l_tc, l_nc, f_d)                                   #Fuselage wetted area
-S_w_n = get_S_w_n(d_n,l_n)                                   #Nacelle wetted area
-S_w_t = get_S_w_t(S)                        #Tail wetted area
-S_w = S_w_w + S_w_f + S_w_t + S_w_n      #Total wetted area in clean configuration
+S_w_w = get_S_w_w(S, b, y_b, lambda_t, tc_max)      #Wing wetted area
+S_w_f = get_S_w_f(l_f, l_tc, l_nc, f_d)             #Fuselage wetted area
+S_w_n = get_S_w_n(d_n,l_n)                          #Nacelle wetted area
+S_w_t = get_S_w_t(S)                                #Tail wetted area
+S_w = S_w_w + S_w_f + S_w_t + S_w_n                 #Total wetted area in clean configuration
+Swb = 10.7*(S/b)**0.75
 
-R_e = 14000000 #(rho*V/mu)*((S_w/ft2)/(b/ft))
-Cd0 = 0.00258+0.00102*e**(-6.28*10E-9*R_e)+0.00295*e**(-2.01*10E-8*R_e)*(S_w/S)
+R_e = (rho*V/mu)*(Swb/ft)
+CFe = 0.00258+0.00102*e**(-6.28E-9*R_e)+0.00295*e**(-2.01E-8*R_e)
+Cd0 = CFe*S_w/b  #10.7*(S/b)**(0.75-1)
 
-print(S_w/ft2)
-
+#print("S_w_w =", S_w_w/ft2)
+#print("S_w_f =", S_w_f/ft2)
+#print("S_w_n =", S_w_n/ft2)
+#print("S_w_t =", S_w_t/ft2)
 print("CD_0 =", Cd0)
+print(S_w/b)
