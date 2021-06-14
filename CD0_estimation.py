@@ -69,11 +69,11 @@ Swb = 10.7*(S/b)**0.75
 
 R_e = (rho*V/mu)*(Swb/ft)
 CFe = 0.00258+0.00102*e**(-6.28E-9*R_e)+0.00295*e**(-2.01E-8*R_e)
-Cd0 = CFe*S_w/b  #10.7*(S/b)**(0.75-1)
+Cd0 = CFe*10.7*(S/b)**(0.75-1)
 
-#print("S_w_w =", S_w_w/ft2)
-#print("S_w_f =", S_w_f/ft2)
-#print("S_w_n =", S_w_n/ft2)
-#print("S_w_t =", S_w_t/ft2)
+print("S_w_w =", S_w_w/ft2)
+print("S_w_f =", S_w_f/ft2)
+print("S_w_n =", S_w_n/ft2)
+print("S_w_t =", S_w_t/ft2)
 print("CD_0 =", Cd0)
-print(S_w/b)
+print(Swb)
