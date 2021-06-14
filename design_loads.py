@@ -161,15 +161,15 @@ def tail_load_elevator():
     delta_n = lf_pos             # load factor increment
     M = 8618.25503  # [kg]
     g = 9.80665
-    x_cg = 6
-    x_ac = 5.5
+    x_cg = 5.73 #  5.43
+    x_ac = 4.84
     x_cg_ac = x_cg - x_ac  # ???   # [m] distance from ac to cg
-    l_t = 9  # ???         # tail arm
-    S_h_t = 6   # ???      # hor tail area
-    S = 45                 # wing surface
-    aht = 2   # ???        # lift curve slope hor tail
-    a = 3     # ???        # lift curve slope wing
-    deda = 0.7             # downwash change with alpha
+    l_t = 5.93          # tail arm
+    S_h_t = 6        # hor tail area
+    S = 40                 # wing surface
+    aht = 4.65          # lift curve slope hor tail
+    a = 5             # lift curve slope wing
+    deda = 0.38             # downwash change with alpha
     rho_zero = 1.225       # density sealevel
 
     # Change in tail load due to elevator deflection
@@ -179,7 +179,9 @@ def tail_load_elevator():
 
 if __name__ == "__main__":
     lf_pos, lf_min, v = design_loads()
-    fsadf = tail_load_elevator()
+    print(lf_pos, lf_min)
+    delta_P = tail_load_elevator()
+    print(delta_P)
     plt.show()
 
 

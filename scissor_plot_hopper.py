@@ -65,6 +65,7 @@ if __name__ == '__main__':
     
     
     dedalpha = Kel/Kel0*(T1+T2)*Cl_alpha_w/3.1415926535/A
+    print("De/dalpha is: ", dedalpha)
     Cm_ac = -0.986 #!
     Cl_h = -0.5*Ah**0.333
     Cl_Ah = 2.4- Cl_h #!
