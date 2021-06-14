@@ -28,8 +28,8 @@ def loading_diagram():
     nosecone_length          = 3                         # ends at middle of row 1
     starting_length         = nosecone_length - 0.762     # 1 seat distance before middle of row 1
     X_fuel                  = 4.05         # ??                                          # [m] location of cg fuel                                            # [m] location of cg tank
-    M_front_cargo           = 105                     # [kg] 19 passengers + 2 crew
-    M_rear_cargo            = 105                      # [kg] 19 passengers + 2 crew
+    M_front_cargo           = 95                     # [kg] 19 passengers + 2 crew
+    M_rear_cargo            = 95                      # [kg] 19 passengers + 2 crew
     x_front_cargo_absolute  = 6.38    # ??
     x_rear_cargo_absolute   = 7.21    # ??
     X_front_cargo           = (x_front_cargo_absolute - MAC_start)/MAC
