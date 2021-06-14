@@ -4,11 +4,11 @@ from matplotlib import pyplot as plt
 
 def design_loads():
     # Aircraft parameters
-    S = 45  # [m2]
+    S = 40  # [m2]
     MAC = 2.24   # [m]
     Cl_alpha = 4    # ??? Cl_alpha [rad-1]
     CL_clean = 2   # ???
-    CL_flaps = 2.4  # ???
+    CL_flaps = 2.8  # ???
 
     g = 9.80665  # [m/s2]
     W = 8618.25503 * 9.80665  # [N]
