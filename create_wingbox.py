@@ -40,7 +40,7 @@ AL7055 = Material(density, E, G, sigma_y, poisson, 'AL7055')
 density = 2630  # kg/m3, density of aluminium
 E = 78 * 10 ** 9
 G = 27.5 * 10 ** 9
-sigma_y = 455 * 10 ** 6
+sigma_y = 525 * 10 ** 6
 poisson = 0.33
 AL2099 = Material(density, E, G, sigma_y, poisson, 'AL2099')
 
@@ -72,7 +72,7 @@ Glare = Material(density, E, G, sigma_y, poisson, 'Glare')
 
 
 def make_wingbox(t_skin, n_str_top, n_str_bot, str_size, material_skin, material_stringers_top, material_stringers_bottom, n, type):
-    if n != n_ult_flaps:
+    if abs(n) != n_ult_flaps:
         flaps_on = 0
     else:
         flaps_on = 1
@@ -173,7 +173,7 @@ def make_wingbox(t_skin, n_str_top, n_str_bot, str_size, material_skin, material
     v_w_wing = wb.L_ver
     v_Mh = h_F_el * h_lx_el
     v_lz_h = wb.lz_hor
-    v_F_h = -h_w_wing * b_hor
+    v_F_h = -h_w_wing * b_hor - 9.81*164
      
 
     # skin(height, width, x_coordinate, z_coordinate)
@@ -202,6 +202,12 @@ def make_wingbox(t_skin, n_str_top, n_str_bot, str_size, material_skin, material
                             (0.6 * l_w, n_str_bot),
                             (0.8 * l_w, 0),
                             (1.0 * l_w, n_str_bot)]
+    if type == 'vertical':
+        y_stringers_stop_bot = [(0.2 * l_w, n_str_top),
+                                (0.4 * l_w, n_str_top),
+                                (0.6 * l_w, n_str_top),
+                                (0.8 * l_w, n_str_top),
+                                (1.0 * l_w, n_str_top)]
     stringer_width = str_size
     stringer_height = str_size
     stringer_t = 0.005
@@ -302,8 +308,8 @@ def make_wingbox(t_skin, n_str_top, n_str_bot, str_size, material_skin, material
 
 if __name__ == "__main__":
     type = 'wing'
-    wingbox = make_wingbox(0.004, 1, 1, 0.03, AL7040, AL7040, AL7040, n_ult_pos, type)
-    print(wingbox.front_skin_weight())
+    wingbox = make_wingbox(0.002, 4, 5, 0.03, AL2099, AL7055, AL2099, n_ult_pos, type)
+    print(wingbox.is_failing())
     wingbox.plot_crosssection(0)
     # plt.show()
     print(wingbox.get_max_stress())

@@ -45,8 +45,8 @@ tc_max = 0.17
 lambda_t = 0.5
 
 V = 90.                                     #cruise speed [m/s]
-rho = 0.9                                 #density
-mu = 17.78E-6                           #kinematic viscosity [m^2/s] @10 Degrees Celsius
+rho = 0.9093                                 #density
+mu = 17.78E-6                           #Dynamic viscosity [m^2/s] @10 Degrees Celsius
 
 # fuselage inputs #
 l_f = 12.24*ft

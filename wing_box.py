@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from shear_stress import Stress
-
+from time import time
 
 class crosssection:
     def __init__(self, stringers, skins, taper = None, y = None, l_w = None):
@@ -361,6 +361,7 @@ class wingbox:
         volume = np.pi*self.local_crosssection(self.length/2).local_height/2 * self.local_crosssection(self.length/2).local_t * self.length
         rho_glare = 2520
         return volume * rho_glare
+
     def rib_weight(self):
         rib_area = self.local_crosssection(self.length/2).local_width * self.local_crosssection(self.length/2).local_height
         return round(self.length/self.rib_spacing) * rib_area * self.local_crosssection(self.length/2).local_t * self.density
@@ -658,11 +659,12 @@ class wingbox:
         z_centroid = cross_section.z_centroid
         stress = Stress(h, w, Izz, Ixx, t, Vx, Vz,Mx, Mz, T, x_centroid, z_centroid, self.sigma_F(y))
         return stress.max_shear_total()
-        
-    
+
     def crippling(self, y):
         sigma_panel = self.local_crosssection(y).panel_crippling(self.sigma_y, self.E, self.poisson, self.n)
         if len(self.local_crosssection(y).local_stringers['top']) == 0:
+            return sigma_panel
+        if self.n < 0 and len(self.local_crosssection(y).local_stringers['bottom']) == 0:
             return sigma_panel
         sigma_stringer = self.local_crosssection(y).stringer_crippling(self.sigma_y, self.E, self.poisson, self.n)
         #sigma_skin = self.local_crosssection(y).skin_crippling(sigma_y, E, poisson)
@@ -699,10 +701,10 @@ class wingbox:
             failure_modes.append('crippling')
         if overdeflecting:
             failure_modes.append('overdeflecting')
-        return (yielding or skin_buckling or crippling, failure_modes or overdeflecting)
+        return (yielding or skin_buckling or crippling or overdeflecting, failure_modes)
 
     def is_overdeflecting(self):
-        return self.total_displacement_z(self.length) > self.length / 5
+        return self.displacementz(self.length) > self.length / 5
             
 
 def Macaulay(x, x_point, power):
