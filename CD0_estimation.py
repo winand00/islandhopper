@@ -46,7 +46,7 @@ lambda_t = 0.5
 
 V = 90.                                     #cruise speed [m/s]
 rho = 0.9                                 #density
-mu = 14.16E-6                           #kinematic viscosity [m^2/s] @10 Degrees Celsius
+mu = 17.78E-6                           #kinematic viscosity [m^2/s] @10 Degrees Celsius
 
 # fuselage inputs #
 l_f = 12.24*ft
@@ -67,7 +67,7 @@ S_w_t = get_S_w_t(S)                                #Tail wetted area
 S_w = S_w_w + S_w_f + S_w_t + S_w_n                 #Total wetted area in clean configuration
 Swb = 10.7*(S/b)**0.75
 
-R_e = (rho*V/mu)*(S_w/b)/ft
+R_e = ((rho*V/mu)*(S_w/b)/ft)
 CFe = 0.00258+0.00102*e**(-6.28E-9*R_e)+0.00295*e**(-2.01E-8*R_e)
 Cd0 = CFe*S_w/b*b/S  #10.7*(S/b)**(0.75-1)
 

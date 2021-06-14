@@ -6,7 +6,7 @@ weight_wing = 2* 430        #2 Glare wingboxes for engines on tip
 CL_max = 2.8     #Stall velocity
 L_n =   0.6        #nose gear length [m]
 L_m =    2       #Length of main landing gear [m]
-cg_wing = 5.4       #5.256 sized to l410
+cg_wing = 4.8       #5.256 sized to l410
 L_fuselage_whole = 12.24       #Length whole fuselage [m]
 B_w = 20                #Wing span [m]
 
