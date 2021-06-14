@@ -36,11 +36,12 @@ def get_S_w_n(d_n,l_n):
 
 
 ####### inputs ######
-
+c_r = 2.24 * ft
 # Wing/tail inputs #
 b = 20.*ft                                   #Wing span [m]
 y_b = 0.5*ft                                     #
-S = 40.*ft2                                      #Wing area [m]
+#S = 40.*ft2                                      #Wing area [m]
+S = 0.5 * b * c_r * (0.5 * (1-0) + 0 + 0.75)
 tc_max = 0.17
 lambda_t = 0.5
 
@@ -66,14 +67,17 @@ S_w_n = get_S_w_n(d_n,l_n)                          #Nacelle wetted area
 S_w_t = get_S_w_t(S)                                #Tail wetted area
 S_w = S_w_w + S_w_f + S_w_t + S_w_n                 #Total wetted area in clean configuration
 Swb = 10.7*(S/b)**0.75
+print(S_w,"Sw")
+print(S,"S")
 
 R_e = (rho*V/mu)*(Swb/ft)
 CFe = 0.00258+0.00102*e**(-6.28E-9*R_e)+0.00295*e**(-2.01E-8*R_e)
 Cd0 = CFe*10.7*(S/b)**(0.75-1)
 
-print("S_w_w =", S_w_w/ft2)
-print("S_w_f =", S_w_f/ft2)
-print("S_w_n =", S_w_n/ft2)
-print("S_w_t =", S_w_t/ft2)
+print("S_w_w =", S_w_w)
+print("S_w_f =", S_w_f)
+print("S_w_n =", S_w_n)
+print("S_w_t =", S_w_t)
 print("CD_0 =", Cd0)
-print(Swb)
+
+print((Swb*ft2)/b)

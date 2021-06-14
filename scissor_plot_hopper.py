@@ -40,6 +40,7 @@ if __name__ == '__main__':
     SnS = 0.9
     cbar = 2.24
     mac = 2/3*0.5*cbar*((1+0.5+0.5**2)/(1+0.5))
+    print("Mac:",mac)
     xbar_ac = 0.25*mac #(5/12.5)*lf/mac #aerodynamic centre location
     l_h = (5.7/12.5)*lf
     VhV = 0.95
