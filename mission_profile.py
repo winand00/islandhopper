@@ -24,7 +24,7 @@ eff_pmad = 0.989
 g = 9.81
 e = 0.7
 A = 10
-m = 8618
+m = 8618 -1814
 W = m*g
 
 rho_climb = 1.05
@@ -38,7 +38,7 @@ Hcruise = 3048
 
 rho_cruise = script(Hcruise)
 V_cruise = 90
-distance = 555000
+distance = 555600 #370400#
 
 rho_loiter = 1
 t_loiter = 45*60 #min
@@ -171,7 +171,7 @@ t_taxishut = 10*60
 #sizing
 
 #battery
-power_density = 5000 #W/kg
+power_density = 2500 #W/kg
 energy_density = 0.9*360 *3600#Wh/kg
 
 
