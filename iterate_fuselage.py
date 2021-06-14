@@ -21,6 +21,6 @@ def iterate_fuselage(t_skin, n_str, material_skin, materials_stringer):
 material_skin = AL6061
 material_stringer = [AL7040, AL2099, AL7055]
 n_str = np.arange(4, 40, 4)
-t_skin = np.arange(0.001, 0.006, 0.0001)
+t_skin = np.arange(0.002, 0.006, 0.0001)
 
 print(iterate_fuselage(t_skin, n_str, material_skin, material_stringer))

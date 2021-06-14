@@ -157,8 +157,8 @@ def design_loads():
     return lf_pos, lf_neg, lf_pos_flaps
 
 
-def tail_load_elevator():
-    delta_n = lf_pos             # load factor increment
+def tail_load_elevator(lf_pos):
+    delta_n = lf_pos              # load factor increment
     M = 8618.25503  # [kg]
     g = 9.80665
     x_cg = 5.73 #  5.43
@@ -180,7 +180,7 @@ def tail_load_elevator():
 if __name__ == "__main__":
     lf_pos, lf_min, v = design_loads()
     print(lf_pos, lf_min)
-    delta_P = tail_load_elevator()
+    delta_P = tail_load_elevator(lf_pos,)
     print(delta_P)
     plt.show()
 

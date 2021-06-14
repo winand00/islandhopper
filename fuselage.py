@@ -65,6 +65,13 @@ class Fuselage:
         self.E = E
         self.poisson = poisson
 
+    def floor_weight(self):
+        floor_width = 1.9
+        floor_area = floor_width * self.length
+        return 5 * floor_area
+
+    def cutout_weight(self):
+        return 18 * 0.7 + 3 * 18
 
     def rib_weight(self):
         rib_area = np.pi*((self.D/2)**2-(self.D/2-self.rib_width)**2)
@@ -80,7 +87,7 @@ class Fuselage:
             stringer_weight += stri.area * self.length * stri.rho
         bottom_skin = self.skin_area * self.length * self.rho / 2
         top_skin = self.skin_area * self.length * Glare.density / 2
-        return stringer_weight + bottom_skin + top_skin  + self.rib_weight()
+        return stringer_weight + bottom_skin + top_skin + self.rib_weight() + self.floor_weight() + self.cutout_weight()
 
     def make_stringers(self, stringer, n_str):
         t = stringer.t
@@ -292,8 +299,8 @@ def create_fuselage(t_sk, n_str, material_skin, material_stringer):
     x_t = length - 0.1
     F_t = wb.L_hor * wb.b_hor * n
     x_w = wb.x_pos_wing
-    F_w = 0 #weight_ac * n - weight_wing + F_t
-    T_t = wb.L_ver * wb.b_vert ** 2 / 3
+    F_w = weight_ac * n - weight_wing + F_t
+    T_t = wb.L_ver * wb.b_vert ** 2 / 2
     buckling_factor = 0 #5 # fraction of sigma_y
     # Material
     #Stringer
@@ -327,7 +334,7 @@ if __name__ == "__main__":
     material_skin = AL
     material_stringer = AL7040
     fuselage = create_fuselage(t_sk, n_str, material_skin, material_stringer)
-    print(fuselage.rib_weight())
+    print(fuselage.floor_weight())
     fuselage.graphs()
     print(fuselage.max_von_mises())
     print(fuselage.skin_buckling())
