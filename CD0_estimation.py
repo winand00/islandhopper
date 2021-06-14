@@ -24,7 +24,7 @@ def get_S_w_f(l_f, l_tc, l_nc, f_d):
 
 def get_S_w_t(S):
     if S < 3000:
-        S_tail = 0.88*S
+        S_tail = 1.25*S
     else:
         S_tail = 2.5*S**0.85
     return S_tail
@@ -40,23 +40,23 @@ def get_S_w_n(d_n,l_n):
 # Wing/tail inputs #
 b = 20.*ft                                   #Wing span [m]
 y_b = 0.5*ft                                     #
-S = 40.*ft2                                      #Wing area [m]
+S = 45.*ft2                                      #Wing area [m]
 tc_max = 0.17
 lambda_t = 0.5
 
 V = 90.                                     #cruise speed [m/s]
 rho = 0.9                                 #density
-mu = 14.16*(10E-6)                           #kinematic viscosity [m^2/s] @10 Degrees Celsius
+mu = 14.16E-6                           #kinematic viscosity [m^2/s] @10 Degrees Celsius
 
 # fuselage inputs #
 l_f = 12.24*ft
-l_tc = 4.78*ft
-l_nc = 3*ft
+l_tc = 4*ft
+l_nc = 2.5*ft
 f_d = 2.2*ft
 
 # nacelle inputs #
-d_n = 0.3*ft
-l_n = 1.8*ft
+d_n = 0.7*ft
+l_n = 2*ft
 
 #--------------------------------------------------#
 
@@ -67,13 +67,15 @@ S_w_t = get_S_w_t(S)                                #Tail wetted area
 S_w = S_w_w + S_w_f + S_w_t + S_w_n                 #Total wetted area in clean configuration
 Swb = 10.7*(S/b)**0.75
 
-R_e = (rho*V/mu)*(Swb/ft)
+R_e = (rho*V/mu)*(S_w/b)/ft
 CFe = 0.00258+0.00102*e**(-6.28E-9*R_e)+0.00295*e**(-2.01E-8*R_e)
-Cd0 = CFe*10.7*(S/b)**(0.75-1)
+Cd0 = CFe*S_w/b*b/S  #10.7*(S/b)**(0.75-1)
 
 print("S_w_w =", S_w_w/ft2)
-print("S_w_f =", S_w_f/ft2)
+print("S_w_f =", S_w_f)
 print("S_w_n =", S_w_n/ft2)
 print("S_w_t =", S_w_t/ft2)
 print("CD_0 =", Cd0)
-print(Swb)
+print("Sw/S = ", S_w/S)
+print("Re = ", R_e)
+print("Cfe = ", CFe)
