@@ -17,7 +17,7 @@ import math
 #design Cl
 m = 8618
 g = 9.81
-S = 45
+S = 40
 W = m*g
 V_cruise = 90
 V_ldg = 55

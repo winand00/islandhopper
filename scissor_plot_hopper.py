@@ -33,19 +33,20 @@ if __name__ == '__main__':
     eta = 0.95
     lambda_h = 0
     lambda_a = 0
-    b = 20.12
+    b = 20
     bf = 2.09
     lf = 12.24 #fuselage length
-    S = 45
+    S = 40
     SnS = 0.9
     cbar = 2.24
-    mac = 2/3*0.5*cbar*((1+0.5+0.5**2)/(1+0.5))
+    #mac = 2/3*0.5*cbar*((1+0.5+0.5**2)/(1+0.5))
+    mac = 2.24
     print("Mac:",mac)
     xbar_ac = 0.25*mac #(5/12.5)*lf/mac #aerodynamic centre location
-    l_h = (5.7/12.5)*lf
+    l_h = 5.93 #(5.7/12.5)*lf
     VhV = 0.95
     Ah = 6.73
-    A = 9
+    A = 10
     
     Cl_alpha_w = 2*np.pi*A/(2+np.sqrt(4+(A*beta/eta)**2*(1+np.tan(lambda_a)**2/beta**2)))
     print("Cl_alpha_w = ", Cl_alpha_w)
@@ -71,7 +72,7 @@ if __name__ == '__main__':
     Cl_Ah = 2.4- Cl_h #!
 
     # True ShS
-    ShS_true = 13 / 45
+    ShS_true = 11.6 / 40
 
     # Cg locations Hopper from loading diagram
     min_x_cg, max_x_cg = cgboundaries() 

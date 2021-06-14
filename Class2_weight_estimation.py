@@ -2,11 +2,11 @@ from math import *
 
 
 
-weight_wing = 2* 430        #2 Glare wingboxes for engines on tip
+weight_wing = 2* 362.5        #2 Glare wingboxes for engines on tip
 CL_max = 2.8     #Stall velocity
 L_n =   0.6        #nose gear length [m]
 L_m =    2       #Length of main landing gear [m]
-cg_wing = 5.4       #5.256 sized to l410
+cg_wing = 4.8       #5.256 sized to l410
 L_fuselage_whole = 12.24       #Length whole fuselage [m]
 B_w = 20                #Wing span [m]
 
@@ -282,8 +282,8 @@ cg_hydraulics = cg_flight_controls -0.3         #2 ailerons, 2 elevators, 1 rudd
 #------------------Class 2 weights------------------
 #weight_wing = get_weight_wing(W_dg,N_z,S_w,A,t_c_root,Lambda,Sweep_angle,S_csw)         #c.g. in Wing
 weight_avionics = get_weight_avionics(W_uav)            #c.g. 2 meter?
-weight_fuselage = get_weight_fuselage(K_door,K_lg,W_dg,N_z,L_fus,S_f,L_over_D,B_w,Lambda)       #
-weight_vertical_tail = get_weight_vert_tail(H_t,H_v,W_dg,N_z,L_t,S_vt,Sweep_angle_vt,A_v,t_c_root)  #1meter from end
+weight_fuselage = 1033 #get_weight_fuselage(K_door,K_lg,W_dg,N_z,L_fus,S_f,L_over_D,B_w,Lambda)       #
+weight_vertical_tail = 121.6 #get_weight_vert_tail(H_t,H_v,W_dg,N_z,L_t,S_vt,Sweep_angle_vt,A_v,t_c_root)  #1meter from end
 weight_horizontal_tail = get_weight_hor_tail(K_uht,F_w,B_h,W_dg,N_z,S_ht,L_t,Sweep_angle_ht,A_h,S_e)     #1meter from end
 weight_landing_gear,W_mlg,W_nlg = get_weight_landing_gear(K_mp,K_np,N_l,W_l,L_m,L_n,N_mw,N_nw,N_mss,V_stall)    #Nose:      mlg:
 weight_engine_control = get_weight_Engine_Controls(N_en,L_ec)   #c.g. in wing
