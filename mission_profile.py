@@ -15,11 +15,11 @@ eff_propeller = 0.85
 eff_pmad = 0.989
 g = 9.81
 e = 0.7
-A = 9
+A = 10
 m = 8618
 W = m*g
 rho_climb = 1.05
-S = 45
+S = 40
 Cd0 = 0.03
 Hcruise = 3048
 
@@ -28,7 +28,7 @@ rho_takeoff = 1.225
 s_takeoff = 750
 
 rho_cruise = script(Hcruise)
-V_cruise = 58
+V_cruise = 90
 distance = 555000
 
 rho_loiter = 1
@@ -199,3 +199,4 @@ T_diff = 50
 Pratzl = 0.71
 #Nusselt =
 print(E_taxi/3600000,E_takeoff/3600000,E_climb/3600000,E_cruise/3600000,E_descent/3600000, Etotal/3600000)
+
