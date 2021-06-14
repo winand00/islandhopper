@@ -51,6 +51,8 @@ if __name__ == '__main__':
     Cl_alpha_h = 2*np.pi*Ah/(2+np.sqrt(4+(Ah*beta/eta)**2*(1+np.tan(lambda_h)**2/beta**2)))
     Cl_alpha_Ah =  5.8 #Cl_alpha_w*(1+2.15*bf/b)*SnS +np.pi/2*bf**2/S
     print("Cl_alpha_Ah = ", Cl_alpha_Ah)
+    Cl_alpha_A = Cl_alpha_Ah + Cl_alpha_h
+    print("Cl_alpha_A = ", Cl_alpha_A)
     
     r = 0.867
     mtv = 0.067
