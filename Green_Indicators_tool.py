@@ -159,15 +159,21 @@ design2 = Parameters2()
 
 
 # Recyclability inputs , (M, RC, E_vir, E_rc , RECD) Line 12-16 for explanation of symbols
-carbon1 = Material(400, 0.4, 220000, 20000, 0.6)
-alluminium1 = Material(100, 0.8, 10000, 1500, 0.5)
+alluminium1 = Material(1, 1, 220*10**6, 30*10**6, 0.45)
 
-carbon2 = Material(400, 0.4, 220000, 20000, 0.5)
-alluminium2 = Material(100, 0.8, 10000, 1500, 0.6)
+titanium1 = Material(1, 1, 720*10**6, 96*10**6, 0.24)
 
+cfrp1 = Material(1, 0, 500*10**6, 500*10**6, 0)
+
+glare1 = Material(1, 0.81, 200*10**6, 46.72*10**6, 0.3645)
 
 
 Option1 = [carbon1, alluminium1]
 Option2 = [carbon2, alluminium2]
 
-tool(design1, Option1, design2, Option2)
+Option1 = [alluminium1]
+Option2 = [titanium1]
+Option3 = [cfrp1]
+Option4 = [glare1]
+
+tool(design1,Option3,design2,Option4)
