@@ -4,7 +4,7 @@ from math import *
 
 weight_wing = 2* 430        #2 Glare wingboxes for engines on tip
 CL_max = 2.8     #Stall velocity
-L_n =   1        #nose gear length [m]
+L_n =   0.6        #nose gear length [m]
 L_m =    2       #Length of main landing gear [m]
 cg_wing = 5.4       #5.256 sized to l410
 L_fuselage_whole = 12.24       #Length whole fuselage [m]
@@ -17,21 +17,14 @@ weight_batteries = 2*164 #in the wing
 weight_cooling_system_etc = 2*(133 + 50) #tried in the wing
 weight_engines = 2 * (155 + 4 * 12 + 20 + 80)        #2 times: 1 engine, 4 inverters, 20kg of nacelle, 80kg of propeller)       #Wing
 cg_hydrogen_tank = 4.05
-cg_landing_gear = 5     #NLG:  2     MLG: 7.5
-cg_vertical_tail = 11.5
-cg_horizontal_tail = 10.5
-cg_lavatory = 8.4
-N_l = 2.5     #Ultimate landing load factor
+cg_NLG = 1.5             #Nose landing gear
+cg_MLG = 6.294          #Main landing gear
+cg_vertical_tail = L_fuselage_whole - 0.75
+cg_horizontal_tail = L_fuselage_whole - 0.5
+cg_lavatory = 8.782         #From n2
+cg_fuselage = 0.5 * L_fuselage_whole   # Look into this
+Nose_len = 3        #Nosecone length
 
-
-cg_avionics = 1.5     #cockpit
-cg_fuselage = 0.45 * L_fuselage_whole   # Look into this
-cg_furnishing = (3.2 * 3 + 3* (3.2+0.76) + 3 *(3.2+0.76*2+0.15) + 3* (3.2+0.76*3+0.15) + 3* (3.2+0.76*4+0.15) + 3* (3.2+0.76*5+0.15) + 3.2 + 0.76*6+0.15)/19        #Dependent on nose cone
-cg_handling_gear = 2        #Cockpit
-cg_instruments = 1.5
-cg_hydraulics = 9          #2 ailerons, 2 elevators, 1 rudder    Can be calculated with those 5 control surfaces
-cg_flight_controls = 8      #2 ailerons, flaps, 2 elevators, 1 rudder
-cg_crew = 2             #pilots
 def get_v_stall(W_dg,S_w,CL_max):
     V_stall = sqrt((W_dg*9.81)/(0.5*1.225*S_w*CL_max))
     return V_stall
@@ -52,11 +45,9 @@ def get_weight_landing_gear(K_mp,K_np,N_l,W_l,L_m,L_n,N_mw,N_nw,N_mss,V_stall):
     L_m = L_m * m_to_in
     L_n = L_n * m_to_in
     V_stall = V_stall * m_to_ft
-    W_mlg = 0.0106 * K_mp * W_l ** 0.888 * N_l ** 0.25 * L_m ** 0.4 * N_mw ** 0.321 * N_mss ** (-0.5) * V_stall ** 0.1 /2.204
-    print(W_mlg,"=MLG")
-    W_nlg = 0.032 * K_np * W_l ** 0.646 * N_l ** 0.2 * L_n ** 0.5 * N_nw ** 0.45 / 2.204
-    print(W_nlg, "=NLG")
-    return (W_mlg + W_nlg)/kg_to_lbs
+    W_mlg = 0.0106 * K_mp * W_l ** 0.888 * N_l ** 0.25 * L_m ** 0.4 * N_mw ** 0.321 * N_mss ** (-0.5) * V_stall ** 0.1
+    W_nlg = 0.032 * K_np * W_l ** 0.646 * N_l ** 0.2 * L_n ** 0.5 * N_nw ** 0.45
+    return (W_mlg + W_nlg)/kg_to_lbs,W_mlg/kg_to_lbs,W_nlg/kg_to_lbs
 
 def get_weight_fuselage(K_door,K_lg,W_dg,N_z,L_fus,S_f,L_over_D,B_w,Lambda):
     W_dg = W_dg * kg_to_lbs
@@ -209,6 +200,7 @@ W_l = 8618          #Landing design gross weight [kg]
 K_mp = 1         #1.126 for kneeling gear;= 1.0 otherwise
 K_np = 1         #1.15 for kneeling gear;= 1.0 otherwise
 V_stall = get_v_stall(W_dg,S_w,CL_max)
+N_l = 2.5     #Ultimate landing load factor
 
 #Fuselage inputs
 K_door = 1     #1.0 if no cargo door; = 1.06 if one side cargo door; = 1.12 if two side cargo doors; = 1.12 if aft clamshell door; = 1.25 if two side cargo doors and aft clamshell door
@@ -279,7 +271,13 @@ cg_airconditioning = cg_fuselage
 cg_electrical = cg_fuselage - 2
 cg_APUins = cg_wing     #Necessary?
 cg_starter = cg_engines
-
+cg_avionics = cg_fuselage     #center of fuselage
+cg_furnishing = (Nose_len * 3 + 3* (Nose_len+0.76) + 3 *(Nose_len+0.76*2+0.15) + 3* (Nose_len+0.76*3+0.15) + 3* (Nose_len+0.76*4+0.15) + 3* (Nose_len+0.76*5+0.15) + Nose_len + 0.76*6+0.15)/19        #Dependent on nose cone
+cg_crew = 2             #pilots
+cg_instruments = 1.5
+cg_handling_gear = 2        #Cockpit
+cg_flight_controls = (cg_wing + cg_vertical_tail)/2      #2 ailerons, flaps, 2 elevators, 1 rudder
+cg_hydraulics = cg_flight_controls -0.3         #2 ailerons, 2 elevators, 1 rudder    Can be calculated with those 5 control surfaces
 
 #------------------Class 2 weights------------------
 #weight_wing = get_weight_wing(W_dg,N_z,S_w,A,t_c_root,Lambda,Sweep_angle,S_csw)         #c.g. in Wing
@@ -287,7 +285,7 @@ weight_avionics = get_weight_avionics(W_uav)            #c.g. 2 meter?
 weight_fuselage = get_weight_fuselage(K_door,K_lg,W_dg,N_z,L_fus,S_f,L_over_D,B_w,Lambda)       #
 weight_vertical_tail = get_weight_vert_tail(H_t,H_v,W_dg,N_z,L_t,S_vt,Sweep_angle_vt,A_v,t_c_root)  #1meter from end
 weight_horizontal_tail = get_weight_hor_tail(K_uht,F_w,B_h,W_dg,N_z,S_ht,L_t,Sweep_angle_ht,A_h,S_e)     #1meter from end
-weight_landing_gear = get_weight_landing_gear(K_mp,K_np,N_l,W_l,L_m,L_n,N_mw,N_nw,N_mss,V_stall)    #Nose:      mlg:
+weight_landing_gear,W_mlg,W_nlg = get_weight_landing_gear(K_mp,K_np,N_l,W_l,L_m,L_n,N_mw,N_nw,N_mss,V_stall)    #Nose:      mlg:
 weight_engine_control = get_weight_Engine_Controls(N_en,L_ec)   #c.g. in wing
 weight_furnishing = get_weight_furnishing(N_c,W_c,S_f) + 19*11      #19 seats of 11 kg
 weight_handling_gear = get_weight_handling_gear(W_dg)   #
@@ -303,9 +301,12 @@ weight_lavatory = 0.31 * N_p ** 1.33  #raymer
 weight_all_hydrogen_systems = weight_hydrogen_tank + weight_batteries + weight_cooling_system_etc + weight_fuell_cell #Hydrogen + Hydrogen tank + fuel cells + etc
 W_OEW = weight_all_hydrogen_systems + weight_engines + weight_wing + weight_avionics + weight_landing_gear + weight_fuselage + weight_vertical_tail + weight_horizontal_tail + weight_engine_control + weight_furnishing + weight_handling_gear + weight_instruments + weight_airconditioning + weight_electrical + weight_APUins + weight_starter + weight_hydraulics + weight_flight_controls + weight_lavatory + weight_crew
 
+
+cg_landing_gear = (W_mlg * cg_MLG + W_nlg * cg_NLG) / (W_mlg + W_nlg)     #NLG:  2     MLG: 7.5
 cg_OEW = get_mcg(W_OEW,cg_fuel_cell,weight_fuell_cell,cg_batteries,weight_batteries,cg_cooling_system_etc,weight_cooling_system_etc,cg_engines,weight_engines,cg_avionics,weight_avionics,cg_landing_gear,weight_landing_gear,cg_fuselage,weight_fuselage,cg_vertical_tail,weight_vertical_tail,cg_horizontal_tail,weight_horizontal_tail,cg_engine_control,weight_engine_control,cg_furnishing,weight_furnishing,cg_handling_gear,weight_handling_gear,cg_instruments,weight_instruments,cg_airconditioning,weight_airconditioning,cg_electrical,weight_electrical,cg_APUins,weight_APUins,cg_starter,weight_starter,cg_hydraulics,weight_hydraulics,cg_flight_controls,weight_flight_controls,cg_lavatory,weight_lavatory,cg_wing,weight_wing,cg_hydrogen_tank,weight_hydrogen_tank,cg_crew,weight_crew)
 
 
+print(cg_landing_gear)
 # print("Inputted weights:")
 print("Weight hydrogen tank and fuell cells and hydrogen =", weight_all_hydrogen_systems, "   % of MTOW:", 100*weight_all_hydrogen_systems/W_dg)
 print("Weight engines =", weight_engines, "   % of MTOW:", 100*weight_engines/W_dg)
@@ -331,3 +332,4 @@ print("Weight lavatory =", weight_lavatory, "   , % of MTOW:",100*weight_lavator
 print("\n")
 print("Total weight of subsystems + crew (OEW):", W_OEW)
 print("OEW cg =", cg_OEW)
+print("MTOW:", W_OEW + 110 + 1814)
