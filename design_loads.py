@@ -6,7 +6,7 @@ def design_loads():
     # Aircraft parameters
     S = 40  # [m2]
     MAC = 2.24   # [m]
-    Cl_alpha = 4    # ??? Cl_alpha [rad-1]
+    Cl_alpha = 5    # ??? Cl_alpha [rad-1]
     CL_clean = 2   # ???
     CL_flaps = 2.8  # ???
 
@@ -94,7 +94,6 @@ def design_loads():
     #delta_L_F = kg * Ude_D*3.2808 * VF*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
     #delta_L_C = kg * Ude_C*3.2808 * VC*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
     #delta_L_D = kg * Ude_D*3.2808 * VD*1.9439 * aht * Sht*10.7639 / 498 * (1 - deda) * 4.44822
-
     #delta_L = max(delta_L_F, delta_L_C, delta_L_D)
 
     # Calculate max and minimum load factors
@@ -146,10 +145,10 @@ def design_loads():
         plt.title('Load Diagram Hopper')
         plt.xlabel('V [m/s]')
         plt.ylabel('n [-]')
-        plt.ylim((-1.5, 3.2))
+        plt.ylim((-1.5, 4))
         plt.xlim(0, VD + 10)
         plt.xticks(np.arange(0, VD + 10, 10))
-        plt.yticks(np.arange(-1.5, 3.2, 0.5))
+        plt.yticks(np.arange(-1.5, 4, 0.5))
         ax.set(facecolor='w')
         # Legend:
         #plt.legend(loc=2, prop={'size': 8})

@@ -35,7 +35,7 @@ if __name__ == '__main__':
     lambda_a = 0
     b = 20.12
     bf = 2.09
-    lf = 13 #fuselage length
+    lf = 12.24 #fuselage length
     S = 45
     SnS = 0.9
     cbar = 2.24
@@ -50,6 +50,7 @@ if __name__ == '__main__':
     print("Cl_alpha_w = ", Cl_alpha_w)
     Cl_alpha_h = 2*np.pi*Ah/(2+np.sqrt(4+(Ah*beta/eta)**2*(1+np.tan(lambda_h)**2/beta**2)))
     Cl_alpha_Ah =  5.8 #Cl_alpha_w*(1+2.15*bf/b)*SnS +np.pi/2*bf**2/S
+    print("Cl_alpha_h = ", Cl_alpha_h)
     print("Cl_alpha_Ah = ", Cl_alpha_Ah)
     Cl_alpha_A = Cl_alpha_Ah + Cl_alpha_h
     print("Cl_alpha_A = ", Cl_alpha_A)
