@@ -2,8 +2,14 @@ import numpy as np
 from ISA import script
 import matplotlib.pyplot as plt
 
+W_P = 0.0675
+m = 8618 #-1814
+g = 9.81
+W = m*g
+distance = 370400#555600 #
+
 P_low = 14000 #lighting, cockpit, attitude, cooling pump
-P_max = 1252000
+P_max = W/W_P
 P_compressor = 64000 #vanaf take-off
 P_startupheater = 12000 #taxi
 P_charging = 20000
@@ -16,16 +22,12 @@ tclimb = 10*60
 E_hydrogen = 120000000 #J/kg
 efficiency_constant = 1.23
 eff_engine = 0.93
-eff_propeller_climb = 0.7
-eff_propeller_cruise = 0.85
+eff_propeller_climb = 0.85
+eff_propeller_cruise = 0.7
 eff_pmad = 0.989
 
-
-g = 9.81
 e = 0.7
 A = 10
-m = 8618 -1814
-W = m*g
 
 rho_climb = 1.05
 S = 40
@@ -38,7 +40,6 @@ Hcruise = 3048
 
 rho_cruise = script(Hcruise)
 V_cruise = 90
-distance = 555600 #370400#
 
 rho_loiter = 1
 t_loiter = 45*60 #min
@@ -171,12 +172,12 @@ t_taxishut = 10*60
 #sizing
 
 #battery
-power_density = 2500 #W/kg
+power_density = 2000 #W/kg
 energy_density = 0.9*360 *3600#Wh/kg
 
 
 
-P_fuelcell = P_cruise
+P_fuelcell = 859000
 m_fuelcell = 111.86*np.log(P_fuelcell/1000) - 261.95 + P_fuelcell/3000
 Pbat = P_takeoff-P_fuelcell
 mbat = Pbat/power_density
