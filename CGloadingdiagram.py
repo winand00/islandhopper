@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math as m
 from matplotlib.colors import *
-from Class2_weight_estimation import cg_OEW,W_OEW,cg_wing
+from Class2_weight_estimation import cg_OEW,W_OEW,cg_wing, cg_hydrogen_tank
 
 '''
 Function 'loading_diagram' can be used to plot the loading diagram of either the RJ85 or the RJXX.
@@ -22,12 +22,12 @@ def loading_diagram():
     OEW                     = W_OEW                                          # from class2 script [kg]
     X_oew_abs               = cg_OEW                                    # absolute value of xcg oew
     X_oew                   = (X_oew_abs - MAC_start) / MAC                # [percentage of MAC] (Still Assumed 0.3569)!
-    M_fuel                  = 110                                              # To not exceed the MTOW, a fuel weight of 6249 [kg] is used!!!                                              # [-]
+    M_fuel                  = 125 + 10                                              # To not exceed the MTOW, a fuel weight of 6249 [kg] is used!!!                                              # [-]
     M_pax                   = 82                                               # [kg] 77kg of passenger + 5kg carry on baggage
     seat_pitch              = 0.762     #30 inches (ADSEE)
     nosecone_length          = 3                         # ends at middle of row 1
     starting_length         = nosecone_length - 0.762     # 1 seat distance before middle of row 1
-    X_fuel                  = 4.05         # ??                                          # [m] location of cg fuel                                            # [m] location of cg tank
+    X_fuel                  = cg_hydrogen_tank        # ??                                          # [m] location of cg fuel                                            # [m] location of cg tank
     M_front_cargo           = 95                     # [kg] 19 passengers + 2 crew
     M_rear_cargo            = 95                      # [kg] 19 passengers + 2 crew
     x_front_cargo_absolute  = 6.38    # ??
@@ -160,8 +160,8 @@ def plot_loadings():
     plt.xlabel(r'$X_{cg}/MAC$ [-]')
     plt.ylabel('Weight [kg]')
     plt.ylim((5000,8700))
-    plt.xlim(0.25,0.55)
-    plt.xticks(np.arange(0.25,0.55,0.05))
+    plt.xlim(0.5,0.75)
+    plt.xticks(np.arange(0.5,0.75,0.05))
     ax.set(facecolor='w')
     plt.axvline(min_xcg_Hopper, ymin=0, ymax=1, color='black', linestyle='-')
     plt.axvline(max_xcg_Hopper, ymin=0, ymax=1, color='black', linestyle='-')

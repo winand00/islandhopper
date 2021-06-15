@@ -5,9 +5,9 @@ from matplotlib import pyplot as plt
 def design_loads():
     # Aircraft parameters
     S = 40  # [m2]
-    MAC = 2.24   # [m]
-    Cl_alpha = 5    # ??? Cl_alpha [rad-1]
-    CL_clean = 2   # ???
+    MAC = 2.074   # [m]
+    Cl_alpha = 5.443    # ??? Cl_alpha [rad-1]
+    CL_clean = 1.701   # ???
     CL_flaps = 2.8  # ???
 
     g = 9.80665  # [m/s2]
@@ -57,7 +57,7 @@ def design_loads():
     n_S_line = 0.5 * rho * V ** 2 * CL_clean / (W/S)
     for i in np.arange(0, 130, 1):
         diff = n_B_line[i] - n_S_line[i]
-        if diff > 0 and diff < 0.03:
+        if diff > 0 and diff < 0.05:
             VB_2 = V[i]
 
     # Choose lowest VB, cannot be higher than VC
@@ -158,18 +158,21 @@ def design_loads():
 
 
 def tail_load_elevator(lf_pos):
+    # Changing variables
+    x_cg = 5.73  # Take largest CG
+    x_ac = 4.84
+    aht = 4.65  # lift curve slope hor tail
+    a = 5  # lift curve slope wing
+    l_t = 5.93  # tail arm
+    S_h_t = 6  # hor tail area
+    S = 40  # wing surface
+    deda = 0.38  # downwash change with alpha
+
+    # Constant variables
     delta_n = lf_pos              # load factor increment
     M = 8618.25503  # [kg]
     g = 9.80665
-    x_cg = 5.73 #  5.43
-    x_ac = 4.84
     x_cg_ac = x_cg - x_ac  # ???   # [m] distance from ac to cg
-    l_t = 5.93          # tail arm
-    S_h_t = 6        # hor tail area
-    S = 40                 # wing surface
-    aht = 4.65          # lift curve slope hor tail
-    a = 5             # lift curve slope wing
-    deda = 0.38             # downwash change with alpha
     rho_zero = 1.225       # density sealevel
 
     # Change in tail load due to elevator deflection
