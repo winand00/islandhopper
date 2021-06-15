@@ -2,7 +2,8 @@ from math import *
 from CGloadingdiagram import max_xcg_Hopper_nose
 print()
 print()
-max_xcg_Hopper_nose=5.4
+#max_xcg_Hopper_nose=5.4
+print('Max cg from nose is',max_xcg_Hopper_nose)
 ##constants
 height = 0.1                                            #Landing gear height from bottom fuselage. #is later iterated for longitudinal placement
 Pn = 5                                                  #Percentge of weight on the nose wheel      #is later iterated for longitudinal placement
@@ -12,7 +13,7 @@ overturn = 60                                           #overturn angle
 Phi_clearance = 8                                       #Lateral clearance
 
 ##Main inputs (these can be changed)
-Height_fuselage = 2.4                                  #height fuselage
+Height_fuselage = 2.4                                   #height fuselage
 CGyvalue= (2/3)*Height_fuselage                         #y valeu of cg from bottom of the fuselage. (estimated at 2/3)
 Engine_yloc = 10                                        #lateral engine placement.
 n_m = 2                                                 #number of main landing gears
@@ -20,8 +21,8 @@ minnoselg_xpos = 0.5                                    #minimum distance for th
 
 MTOW = 8618
 wingspan = 20
-Prop_dia = 2.4
-loc = 8.46                                              #Beginning of tailcone from nose
+Prop_dia = 2.48
+loc = 7.46                                              #Beginning of tailcone from nose
 
 
 
