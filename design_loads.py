@@ -6,9 +6,9 @@ def design_loads():
     # Aircraft parameters
     S = 40  # [m2]
     MAC = 2.074   # [m]
-    Cl_alpha = 5.443    # ??? Cl_alpha [rad-1]
-    CL_clean = 1.701   # ???
-    CL_flaps = 2.8  # ???
+    Cl_alpha = 5.101  # CL alpha w
+    CL_clean = 1.701   #
+    CL_flaps = 2.8  #
 
     g = 9.80665  # [m/s2]
     W = 8618.25503 * 9.80665  # [N]
@@ -159,14 +159,14 @@ def design_loads():
 
 def tail_load_elevator(lf_pos):
     # Changing variables
-    x_cg = 5.73  # Take largest CG
-    x_ac = 4.84
-    aht = 4.65  # lift curve slope hor tail
-    a = 5  # lift curve slope wing
-    l_t = 5.93  # tail arm
-    S_h_t = 6  # hor tail area
+    x_cg = 5.692  # Take largest CG
+    x_ac = 4.927
+    aht = 4.63  # lift curve slope hor tail
+    a = 5.101  # lift curve slope wing
+    l_t = 5.599  # tail arm
+    S_h_t = 8.3  # hor tail area
     S = 40  # wing surface
-    deda = 0.38  # downwash change with alpha
+    deda = 0.3144  # downwash change with alpha
 
     # Constant variables
     delta_n = lf_pos              # load factor increment
