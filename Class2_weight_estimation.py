@@ -2,27 +2,32 @@ from math import *
 
 
 
-weight_wing = 2* 362.5        #2 Glare wingboxes for engines on tip
-CL_max = 2.8     #Stall velocity
+weight_wing = 2* 362.5                                     #2 Glare wingboxes for engines on tip
+weight_fuselage = 1027.23                                   #get_weight_fuselage(K_door,K_lg,W_dg,N_z,L_fus,S_f,L_over_D,B_w,Lambda)       #
+weight_vertical_tail = 121.6                               #get_weight_vert_tail(H_t,H_v,W_dg,N_z,L_t,S_vt,Sweep_angle_vt,A_v,t_c_root)  #1meter from end
+weight_horizontal_tail = 2*82                               #get_weight_hor_tail(K_uht,F_w,B_h,W_dg,N_z,S_ht,L_t,Sweep_angle_ht,A_h,S_e)     #1meter from end
+CL_max = 2.8     #Stall velocity calculation
 L_n =   0.6        #nose gear length [m]
 L_m =    2       #Length of main landing gear [m]
-cg_wing = 4.8       #5.256 sized to l410
+cg_wing = 5.1       #5.256 sized to l410
 L_fuselage_whole = 12.24       #Length whole fuselage [m]
 B_w = 20                #Wing span [m]
+S_w = 40             #Wing surface [m^2]
 
 #Systems:
-weight_fuell_cell = 2 * (258.66) #(c.g. in wing)
-weight_hydrogen_tank = 105 # cg in fuselage (metal liner, mass tank, insulation, polyamide liner) x4
-weight_batteries = 2*164 #in the wing
+weight_fuell_cell = 2 * (117+142.8) #fuel cell components + stack mass
+weight_hydrogen_tank = 92 # cg in fuselage (metal liner, mass tank, insulation, polyamide liner) x2
+weight_batteries = 2*222 #in the wing
 weight_cooling_system_etc = 2*(133 + 50) #tried in the wing
-weight_engines = 2 * (155 + 4 * 12 + 20 + 80)        #2 times: 1 engine, 4 inverters, 20kg of nacelle, 80kg of propeller)       #Wing
+weight_engines = 2 * (180 + 4 * 12 + 20)        #2 times: 1 engine, 4 inverters, 20kg of nacelle, 80kg of propeller)       #Wing
+weight_propeller = 2* 81
 cg_hydrogen_tank = 4.05
-cg_NLG = 1.5             #Nose landing gear
-cg_MLG = 6.294          #Main landing gear
+cg_NLG = .5             #Nose landing gear
+cg_MLG = 6.296          #Main landing gear
 cg_vertical_tail = L_fuselage_whole - 0.75
 cg_horizontal_tail = L_fuselage_whole - 0.5
 cg_lavatory = 8.782         #From n2
-cg_fuselage = 0.5 * L_fuselage_whole   # Look into this
+cg_fuselage = 0.45 * L_fuselage_whole   # Look into this
 Nose_len = 3        #Nosecone length
 
 def get_v_stall(W_dg,S_w,CL_max):
@@ -138,7 +143,7 @@ def get_weight_flight_controls(N_f,N_m,S_csw,B_w,L_fuselage_whole,W_dg,R_z):
     W_flightcon = kg_to_lbs * 145.9 * N_f ** 0.554 * (1 + N_m / N_f) ** (-1) * S_csw ** 0.2 * (I_y * 10 ** (-6)) * 0.07
     return W_flightcon/kg_to_lbs
 
-def get_mcg(W_OEW,cg_fuel_cell,weight_fuell_cell,cg_batteries,weight_batteries,cg_cooling_system_etc,weight_cooling_system_etc,cg_engines,weight_engines,cg_avionics,weight_avionics,cg_landing_gear,weight_landing_gear,cg_fuselage,weight_fuselage,cg_vertical_tail,weight_vertical_tail,cg_horizontal_tail,weight_horizontal_tail,cg_engine_control,weight_engine_control,cg_furnishing,weight_furnishing,cg_handling_gear,weight_handling_gear,cg_instruments,weight_instruments,cg_airconditioning,weight_airconditioning,cg_electrical,weight_electrical,cg_APUins,weight_APUins,cg_starter,weight_starter,cg_hydraulics,weight_hydraulics,cg_flight_controls,weight_flight_controls,cg_lavatory,weight_lavatory,cg_wing,weight_wing,cg_hydrogen_tank,weight_hydrogen_tank,cg_crew,weight_crew):
+def get_mcg(W_OEW,cg_fuel_cell,weight_fuell_cell,cg_batteries,weight_batteries,cg_cooling_system_etc,weight_cooling_system_etc,cg_engines,weight_engines,cg_avionics,weight_avionics,cg_landing_gear,weight_landing_gear,cg_fuselage,weight_fuselage,cg_vertical_tail,weight_vertical_tail,cg_horizontal_tail,weight_horizontal_tail,cg_engine_control,weight_engine_control,cg_furnishing,weight_furnishing,cg_handling_gear,weight_handling_gear,cg_instruments,weight_instruments,cg_airconditioning,weight_airconditioning,cg_electrical,weight_electrical,cg_APUins,weight_APUins,cg_starter,weight_starter,cg_hydraulics,weight_hydraulics,cg_flight_controls,weight_flight_controls,cg_lavatory,weight_lavatory,cg_wing,weight_wing,cg_hydrogen_tank,weight_hydrogen_tank,cg_crew,weight_crew,cg_propeller,weight_propeller):
     mcg_wing = cg_wing * weight_wing
     mcg_hydrogen_tank = cg_hydrogen_tank * weight_hydrogen_tank
     mcg_fuel_cell = cg_fuel_cell * weight_fuell_cell
@@ -162,7 +167,8 @@ def get_mcg(W_OEW,cg_fuel_cell,weight_fuell_cell,cg_batteries,weight_batteries,c
     mcg_flight_controls = cg_flight_controls * weight_flight_controls
     mcg_lavatory = cg_lavatory * weight_lavatory
     mcg_crew = cg_crew * weight_crew
-    mcg_total = mcg_crew + mcg_wing + mcg_hydrogen_tank + mcg_fuel_cell + mcg_batteries + mcg_cooling_system_etc + mcg_engines + mcg_avionics + mcg_landing_gear + mcg_fuselage + mcg_vertical_tail + mcg_horizontal_tail + mcg_engine_control + mcg_furnishing + mcg_handling_gear + mcg_instruments + mcg_airconditioning + mcg_electrical + mcg_APUins + mcg_starter + mcg_hydraulics + mcg_flight_controls + mcg_lavatory
+    mcg_propeller = cg_propeller * weight_propeller
+    mcg_total = mcg_propeller + mcg_crew + mcg_wing + mcg_hydrogen_tank + mcg_fuel_cell + mcg_batteries + mcg_cooling_system_etc + mcg_engines + mcg_avionics + mcg_landing_gear + mcg_fuselage + mcg_vertical_tail + mcg_horizontal_tail + mcg_engine_control + mcg_furnishing + mcg_handling_gear + mcg_instruments + mcg_airconditioning + mcg_electrical + mcg_APUins + mcg_starter + mcg_hydraulics + mcg_flight_controls + mcg_lavatory
     return mcg_total/W_OEW
 
 #------------------------------------- conversions:
@@ -183,8 +189,7 @@ W_dg = 8618             #Design gross weight [kg]
 N_z = 4.3913             #Ultimate load factor (1.5* limit load factor)
 
 #Wing inputs:
-S_w = 40             #Wing surface [m^2]
-A = 9                #Aspect ratio
+A = 10                #Aspect ratio
 t_c_root =   0.16       #Thickness to chord ratio at root [m]
 Lambda =  0.5          #Wing taper ratio
 Sweep_angle = 0      #Sweep angle at 25% MAC [rad]
@@ -262,11 +267,13 @@ weight_crew = 77*2
 
 #--------------------Centre of gravity inputs-------------------------------------- Need to be refined!!!
 #cg in meters from front of the plane
+
 cg_fuel_cell = cg_wing
 cg_batteries = cg_wing
 cg_cooling_system_etc = cg_wing
-cg_engines = cg_wing - 1
+cg_engines = cg_wing - 0.5
 cg_engine_control = cg_engines
+cg_propeller = cg_engines - 0.45
 cg_airconditioning = cg_fuselage
 cg_electrical = cg_fuselage - 2
 cg_APUins = cg_wing     #Necessary?
@@ -282,9 +289,6 @@ cg_hydraulics = cg_flight_controls -0.3         #2 ailerons, 2 elevators, 1 rudd
 #------------------Class 2 weights------------------
 #weight_wing = get_weight_wing(W_dg,N_z,S_w,A,t_c_root,Lambda,Sweep_angle,S_csw)         #c.g. in Wing
 weight_avionics = get_weight_avionics(W_uav)            #c.g. 2 meter?
-weight_fuselage = 1033 #get_weight_fuselage(K_door,K_lg,W_dg,N_z,L_fus,S_f,L_over_D,B_w,Lambda)       #
-weight_vertical_tail = 121.6 #get_weight_vert_tail(H_t,H_v,W_dg,N_z,L_t,S_vt,Sweep_angle_vt,A_v,t_c_root)  #1meter from end
-weight_horizontal_tail = get_weight_hor_tail(K_uht,F_w,B_h,W_dg,N_z,S_ht,L_t,Sweep_angle_ht,A_h,S_e)     #1meter from end
 weight_landing_gear,W_mlg,W_nlg = get_weight_landing_gear(K_mp,K_np,N_l,W_l,L_m,L_n,N_mw,N_nw,N_mss,V_stall)    #Nose:      mlg:
 weight_engine_control = get_weight_Engine_Controls(N_en,L_ec)   #c.g. in wing
 weight_furnishing = get_weight_furnishing(N_c,W_c,S_f) + 19*11      #19 seats of 11 kg
@@ -299,17 +303,17 @@ weight_hydraulics = get_weight_hydraulics(N_f,L_fuselage_whole,B_w)
 weight_flight_controls = 150            #From torenbeek, raymer formula is not applicable
 weight_lavatory = 0.31 * N_p ** 1.33  #raymer
 weight_all_hydrogen_systems = weight_hydrogen_tank + weight_batteries + weight_cooling_system_etc + weight_fuell_cell #Hydrogen + Hydrogen tank + fuel cells + etc
-W_OEW = weight_all_hydrogen_systems + weight_engines + weight_wing + weight_avionics + weight_landing_gear + weight_fuselage + weight_vertical_tail + weight_horizontal_tail + weight_engine_control + weight_furnishing + weight_handling_gear + weight_instruments + weight_airconditioning + weight_electrical + weight_APUins + weight_starter + weight_hydraulics + weight_flight_controls + weight_lavatory + weight_crew
+W_OEW = weight_propeller + weight_all_hydrogen_systems + weight_engines + weight_wing + weight_avionics + weight_landing_gear + weight_fuselage + weight_vertical_tail + weight_horizontal_tail + weight_engine_control + weight_furnishing + weight_handling_gear + weight_instruments + weight_airconditioning + weight_electrical + weight_APUins + weight_starter + weight_hydraulics + weight_flight_controls + weight_lavatory + weight_crew
 
 
 cg_landing_gear = (W_mlg * cg_MLG + W_nlg * cg_NLG) / (W_mlg + W_nlg)     #NLG:  2     MLG: 7.5
-cg_OEW = get_mcg(W_OEW,cg_fuel_cell,weight_fuell_cell,cg_batteries,weight_batteries,cg_cooling_system_etc,weight_cooling_system_etc,cg_engines,weight_engines,cg_avionics,weight_avionics,cg_landing_gear,weight_landing_gear,cg_fuselage,weight_fuselage,cg_vertical_tail,weight_vertical_tail,cg_horizontal_tail,weight_horizontal_tail,cg_engine_control,weight_engine_control,cg_furnishing,weight_furnishing,cg_handling_gear,weight_handling_gear,cg_instruments,weight_instruments,cg_airconditioning,weight_airconditioning,cg_electrical,weight_electrical,cg_APUins,weight_APUins,cg_starter,weight_starter,cg_hydraulics,weight_hydraulics,cg_flight_controls,weight_flight_controls,cg_lavatory,weight_lavatory,cg_wing,weight_wing,cg_hydrogen_tank,weight_hydrogen_tank,cg_crew,weight_crew)
-
+cg_OEW = get_mcg(W_OEW,cg_fuel_cell,weight_fuell_cell,cg_batteries,weight_batteries,cg_cooling_system_etc,weight_cooling_system_etc,cg_engines,weight_engines,cg_avionics,weight_avionics,cg_landing_gear,weight_landing_gear,cg_fuselage,weight_fuselage,cg_vertical_tail,weight_vertical_tail,cg_horizontal_tail,weight_horizontal_tail,cg_engine_control,weight_engine_control,cg_furnishing,weight_furnishing,cg_handling_gear,weight_handling_gear,cg_instruments,weight_instruments,cg_airconditioning,weight_airconditioning,cg_electrical,weight_electrical,cg_APUins,weight_APUins,cg_starter,weight_starter,cg_hydraulics,weight_hydraulics,cg_flight_controls,weight_flight_controls,cg_lavatory,weight_lavatory,cg_wing,weight_wing,cg_hydrogen_tank,weight_hydrogen_tank,cg_crew,weight_crew,cg_propeller,weight_propeller)
 
 print(cg_landing_gear)
 # print("Inputted weights:")
 print("Weight hydrogen tank and fuell cells and hydrogen =", weight_all_hydrogen_systems, "   % of MTOW:", 100*weight_all_hydrogen_systems/W_dg)
 print("Weight engines =", weight_engines, "   % of MTOW:", 100*weight_engines/W_dg)
+print("Weight propellers =", weight_propeller, "   % of MTOW:", 100*weight_propeller/W_dg)
 #
 print("\n Calculated weights Class 2:")
 print("Weight wing =", weight_wing, "   ,  % of MTOW:",  100*weight_wing/W_dg, "    ,   c.g.:", cg_wing, "m")
@@ -332,4 +336,4 @@ print("Weight lavatory =", weight_lavatory, "   , % of MTOW:",100*weight_lavator
 print("\n")
 print("Total weight of subsystems + crew (OEW):", W_OEW)
 print("OEW cg =", cg_OEW)
-print("MTOW:", W_OEW + 110 + 1814)
+print("MTOW:", W_OEW + 135 + 1814)
