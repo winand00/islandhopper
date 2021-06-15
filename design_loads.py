@@ -6,7 +6,7 @@ def design_loads():
     # Aircraft parameters
     S = 40  # [m2]
     MAC = 2.074   # [m]
-    Cl_alpha = 5    # ??? Cl_alpha [rad-1]
+    Cl_alpha = 5.443    # ??? Cl_alpha [rad-1]
     CL_clean = 1.701   # ???
     CL_flaps = 2.8  # ???
 

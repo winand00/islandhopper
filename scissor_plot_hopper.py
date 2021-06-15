@@ -73,7 +73,6 @@ if __name__ == '__main__':
     print("Cl_alpha_h = ", Cl_alpha_h)
     print("Cl_alpha_Ah = ", Cl_alpha_Ah)
     Cl_alpha_A = Cl_alpha_Ah + Cl_alpha_h
-    print
     print("Cl_alpha_A = ", Cl_alpha_A)
 
     xbar_ac = get_ac(cg_wing, cbar, Cl_alpha_Ah, bf, hf, S, mac, lambda_taper, lambda_a)
@@ -81,7 +80,7 @@ if __name__ == '__main__':
 
     l_h = cg_horizontal_tail - (cg_wing - mac/2 + xbar_ac)  # 5.93 #(5.7/12.5)*lf
     r = l_h/(b/2)
-    mtv = 0.067
+    mtv = 0.2
     Kel = 0.1124/r**2 + 0.1024/r + 2
     Kel0 = 0.1124/r**2 + 0.1024/r + 2
     T1 = (r/(r**2+mtv**2))*0.4876/(np.sqrt(r**2+0.6319+mtv**2))
@@ -95,7 +94,7 @@ if __name__ == '__main__':
     Cl_alpha_w_low = 2 * np.pi * A / (2 + np.sqrt(4 + (A * betalow / eta) ** 2 * (1 + np.tan(lambda_a) ** 2 / betalow ** 2)))
     Cl_alpha_Ah_low = Cl_alpha_w_low*(1+2.15*bf/b)*SnS +np.pi/2*bf**2 /S
     Cm_acw = Cm0_airfoil * (A*np.cos(lambda_a)*np.cos(lambda_a))/(A+2*np.cos(lambda_a))
-    dfC_m_ac = - 0.43       #From sead lecture 5 slide 21
+    dfC_m_ac = - 0.33       #From sead lecture 5 slide 21
     dfusCm_ac = -1.8 * (1-2.5*bf/lf) * (np.pi * bf * hf * lf)/(4*S*cbar) * (CL0_airfoil / Cl_alpha_Ah_low)
     Cm_ac = Cm_acw +  dfC_m_ac  + dfusCm_ac        #-0.986
     print("Cm_ac=", Cm_ac)
