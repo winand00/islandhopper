@@ -48,7 +48,7 @@ if __name__ == '__main__':
     S_net = S - bf * 3  # S minus b_f * chord at root
     mac = 2.074             #mac = 2/3*0.5*cbar*((1+0.5+0.5**2)/(1+0.5))
     VhV = 0.95
-    Ah = 6.73
+    Ah = 5.193
     A = 10
     Cm0_airfoil = -0.0232
     CL0_airfoil = .2885
@@ -72,15 +72,13 @@ if __name__ == '__main__':
     Cl_alpha_Ah =  Cl_alpha_w*(1+2.15*bf/b)*SnS +np.pi/2*bf**2 /S
     print("Cl_alpha_h = ", Cl_alpha_h)
     print("Cl_alpha_Ah = ", Cl_alpha_Ah)
-    Cl_alpha_A = Cl_alpha_Ah + Cl_alpha_h
-    print("Cl_alpha_A = ", Cl_alpha_A)
 
     xbar_ac = get_ac(cg_wing, cbar, Cl_alpha_Ah, bf, hf, S, mac, lambda_taper, lambda_a)
     print("x_ac=",cg_wing - cbar/2 + xbar_ac)
 
     l_h = cg_horizontal_tail - (cg_wing - mac/2 + xbar_ac)  # 5.93 #(5.7/12.5)*lf
     r = l_h/(b/2)
-    mtv = 0.2
+    mtv = 2.2/10
     Kel = 0.1124/r**2 + 0.1024/r + 2
     Kel0 = 0.1124/r**2 + 0.1024/r + 2
     T1 = (r/(r**2+mtv**2))*0.4876/(np.sqrt(r**2+0.6319+mtv**2))
