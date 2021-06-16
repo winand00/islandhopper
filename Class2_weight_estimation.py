@@ -2,14 +2,14 @@ from math import *
 
 
 
-weight_wing = 2* 362.5                                     #2 Glare wingboxes for engines on tip
+weight_wing = 2* 386.06                                     #2 Glare wingboxes for engines on tip
 weight_fuselage = 1027.23                                   #get_weight_fuselage(K_door,K_lg,W_dg,N_z,L_fus,S_f,L_over_D,B_w,Lambda)       #
-weight_vertical_tail = 121.6                               #get_weight_vert_tail(H_t,H_v,W_dg,N_z,L_t,S_vt,Sweep_angle_vt,A_v,t_c_root)  #1meter from end
-weight_horizontal_tail = 2*82                               #get_weight_hor_tail(K_uht,F_w,B_h,W_dg,N_z,S_ht,L_t,Sweep_angle_ht,A_h,S_e)     #1meter from end
+weight_vertical_tail = 116.5                               #get_weight_vert_tail(H_t,H_v,W_dg,N_z,L_t,S_vt,Sweep_angle_vt,A_v,t_c_root)  #1meter from end
+weight_horizontal_tail = 2*62.3                               #get_weight_hor_tail(K_uht,F_w,B_h,W_dg,N_z,S_ht,L_t,Sweep_angle_ht,A_h,S_e)     #1meter from end
 CL_max = 2.8     #Stall velocity calculation
-L_n =   0.6        #nose gear length [m]
-L_m =    2       #Length of main landing gear [m]
-cg_wing = 5.55       #5.256 sized to l410
+L_n =   0.297        #nose gear length [m]
+L_m =    2  + L_n     #Length of main landing gear [m]
+cg_wing = 5.5       #5.256 sized to l410
 L_fuselage_whole = 12.24       #Length whole fuselage [m]
 B_w = 20                #Wing span [m]
 S_w = 40             #Wing surface [m^2]
@@ -17,15 +17,15 @@ S_w = 40             #Wing surface [m^2]
 #Systems:
 weight_fuell_cell = 2 * (117+142.8) #fuel cell components + stack mass
 weight_hydrogen_tank = 92 # cg in fuselage (metal liner, mass tank, insulation, polyamide liner) x2
-weight_batteries = 2*222 #in the wing
-weight_cooling_system_etc = 2*(133 + 50) #tried in the wing
+weight_batteries = 2*231 #in the wing
+weight_cooling_system_etc = 2*(95 + 50) #tried in the wing
 weight_engines = 2 * (180 + 4 * 12 + 20)        #2 times: 1 engine, 4 inverters, 20kg of nacelle, 80kg of propeller)       #Wing
 weight_propeller = 2* 81
 cg_hydrogen_tank = 4.05
 cg_NLG = .5             #Nose landing gear
-cg_MLG = 6.296          #Main landing gear
-cg_vertical_tail = L_fuselage_whole - 0.75
-cg_horizontal_tail = L_fuselage_whole - 0.5
+cg_MLG = 6.352          #Main landing gear
+cg_vertical_tail = L_fuselage_whole - 0.5
+cg_horizontal_tail = L_fuselage_whole - 1.75
 cg_lavatory = 8.782         #From n2
 cg_fuselage = 0.45 * L_fuselage_whole   # Look into this
 Nose_len = 3        #Nosecone length
