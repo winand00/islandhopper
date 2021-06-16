@@ -1,6 +1,7 @@
 from wing_box import Macaulay
 import wingbox_inputs as wb
-from create_wingbox import AL, AL7040, Glare
+from create_wingbox import AL, AL7040, Glare, n_ult_pos
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -290,7 +291,7 @@ class Fuselage:
     
 def create_fuselage(t_sk, n_str, material_skin, material_stringer):
     weight_ac = 84516
-    n = 2.93 * 1.5
+    n = n_ult_pos  #2.93 * 1.5
     length = wb.l_fuselage
     weight_wing = wb.weight_wing
     weight_dist = (weight_ac - weight_wing) / length * n
