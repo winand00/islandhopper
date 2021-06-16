@@ -19,7 +19,7 @@ weight_fuell_cell = 2 * (117+142.8) #fuel cell components + stack mass
 weight_hydrogen_tank = 92 # cg in fuselage (metal liner, mass tank, insulation, polyamide liner) x2
 weight_batteries = 2*231 #in the wing
 weight_cooling_system_etc = 2*(95 + 50) #tried in the wing
-weight_engines = 2 * (180 + 4 * 12 + 20)        #2 times: 1 engine, 4 inverters, 20kg of nacelle, 80kg of propeller)       #Wing
+weight_engines = 4 * (91 + 2 * 12 + 20)#2 * (180 + 4 * 12 + 20)        #2 times: 1 engine, 4 inverters, 20kg of nacelle, 80kg of propeller)       #Wing
 weight_propeller = 2* 81
 cg_hydrogen_tank = 4.05
 cg_NLG = .5             #Nose landing gear
@@ -115,7 +115,7 @@ def get_weight_airconditioning(N_p,V_pr,W_uav):
 def get_weight_electrical(R_kva,L_a,N_gen):
     L_a = L_a * m_to_ft
     W_electrical = (7.291 * R_kva ** 0.782 * L_a ** 0.346 * N_gen ** 0.1)
-    return W_electrical/kg_to_lbs
+    return W_electrical/kg_to_lbs + 150
 #def get_weight_nacelle_group(K_ng,N_Lt,N_w,W_ec,N_en,S_n):
 
 def get_weight_apuinstalled(W_APU_uninstalled):
