@@ -21,9 +21,9 @@ max_deflection = 0.15                                  #Maxiumum deflection of t
 MTOW = 8618
 wingspan = 20                                           #Wingspan
 ##These change through iteration
-max_xcg_Hopper_nose=5.347
+max_xcg_Hopper_nose=5.548
 Height_fuselage = 2.4                                   #height fuselage
-Prop_dia = 2.35                                         #Diameter of prop
+Prop_dia = 2.39                                         #Diameter of prop
 loc = 7.46+0.762                                        #Beginning of tailcone from nose
 
 CGyvalue= (2/3)*Height_fuselage                         #y valeu of cg from bottom of the fuselage. (estimated at 2/3)
