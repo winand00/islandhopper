@@ -15,7 +15,7 @@ flambda = lambda x: 0.0524*x**4 -0.15*x**3 + 0.1659*x**2 - 0.0706*x + 0.0119
 
 dlambda = -0.357 + 0.45
 
-def e_theo(lmbda=0.5, dlambda=dlambda, A = 8):
+def e_theo(lmbda=0.5, dlambda=dlambda, A = 8.889):
     return 1/(1+flambda(lmbda - dlambda)*A)
 
 
@@ -26,7 +26,7 @@ def k_ef(df=2.255, b=20):
     return 1- 2*(df/b)**2
 
 
-def e2(C_d0=0.025, A=8):
+def e2(C_d0=0.0252, A=8.889):
     K = 0.38
     P = K*C_d0
     Q = 1/e_theo()*k_ef()
