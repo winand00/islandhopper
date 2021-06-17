@@ -4,11 +4,11 @@ from matplotlib import pyplot as plt
 
 def design_loads():
     # Aircraft parameters
-    S = 40  # [m2]
-    MAC = 2.074   # [m]
-    Cl_alpha = 5.443    # ??? Cl_alpha [rad-1]
-    CL_clean = 1.701   # ???
-    CL_flaps = 2.8  # ???
+    S = 43  # [m2]
+    MAC = 2.23   # [m]
+    Cl_alpha = 5.101  # CL alpha w
+    CL_clean = 1.701   #
+    CL_flaps = 2.8  #
 
     g = 9.80665  # [m/s2]
     W = 8618.25503 * 9.80665  # [N]
@@ -159,14 +159,14 @@ def design_loads():
 
 def tail_load_elevator(lf_pos):
     # Changing variables
-    x_cg = 5.73  # Take largest CG
-    x_ac = 4.84
-    aht = 4.65  # lift curve slope hor tail
-    a = 5  # lift curve slope wing
-    l_t = 5.93  # tail arm
-    S_h_t = 6  # hor tail area
-    S = 40  # wing surface
-    deda = 0.38  # downwash change with alpha
+    x_cg = 5.548  # Take largest CG
+    x_ac = 4.635
+    aht = 4.269  # lift curve slope hor tail
+    a = 5.101  # lift curve slope wing
+    l_t = 6.0553  # tail arm
+    S_h_t = 9.5  # hor tail area
+    S = 43  # wing surface
+    deda = 0.3267  # downwash change with alpha
 
     # Constant variables
     delta_n = lf_pos              # load factor increment
