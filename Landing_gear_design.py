@@ -10,14 +10,14 @@ height = 0.1                                            #Landing gear height fro
 Pn = 5                                                  #Percentge of weight on the nose wheel      #is later iterated for longitudinal placement
 Tip_over = 18                                           #tip over anglee
 Scrape_angle = 15                                       #scrape angle
-overturn = 63                                           #overturn angle
-Phi_clearance = 5                                       #Lateral clearance
+overturn = 55                                           #overturn angle
+Phi_clearance = 8                                       #Lateral clearance
 Engine_clearance = 0.15
 
 ##Main inputs (these can be changed)
 Engine_yloc = 10                                        #lateral engine placement.
 n_m = 2                                                 #number of main landing gears
-max_deflection = 0.15                                  #Maxiumum deflection of the wing tip
+max_deflection = 0.15                                   #Maxiumum deflection of the wing tip
 MTOW = 8618
 wingspan = 20                                           #Wingspan
 ##These change through iteration
@@ -28,8 +28,8 @@ loc = 7.46+0.762                                        #Beginning of tailcone f
 
 CGyvalue= (2/3)*Height_fuselage                         #y valeu of cg from bottom of the fuselage. (estimated at 2/3)
 ##Values that can be constraining
-min_nose_lg_xpos = 0.5                                  #minimum distance for the nose lg to nose of aircraft
-max_lateral_lg = 1.5                                    #Maximum lateral placement of lg
+min_nose_lg_xpos = 1.5                                  #minimum distance for the nose lg to nose of aircraft
+max_lateral_lg = 2                                      #Maximum lateral placement of lg
 
 
 

@@ -307,8 +307,8 @@ def make_wingbox(t_skin, n_str_top, n_str_bot, str_size, material_skin, material
 
 
 if __name__ == "__main__":
-    type = 'wing'
-    wingbox = make_wingbox(0.002, 4, 5, 0.03, AL2099, AL7055, AL2099, n_ult_pos, type)
+    type = 'vertical'
+    wingbox = make_wingbox(0.002, 3, 4, 0.03, AL2099, AL7055, AL2099, 0, type)
     print(wingbox.is_failing())
     wingbox.plot_crosssection(0)
     # plt.show()
