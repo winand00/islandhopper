@@ -2,16 +2,16 @@ import numpy as np
 from ISA import script
 import matplotlib.pyplot as plt
 
-W_P = 0.07226
-m = 8618 #-1814
+W_P = 0.0723
+m = 8618 -1814+132
 g = 9.81
 W = m*g
-distance = 700000 #900000
+distance = 1900000 #160000#480000# 1880000  # 555600 #900000
 
 
 S = 43
-Cd0 = 0.0261
-e = 0.7805
+Cd0 = 0.0251
+e = 0.7853
 A = 9.302
 
 P_low = 14000 #lighting, cockpit, attitude, cooling pump
