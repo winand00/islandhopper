@@ -2,14 +2,21 @@ import numpy as np
 from ISA import script
 import matplotlib.pyplot as plt
 
-W_P = 0.0675
+W_P = 0.07226
 m = 8618 #-1814
 g = 9.81
 W = m*g
-distance = 370400#555600 #
+distance = 700000 #900000
+
+
+S = 43
+Cd0 = 0.0261
+e = 0.7805
+A = 9.302
 
 P_low = 14000 #lighting, cockpit, attitude, cooling pump
 P_max = W/W_P
+print("pmax", P_max)
 P_compressor = 64000 #vanaf take-off
 P_startupheater = 12000 #taxi
 P_charging = 20000
@@ -22,16 +29,13 @@ tclimb = 10*60
 E_hydrogen = 120000000 #J/kg
 efficiency_constant = 1.23
 eff_engine = 0.93
-eff_propeller_climb = 0.85
-eff_propeller_cruise = 0.7
+eff_propeller_climb = 0.8
+eff_propeller_cruise = 0.8
 eff_pmad = 0.989
 
-e = 0.7
-A = 10
 
 rho_climb = 1.05
-S = 40
-Cd0 = 0.03
+
 Hcruise = 3048
 
 #CL_takeoff = 2.4
@@ -173,22 +177,21 @@ t_taxishut = 10*60
 
 #battery
 power_density = 2000 #W/kg
-energy_density = 0.9*360 *3600#Wh/kg
+energy_density = 0.9*369 *3600#Wh/kg
 
 
 
-P_fuelcell = 859000
+P_fuelcell = P_cruise
 m_fuelcell = 111.86*np.log(P_fuelcell/1000) - 261.95 + P_fuelcell/3000
 Pbat = P_takeoff-P_fuelcell
 mbat = Pbat/power_density
 Ebat = mbat * energy_density
 
 print("Battery until what phase?: climbout/climb")
-batphase = input()
+#batphase = input()
 
-Ebat_needed = (P_takeoff-P_fuelcell)*t_takeoff + (P_climbout-P_fuelcell)*t_climbout + (P_startup*t_startup)+ P_taxi*t_taxi
-if batphase == "climb":
-    Ebat_needed= Ebat_needed + (P_climb-P_fuelcell)*tclimb
+Ebat_needed = (P_takeoff-P_fuelcell)*t_takeoff + (P_climbout-P_fuelcell)*t_climbout +P_taxishut*t_taxishut+(P_startup*t_startup)+ P_taxi*t_taxi
+Ebat_needed= Ebat_needed + (P_climb-P_fuelcell)*tclimb
 
 if Ebat_needed>Ebat:
     mbat = Ebat_needed/(energy_density)
