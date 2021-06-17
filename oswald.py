@@ -26,7 +26,7 @@ def k_ef(df=2.255, b=20):
     return 1- 2*(df/b)**2
 
 
-def e2(C_d0=0.026, A=9.302):
+def e2(C_d0=0.0253, A=9.302):
     K = 0.38
     P = K*C_d0
     Q = 1/e_theo()*k_ef()

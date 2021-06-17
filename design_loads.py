@@ -159,14 +159,14 @@ def design_loads():
 
 def tail_load_elevator(lf_pos):
     # Changing variables
-    x_cg = 5.548  # Take largest CG
-    x_ac = 4.635
+    x_cg = 5.8468  # Take largest CG
+    x_ac = 4.936
     aht = 4.269  # lift curve slope hor tail
     a = 5.101  # lift curve slope wing
-    l_t = 6.0553  # tail arm
-    S_h_t = 9.5  # hor tail area
+    l_t = 6.59384  # tail arm
+    S_h_t = 8.2  # hor tail area
     S = 43  # wing surface
-    deda = 0.3267  # downwash change with alpha
+    deda = 0.31704  # downwash change with alpha
 
     # Constant variables
     delta_n = lf_pos              # load factor increment
