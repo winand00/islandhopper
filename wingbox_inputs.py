@@ -36,8 +36,8 @@ F_a = 0.5 * 1.225 * V_cruise ** 2 * S_w * 0.25 / w_wing  # Force of aileron
 
 # Vertical tail
 #S_vert = 10 * 1.1
-S_vert = 11.8
-A_vert = 1.7
+S_vert = 10
+A_vert = 2.1
 b_vert = np.sqrt(A_vert*S_vert) * 2
 
 taper_vert = 0.6
@@ -55,12 +55,12 @@ h_vert = w_vert * 0.3
 ly_r = b_vert / 2 / 2
 lx_r = 3 * w_vert / 2
 #F_r = 3000
-F_r = 8670
+F_r = 7710
 
 # Horizontal tail
 
 taper_hor = 0.8
-S_h = 9.5
+S_h = 8.2
 A_h = 5.193
 b_hor = np.sqrt(S_h*A_h)
 c_avg_hor = S_h/(b_hor)
@@ -82,7 +82,7 @@ F_el = tail_load_elevator(lf_pos)  # elevator force
 #Systems inputs:
 #Engine
 w_engine = 161 * 9.81
-ly_e = 0.7 * b_wing / 2
+ly_e = 0.75 * b_wing / 2
 
 lz_e = h_wing / 2
 powersetting = 0.5
@@ -90,11 +90,11 @@ w_radiator = 95 * 9.81
 w_prop = 79 * 9.81
 
 #Fuel cell
-w_fc = (117 + 50 + 140.6) * 9.81
+w_fc = (117 + 50 + 137.3) * 9.81
 ly_fc = 0.33 * b_wing
 
 #Battery
-w_bat = 206 * 9.81
+w_bat = 210 * 9.81
 ly_bat = 0.66 * b_wing
 
 #Other systems
@@ -102,7 +102,7 @@ w_sys = w_radiator
 ly_sys = 0.7 * b_wing / 2
 
 # Structures
-l_fuselage = 12.2
+l_fuselage = 12.2 + 1
 x_pos_wing = 5.22
 D_fuselage = 2.25
 weight_w = (412.02 * 2 + 150) * 9.81
