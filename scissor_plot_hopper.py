@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from CGloadingdiagram import cgboundaries
-from Class2_weight_estimation import cg_wing, cg_horizontal_tail, L_fuselage_whole, S_w, CL_max, V_stall, B_w
+from CGloadingdiagram import cgboundaries, MACcg
+from Class2_weight_estimation import cg_wing, cg_horizontal_tail, L_fuselage_whole, S_w, CL_max, V_stall, B_w, S_tail_c2
 
 
 #Define functions
@@ -36,18 +36,19 @@ def get_ac(cg_wing,cbar,Cl_alpha_Ah,bf,hf,S,mac,lambda_taper,lambda_a):
 
 if __name__ == '__main__':
     # Set Hopper values, iteration inputs
-    c_r = 2.67  # Root chord
+    c_r = 2.866666  # Root chord
     bf = 2.11
     hf =   2.4     #Fuselage height
-    cbar = 0.75*c_r
 
 #------------------Not for iteration---------------
+    cbar = 0.75 * c_r
+    S_tail = S_tail_c2
+    mac = MACcg  # 3/4 * c_r            #mac = 2/3*0.5*cbar*((1+0.5+0.5**2)/(1+0.5))
     b = B_w
     V_low = 1.1* V_stall
     S = S_w
     lf = L_fuselage_whole  # fuselage length
     S_net = S - bf * c_r  # S minus b_f * chord at root
-    mac = 2.074             #mac = 2/3*0.5*cbar*((1+0.5+0.5**2)/(1+0.5))
     VhV = 0.95
     Ah = 5.193
     A = 10
@@ -101,7 +102,7 @@ if __name__ == '__main__':
     Cl_Ah = CL_max - Cl_h
 
     # True ShS
-    ShS_true = 8.3 / 40
+    ShS_true = S_tail / S
 
     # Cg locations Hopper from loading diagram
     min_x_cg, max_x_cg = cgboundaries() 
