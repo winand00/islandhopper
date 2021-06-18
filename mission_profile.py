@@ -2,16 +2,16 @@ import numpy as np
 from ISA import script
 import matplotlib.pyplot as plt
 
-W_P = 0.07226
-m = 8618 #-1814
+W_P = 0.0723
+m = 8618 #-1814+132
 g = 9.81
 W = m*g
-distance = 700000 #900000
+distance = 480000#1900000 #160000#1880000  # 555600 #900000
 
 
 S = 43
-Cd0 = 0.0261
-e = 0.7805
+Cd0 = 0.0251
+e = 0.7853
 A = 9.302
 
 P_low = 14000 #lighting, cockpit, attitude, cooling pump
@@ -229,6 +229,6 @@ Reynolds = 15000000
 T_diff = 50
 Pratzl = 0.71
 #Nusselt =
-print(E_taxi/3600000,E_takeoff/3600000,E_climb/3600000,E_cruise/3600000,E_descent/3600000, Etotal/3600000)
+print(E_startup/3600000,E_taxi/3600000,E_takeoff/3600000,E_climb/3600000,E_cruise/3600000,E_descent/3600000, E_taxishut/3600000)
 print(Ebat_needed)
 
