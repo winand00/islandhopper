@@ -11,7 +11,7 @@ CL_max = 2.8     #Stall velocity calculation
 L_n =   0.461        #nose gear length [m]
 L_fuselage_whole = 13.24       #Length whole fuselage [m]
 B_w = 20                #Wing span [m]
-S_w = 43             #Wing surface [m^2]
+S_w = 40             #Wing surface [m^2]
 
 #Systems:
 weight_fuell_cell = 2 * (117+137.3) #fuel cell components + stack mass

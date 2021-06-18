@@ -3,31 +3,33 @@ from CGloadingdiagram import max_xcg_Hopper_nose
 print()
 print()
 print('Max cg from nose is',max_xcg_Hopper_nose)
-max_xcg_Hopper_nose=5.736
+
 
 ##constants
 height = 0.1                                            #Landing gear height from bottom fuselage. #is later iterated for longitudinal and lateral placement
 Pn = 5                                                  #Percentge of weight on the nose wheel      #is later iterated for longitudinal placement
 Tip_over = 18                                           #tip over anglee
 Scrape_angle = 15                                       #scrape angle
-overturn = 63                                           #overturn angle
-Phi_clearance = 5                                       #Lateral clearance
+overturn = 55                                           #overturn angle
+Phi_clearance = 8                                       #Lateral clearance
 Engine_clearance = 0.15
 
 ##Main inputs (these can be changed)
-Height_fuselage = 2.4                                   #height fuselage
-CGyvalue= (2/3)*Height_fuselage                         #y valeu of cg from bottom of the fuselage. (estimated at 2/3)
 Engine_yloc = 10                                        #lateral engine placement.
 n_m = 2                                                 #number of main landing gears
-max_deflection = 0.15                                  #Maxiumum deflection of the wing tip
+max_deflection = 0.15                                   #Maxiumum deflection of the wing tip
 MTOW = 8618
 wingspan = 20                                           #Wingspan
-Prop_dia = 2.48                                         #Diameter of prop
-loc = 7.46                                              #Beginning of tailcone from nose
+##These change through iteration
+max_xcg_Hopper_nose=5.847
+Height_fuselage = 2.4                                   #height fuselage
+Prop_dia = 2.39                                        #Diameter of prop
+loc = 7.46+0.762                                        #Beginning of tailcone from nose
 
+CGyvalue= (2/3)*Height_fuselage                         #y valeu of cg from bottom of the fuselage. (estimated at 2/3)
 ##Values that can be constraining
-min_nose_lg_xpos = 0.5                                  #minimum distance for the nose lg to nose of aircraft
-max_lateral_lg = 1.5                                    #Maximum lateral placement of lg
+min_nose_lg_xpos = 1.5                                  #minimum distance for the nose lg to nose of aircraft
+max_lateral_lg = 2                                      #Maximum lateral placement of lg
 
 
 
@@ -93,7 +95,7 @@ elif max(Lgmain_yloc1,Lgmain_yloc2,Lgmain_yloc3) == Lgmain_yloc3:
     print('Prop clearance is critical. Distance from center is:         ',round(Lgmain_yloc3,2),'[m]')
 print('Load percentage of nose wheel is:                            ',round(Pn,3),'[%]')
 print('Height of the landing gear is:                               ',round(height,3),'[m]')
-print(Lgmain_yloc1,Lgmain_yloc2,Lgmain_yloc3)          #prints the 3 critical y placements from center.
+#print(Lgmain_yloc1,Lgmain_yloc2,Lgmain_yloc3)          #prints the 3 critical y placements from center.
 
 
 

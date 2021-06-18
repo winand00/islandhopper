@@ -40,19 +40,22 @@ def iterate_wing_box(t_skin, n_str_top, n_str_bot, str_size, materials, n, type)
     min_weight = min(working_designs.values())
     return min_weight, lowest_weight, min(working_designs)#, failed_designs
 
-type = 'wing'
+types = ['wing', 'horizontal', 'vertical']
 size_str = np.arange(0.03, 0.06, 0.01)
 n_str_top = np.arange(2, 8, 1)
 n_str_bot = np.arange(1, 6, 1)
 t_skin = np.arange(0.002, 0.003, 0.0005)
-#n = [n_ult_pos, -n_ult_pos, n_ult_pos, n_ult_pos]# for the vertical tail
-n = [n_ult_pos, n_ult_neg, n_ult_flaps, n_ult_ail] # for the wing
-print(n)
-materials = [AL7055, AL2099]
-start = time()
-print(iterate_wing_box(t_skin, n_str_top, n_str_bot, size_str, materials, n, type))
-end = time()
-print(f'Time spend: {end-start}s')
-#print(iterate_wing_box(t_skin, n_str, size_str, AL, n, type))
-#print(iterate_wing_box(t_skin, n_str, size_str, Ti, n, type))
-#print(iterate_wing_box(t_skin, n_str, size_str, Glare, n, type))
+for type in types:
+    if type == 'vertical':
+        n = [n_ult_pos, -n_ult_pos, n_ult_pos, n_ult_pos]# for the vertical tail
+    else:
+        n = [n_ult_pos, n_ult_neg, n_ult_flaps, n_ult_ail] # for the wing
+    print(n)
+    materials = [AL7055, AL2099]
+    start = time()
+    print(type, iterate_wing_box(t_skin, n_str_top, n_str_bot, size_str, materials, n, type))
+    end = time()
+    print(f'Time spend: {end-start}s')
+    #print(iterate_wing_box(t_skin, n_str, size_str, AL, n, type))
+    #print(iterate_wing_box(t_skin, n_str, size_str, Ti, n, type))
+    #print(iterate_wing_box(t_skin, n_str, size_str, Glare, n, type))
