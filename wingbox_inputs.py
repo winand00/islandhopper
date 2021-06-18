@@ -36,8 +36,8 @@ F_a = 0.5 * 1.225 * V_cruise ** 2 * S_w * 0.25 / w_wing  # Force of aileron
 
 # Vertical tail
 #S_vert = 10 * 1.1
-S_vert = 10
-A_vert = 2.1
+S_vert = 9.7
+A_vert = 2.2
 b_vert = np.sqrt(A_vert*S_vert) * 2
 
 taper_vert = 0.6
@@ -55,12 +55,12 @@ h_vert = w_vert * 0.3
 ly_r = b_vert / 2 / 2
 lx_r = 3 * w_vert / 2
 #F_r = 3000
-F_r = 7710
+F_r = 5115
 
 # Horizontal tail
 
 taper_hor = 0.8
-S_h = 8.2
+S_h = 8
 A_h = 5.193
 b_hor = np.sqrt(S_h*A_h)
 c_avg_hor = S_h/(b_hor)

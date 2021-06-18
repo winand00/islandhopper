@@ -210,7 +210,7 @@ def make_wingbox(t_skin, n_str_top, n_str_bot, str_size, material_skin, material
                                 (1.0 * l_w, n_str_top)]
     stringer_width = str_size
     stringer_height = str_size
-    stringer_t = 0.005
+    stringer_t = 0.004
     stringer_list = {}
     top_stringer_list = []
     bottom_stringer_list = []
@@ -307,15 +307,15 @@ def make_wingbox(t_skin, n_str_top, n_str_bot, str_size, material_skin, material
 
 
 if __name__ == "__main__":
-    type = 'vertical'
-    wingbox = make_wingbox(0.002, 3, 4, 0.03, AL2099, AL7055, AL2099, 0, type)
+    type = 'horizontal'
+    wingbox = make_wingbox(0.002, 2, 1, 0.03, AL2099, AL7055, AL2099, n_ult_pos, type)
     print(wingbox.is_failing())
     wingbox.plot_crosssection(0)
     # plt.show()
     print(wingbox.get_max_stress())
     # wingbox.graph_properties()
-    wingbox.graphs()
-    print(wingbox.top_stringer_weight(), wingbox.bottom_stringer_weight(), wingbox.skin_weight())
+    # wingbox.graphs()
+    print(wingbox.top_stringer_weight(), wingbox.bottom_stringer_weight(), wingbox.skin_weight()+wingbox.rib_weight(), wingbox.front_skin_weight())
     y_max, max_stress = wingbox.get_max_stress()
     print(f'{max_stress/(10**6)} MPa, at y = {y_max} m')
     print(wingbox.weight, 'kg')
