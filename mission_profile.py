@@ -3,15 +3,15 @@ from ISA import script
 import matplotlib.pyplot as plt
 
 W_P = 0.0723
-m = 8618 #-1814+132
+m = 8618 -1814+116
 g = 9.81
 W = m*g
-distance = 480000#1900000 #160000#1880000  # 555600 #900000
+distance = 2180000# 1600000# 1600000 #480000#1900000 #1880000  # 555600 #900000
 
 
 S = 43
 Cd0 = 0.0251
-e = 0.7853
+e = 0.785
 A = 9.302
 
 P_low = 14000 #lighting, cockpit, attitude, cooling pump
@@ -36,7 +36,7 @@ eff_pmad = 0.989
 
 rho_climb = 1.05
 
-Hcruise = 3048
+Hcruise = 3000
 
 #CL_takeoff = 2.4
 #rho_takeoff = 1.225
@@ -229,6 +229,8 @@ Reynolds = 15000000
 T_diff = 50
 Pratzl = 0.71
 #Nusselt =
-print(E_startup/3600000,E_taxi/3600000,E_takeoff/3600000,E_climb/3600000,E_cruise/3600000,E_descent/3600000, E_taxishut/3600000)
-print(Ebat_needed)
-
+print(E_startup/3600000,E_taxi/3600000,E_takeoff/3600000,E_climb/3600000,E_cruise/3600000,E_descent/3600000, E_taxishut/3600000, E_loiter/3600000)
+print(P_climb)
+print(Etotal/3600000)
+print(Cl_cruise/Cd_cruise)
+print(RC)
