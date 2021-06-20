@@ -17,7 +17,7 @@ import math
 #design Cl
 m = 8618
 g = 9.81
-S = 45
+S = 40
 W = m*g
 V_cruise = 90
 V_ldg = 55
@@ -96,6 +96,7 @@ def flap_calculator(dCl_max_TE, dCL_max= dCL_max, LE = False):
         SwfS_TE = dCL_max_TE/0.9/dCl_max_TE
         
     return SwfS_LE, SwfS_TE
+
 
 
 def chord(y):

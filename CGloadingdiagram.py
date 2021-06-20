@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math as m
 from matplotlib.colors import *
-from Class2_weight_estimation import cg_OEW,W_OEW,cg_wing
+from Class2_weight_estimation import cg_OEW,W_OEW,cg_wing, cg_hydrogen_tank
 
 '''
 Function 'loading_diagram' can be used to plot the loading diagram of either the RJ85 or the RJXX.
@@ -15,27 +15,28 @@ def cgboundaries():
     max_xcg_Hopper = max(loading_diagram()[2]) + 0.02
     return min_xcg_Hopper, max_xcg_Hopper
 
-MAC = 2
+MAC = 2.24
 def loading_diagram():
     # Define Hopper input parameters                                          # [m]
     MAC_start               = cg_wing- 0.5*MAC                                   # [m]
     OEW                     = W_OEW                                          # from class2 script [kg]
-    X_oew_abs               = cg_OEW                                       # absolute value of xcg oew
+    X_oew_abs               = cg_OEW                                    # absolute value of xcg oew
     X_oew                   = (X_oew_abs - MAC_start) / MAC                # [percentage of MAC] (Still Assumed 0.3569)!
-    M_fuel                  = 110                                              # To not exceed the MTOW, a fuel weight of 6249 [kg] is used!!!                                              # [-]
+    M_fuel                  = 114 + 10                                              # To not exceed the MTOW, a fuel weight of 6249 [kg] is used!!!                                              # [-]
     M_pax                   = 82                                               # [kg] 77kg of passenger + 5kg carry on baggage
     seat_pitch              = 0.762     #30 inches (ADSEE)
-    nosecone_length          = 3.056                         # ends at middle of row 1
+    nosecone_length          = 3                         # ends at middle of row 1
     starting_length         = nosecone_length - 0.762     # 1 seat distance before middle of row 1
-    X_fuel                  = 6.5         # ??                                          # [m] location of cg fuel                                            # [m] location of cg tank
-    M_front_cargo           = 105                     # [kg] 19 passengers + 2 crew
-    M_rear_cargo            = 105                      # [kg] 19 passengers + 2 crew
-    x_front_cargo_absolute  = 3    # ??
-    x_rear_cargo_absolute   = 8    # ??
+    X_fuel                  = cg_hydrogen_tank        # ??                                          # [m] location of cg fuel                                            # [m] location of cg tank
+    M_front_cargo           = 95                     # [kg] 19 passengers + 2 crew
+    M_rear_cargo            = 95                      # [kg] 19 passengers + 2 crew
+    x_front_cargo_absolute  = 6.38    # ??
+    x_rear_cargo_absolute   = 7.21    # ??
     X_front_cargo           = (x_front_cargo_absolute - MAC_start)/MAC
     X_rear_cargo            = (x_rear_cargo_absolute - MAC_start)/MAC
     emergency_space         = 0.15       # [m]
     # ____________________________________________________________________________
+
 
     # Function to calculate the cg by adding extra mass:
     def cg_calc(CurrentMass,Current_cg,Extra_mass,cg_extra_mass):
@@ -159,8 +160,9 @@ def plot_loadings():
     plt.xlabel(r'$X_{cg}/MAC$ [-]')
     plt.ylabel('Weight [kg]')
     plt.ylim((5000,8700))
-    plt.xlim(0.3,0.6)
-    plt.xticks(np.arange(0.3,0.60,0.05))
+    plt.xlim(min_xcg_Hopper-0.05,max_xcg_Hopper+0.05)
+    #plt.xlim(0.5,0.75)
+    plt.xticks(np.arange(round(min_xcg_Hopper/0.05)*0.05-0.05,round(max_xcg_Hopper/0.05)*0.05+0.05,0.05))
     ax.set(facecolor='w')
     plt.axvline(min_xcg_Hopper, ymin=0, ymax=1, color='black', linestyle='-')
     plt.axvline(max_xcg_Hopper, ymin=0, ymax=1, color='black', linestyle='-')

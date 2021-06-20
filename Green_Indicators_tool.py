@@ -27,10 +27,11 @@ def recycle(a):
 def Efficiency(a):
     S = a.S_wing + a.S_tail + a.S_fl_wet + a.S_lg
     CL = (a.CL_wing * a.S_wing + a.CL_tail * a.S_tail) / (S - a.S_lg - a.S_fl_wet)
-    C_D_0 = 1.1* (a.CD0_wing * 2*1.07*(a.S_wing - (45/35.18)*(2.07*2.07)) + a.CD0_tail * 1.05*2*(a.S_tail - (45/35.18) * 0.595) + a.CD0_fl * a.S_fl_wet + a.CD0_lg * a.S_lg_wet) / a.S_wing  #Adsee Lift & Drag Estimation slides
+    C_D_0 = 1.1* (a.CD0_wing * 2*1.07*(a.S_wing - (45/35.18)*(2.07*2.07)) + a.CD0_tail * 1.05*2*(a.S_tail - (45/35.18) * 0.595) + a.CD0_fl * a.S_fl_wet + a.CD0_lg * a.S_lg_wet) / (S - a.S_lg)  #Adsee Lift & Drag Estimation slides
     C_D_i = ( a.S_wing*(a.CL_wing ** 2) / (pi * a.A_wing* a.e_wing) + a.S_tail * (a.CL_tail ** 2) / (pi * a.A_tail* a.e_tail))/(S - a.S_lg - a.S_fl_wet)
     C_D = C_D_0 + C_D_i
-    GI_2 = CL / C_D * 1/(a.MTOW + a.dW * a.G) * a.n_prop * a.n_engine * a.n_pmad * a.n_cooling * a.n_fuelcell
+    GI_2 = CL / C_D * a.MTOW/(a.MTOW + a.dW * a.G) * a.n_prop * a.n_engine * a.n_pmad * a.n_cooling * a.n_fuelcell
+    #print(C_D_0, "= CD0")
     return GI_2
 
 def Noise(a):
@@ -158,15 +159,21 @@ design2 = Parameters2()
 
 
 # Recyclability inputs , (M, RC, E_vir, E_rc , RECD) Line 12-16 for explanation of symbols
-carbon1 = Material(400, 0.4, 220000, 20000, 0.6)
-alluminium1 = Material(100, 0.8, 10000, 1500, 0.5)
+alluminium1 = Material(1, 1, 220*10**6, 30*10**6, 0.45)
 
-carbon2 = Material(400, 0.4, 220000, 20000, 0.5)
-alluminium2 = Material(100, 0.8, 10000, 1500, 0.6)
+titanium1 = Material(1, 1, 720*10**6, 96*10**6, 0.24)
 
+cfrp1 = Material(1, 0, 500*10**6, 500*10**6, 0)
+
+glare1 = Material(1, 0.81, 200*10**6, 46.72*10**6, 0.3645)
 
 
 Option1 = [carbon1, alluminium1]
 Option2 = [carbon2, alluminium2]
 
-tool(design1, Option1, design2, Option2)
+Option1 = [alluminium1]
+Option2 = [titanium1]
+Option3 = [cfrp1]
+Option4 = [glare1]
+
+tool(design1,Option3,design2,Option4)

@@ -1,5 +1,7 @@
 from wing_box import Macaulay
 import wingbox_inputs as wb
+from create_wingbox import AL, AL7040, Glare, n_ult_pos, AL6061
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -41,6 +43,8 @@ class Stringer:
 class Fuselage:
     def __init__(self, stringer, n_str, length, t, D, weight_dist, x_w, T_t, x_t, F_t, rho, E, sigma_y, poisson, buckling_factor):
         self.weight_dist = weight_dist
+        self.rib_spacing = 0.8
+        self.rib_width = 0.1
         self.x_w = x_w
         #self.F_w = F_w
         self.x_t = x_t
@@ -62,14 +66,38 @@ class Fuselage:
         self.E = E
         self.poisson = poisson
 
+    def floor_weight(self):
+        floor_width = 1.9
+        floor_area = floor_width * self.length
+        return 5 * floor_area
+
+    def cutout_weight(self):
+        return 18 * 0.7 + 3 * 18
+
+    def rib_weight(self):
+        rib_area = np.pi*((self.D/2)**2-(self.D/2-self.rib_width)**2)
+        total_area = round(self.length/self.rib_spacing) * rib_area
+        return total_area*self.t*self.rho
+
     def skin_area(self):
         return np.pi * self.D * self.t
 
-    def get_weight(self):
+    def stringer_weight(self):
         stringer_weight = 0
         for stri in self.stringers:
             stringer_weight += stri.area * self.length * stri.rho
-        return stringer_weight + self.skin_area * self.length * self.rho
+        return stringer_weight
+
+    def bottom_skin_weight(self):
+        bottom_skin = self.skin_area * self.length * self.rho / 2
+        return bottom_skin
+
+    def top_skin_weight(self):
+        top_skin = self.skin_area * self.length * Glare.density / 2
+        return top_skin
+
+    def get_weight(self):
+        return self.stringer_weight() + self.bottom_skin_weight() + self.top_skin_weight() + self.rib_weight() + self.floor_weight() + self.cutout_weight()
 
     def make_stringers(self, stringer, n_str):
         t = stringer.t
@@ -270,9 +298,9 @@ class Fuselage:
         return sigma_panel
     
     
-def create_fuselage(t_sk, n_str):
+def create_fuselage(t_sk, n_str, material_skin, material_stringer):
     weight_ac = 84516
-    n = 2.93 * 1.5
+    n = n_ult_pos  #2.93 * 1.5
     length = wb.l_fuselage
     weight_wing = wb.weight_wing
     weight_dist = (weight_ac - weight_wing) / length * n
@@ -281,28 +309,27 @@ def create_fuselage(t_sk, n_str):
     x_t = length - 0.1
     F_t = wb.L_hor * wb.b_hor * n
     x_w = wb.x_pos_wing
-    F_w = 0 #weight_ac * n - weight_wing + F_t
-    T_t = wb.L_ver * wb.b_vert ** 2 / 3
+    F_w = weight_ac * n - weight_wing + F_t
+    T_t = wb.L_ver * wb.b_vert ** 2 / 2
     buckling_factor = 0 #5 # fraction of sigma_y
     # Material
     #Stringer
-    rho_str = 2820
-    E_str = 69 * 10 ** 9   
-    sigma_y_str = 450 * 10 ** 6
-    poisson_str = 0.33   
+    rho_str = material_stringer.density
+    E_str = material_stringer.E
+    sigma_y_str = material_stringer.sigma_y
+    poisson_str = material_stringer.poisson
     
     #Skin
-    rho_sk = 2820
-    E_sk = 69 * 10 ** 9
-    sigma_y_sk = 450 * 10 ** 6
-    poisson_sk = 0.33
-
+    rho_sk = material_skin.density
+    E_sk = material_skin.E
+    sigma_y_sk = material_skin.sigma_y
+    poisson_sk = material_skin.poisson
     #G = 26.4 * 10 ** 9
     
     # Make stringer
     t_str = 0.005
-    w_str = 0.1
-    h_str = 0.1
+    w_str = 0.04
+    h_str = 0.04
 
     stringer = Stringer(t_str, w_str, h_str, rho_str, sigma_y_str, E_str, poisson_str)
     n_str = n_str # Has to be a multiple of 4
@@ -312,12 +339,16 @@ def create_fuselage(t_sk, n_str):
 
 
 if __name__ == "__main__":
-    t_sk = 0.003
-    n_str = 20
-    fuselage = create_fuselage(t_sk, n_str)
+    t_sk = 0.002
+    n_str = 32
+    material_skin = AL
+    material_stringer = AL6061
+    fuselage = create_fuselage(t_sk, n_str, material_skin, material_stringer)
+    print(fuselage.floor_weight())
     fuselage.graphs()
     print(fuselage.max_von_mises())
     print(fuselage.skin_buckling())
+    print(fuselage.top_skin_weight(), fuselage.bottom_skin_weight(), fuselage.stringer_weight(), fuselage.rib_weight(), fuselage.floor_weight())
     print(fuselage.weight)
     print(fuselage.effected_width())
     print(fuselage.panel_crippling())
