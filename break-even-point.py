@@ -48,19 +48,10 @@ ax2.set_xlabel('Years [-]')
 ax1.set_ylabel('million [$]')
 plt.show()
 
-# #Plot
-# fig, ax1 = plt.subplots()
-# ax1.plot(np.arange(0, (plot_years * sales_per_year) + 1), (revenue_per_ac - VC) * np.arange(0, (plot_years * sales_per_year) + 1), label='Profit')
-# ax1.plot(np.arange(0, plot_years * 23), RDTE * np.ones(plot_years * 23), label='RDTE')
-#
-# #Customize graph
-# ax2 = ax1.twiny()
-# ax2.set_xticks(np.arange(0, plot_years) + 1)
-#
-# plt.title('Break-Even Point', weight='bold')
-# ax1.legend(loc='best')
-# ax1.grid(b=True, which='major', axis='y')
-# ax1.set_xlabel('Aircraft sold [-]')
-# ax2.set_xlabel('Years [-]')
-# ax1.set_ylabel('million [$]')
-# plt.show()
+#Print Result
+tot_rev = revenue_per_ac * plot_years * sales_per_year
+tot_cost = RDTE + VC * plot_years * sales_per_year
+print(f"Total Revenue: {round(tot_rev, 1)}\n"
+      f"Total Cost:    {round(tot_cost, 1)}\n"
+      f"               -------\n"
+      f"Profit:        {round(tot_rev - tot_cost, 1)} million [$]")
