@@ -22,7 +22,7 @@ def loading_diagram():
     OEW                     = W_OEW                                          # from class2 script [kg]
     X_oew_abs               = cg_OEW                                    # absolute value of xcg oew
     X_oew                   = (X_oew_abs - MAC_start) / MAC                # [percentage of MAC] (Still Assumed 0.3569)!
-    M_fuel                  = 108 + 10                                              # To not exceed the MTOW, a fuel weight of 6249 [kg] is used!!!                                              # [-]
+    M_fuel                  = 103 + 10                                              # To not exceed the MTOW, a fuel weight of 6249 [kg] is used!!!                                              # [-]
     M_pax                   = 82                                               # [kg] 77kg of passenger + 5kg carry on baggage
     seat_pitch              = 0.762     #30 inches (ADSEE)
     nosecone_length          = 3                         # ends at middle of row 1

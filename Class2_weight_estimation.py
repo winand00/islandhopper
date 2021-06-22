@@ -1,21 +1,21 @@
 from math import *
 
-S_tail_c2 = 8
-cg_wing = 5.56       #5.256 sized to l410
+S_tail_c2 = 8.15
+cg_wing = 5.565       #5.256 sized to l410
 
 weight_wing = 2* 397.6                                     #2 Glare wingboxes for engines on tip
 weight_fuselage = 1064.1 #get_weight_fuselage(K_door,K_lg,W_dg,N_z,L_fus,S_f,L_over_D,B_w,Lambda)       #
-weight_vertical_tail = 83.4                               #get_weight_vert_tail(H_t,H_v,W_dg,N_z,L_t,S_vt,Sweep_angle_vt,A_v,t_c_root)  #1meter from end
-weight_horizontal_tail = 2*53.5                               #get_weight_hor_tail(K_uht,F_w,B_h,W_dg,N_z,S_ht,L_t,Sweep_angle_ht,A_h,S_e)     #1meter from end
+weight_vertical_tail = 84.5                               #get_weight_vert_tail(H_t,H_v,W_dg,N_z,L_t,S_vt,Sweep_angle_vt,A_v,t_c_root)  #1meter from end
+weight_horizontal_tail = 2*54.6                               #get_weight_hor_tail(K_uht,F_w,B_h,W_dg,N_z,S_ht,L_t,Sweep_angle_ht,A_h,S_e)     #1meter from end
 CL_max = 2.8     #Stall velocity calculation
 L_n =   0.461        #nose gear length [m]
 L_fuselage_whole = 13.24       #Length whole fuselage [m]
 B_w = 20                #Wing span [m]
-S_w = 40             #Wing surface [m^2]
+S_w = 43             #Wing surface [m^2]
 
 #Systems:
 weight_fuell_cell = 2 * (117+137.3) #fuel cell components + stack mass
-weight_hydrogen_tank = 156 # cg in fuselage (metal liner, mass tank, insulation, polyamide liner) x2
+weight_hydrogen_tank = 92 + 49.4 # cg in fuselage (metal liner, mass tank, insulation, polyamide liner) x2
 weight_batteries = 2*210 #in the wing
 weight_cooling_system_etc = 2*(95 + 50) #tried in the wing
 weight_engines = 2 * (161 + 4 * 12 + 20)        #2 times: 1 engine, 4 inverters, 20kg of nacelle, 80kg of propeller)       #Wing
