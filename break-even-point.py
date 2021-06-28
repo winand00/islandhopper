@@ -5,14 +5,14 @@ from matplotlib import pyplot as plt
 # VC = variable cost
 
 #Parameters
-RDTE = 64571000 / 1000000
+RDTE = 78009063 / 1000000 #64571000 / 1000000
 ref_ac_MC = 7800000 * 0.5
 fuel_tank_MC = 101400
 battery_MC = 21697
 fuel_cell_MC = 2238656
 VC = (ref_ac_MC + fuel_tank_MC + battery_MC + fuel_cell_MC) / 1000000
-revenue_per_ac = 10000000 / 1000000
-plot_years = 3
+revenue_per_ac = 8000000 / 1000000
+plot_years = 4
 sales_per_year = 23
 
 #Calculate Break-Even Units (BEU) and Break-Even Revenue (BER)
